@@ -3,5 +3,13 @@
     <string name="l1_textField">Học viện BCVT</string>
     <string name="l2_textField">nhập tiêu đề</string>
     <string name="l2_textField1">nhập nội dung</string>
-    <string name="l2_textField3">send</string>
+    <string name="l2_textField2">send</string>
+    <string name="l3_textField">Thực hiện phép tính</string>
+    <string name="l3_textField1">Nhập số 1</string>
+    <string name="l3_textField2">Nhập số 2</string>
+    <string name="l3_textField3">Kết Quả</string>
+    <string name="l3_btn">Cộng</string>
+    <string name="l3_btn1">Trừ</string>
+    <string name="l3_btn2">Nhân</string>
+    <string name="l3_btn3">Chia</string>
 </resources>
