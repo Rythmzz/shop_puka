@@ -12,4 +12,10 @@
     <string name="l3_btn1">Trừ</string>
     <string name="l3_btn2">Nhân</string>
     <string name="l3_btn3">Chia</string>
+    <string name="l4_textField">Nhập Thông tin đăng ký</string>
+    <string name="l4_textField1">Nhập tài khoản</string>
+    <string name="l4_textField2">Nhập mật khẩu</string>
+    <string name="l4_textField3">Nhập ngày sinh</string>
+    <string name="l4_textField4">Nhập Email</string>
+
 </resources>
