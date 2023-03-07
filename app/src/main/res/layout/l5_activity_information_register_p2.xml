@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:background="@color/purple_500"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField"
+                android:textSize="30dp"
+                />
+
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/l5_textHoTen"
+            android:hint="@string/l5_textField1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_200"
+            />
+        <EditText
+            android:id="@+id/l5_textNgaySinh"
+            android:hint="@string/l5_textField2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_200"
+            />
+        <RelativeLayout
+            android:background="@color/teal_200"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField3"
+                android:textSize="30dp"
+                />
+
+        </RelativeLayout>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/l5_radio1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField4"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/l5_radio2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField5"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/l5_radio3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField6"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+        <RelativeLayout
+            android:background="@color/teal_200"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField9"
+                android:textSize="30dp"
+                />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:gravity="center"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox android:id="@+id/cb1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField11"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/cb2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField11"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/cb3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField12"
+                android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:background="@color/teal_200"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l5_textField8"
+                android:textSize="30dp"
+                />
+
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/l5_textThongTinKhac"
+            android:hint="@string/l5_textField8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_200"
+            />
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gửi thông tin"
+            />
+        <LinearLayout
+            android:background="@color/green"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/l5_showTextHoTen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+            <TextView
+                android:id="@+id/l5_showTextNgaySinh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+            <TextView
+                android:id="@+id/l5_showTextBangCap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+            <TextView
+                android:id="@+id/l5_showTextSoThich"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+            <TextView
+                android:id="@+id/l5_showTextOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

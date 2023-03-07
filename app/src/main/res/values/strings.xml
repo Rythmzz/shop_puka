@@ -12,4 +12,23 @@
     <string name="l3_btn1">Trừ</string>
     <string name="l3_btn2">Nhân</string>
     <string name="l3_btn3">Chia</string>
+    <string name="l4_textField">Nhập Thông tin đăng ký</string>
+    <string name="l4_textField1">Nhập tài khoản</string>
+    <string name="l4_textField2">Nhập mật khẩu</string>
+    <string name="l4_textField3">Nhập ngày sinh</string>
+    <string name="l4_textField4">Nhập Email</string>
+    <string name="l5_textField">Thông Tin Cá Nhân</string>
+    <string name="l5_textField1">Nhập Họ Tên</string>
+    <string name="l5_textField2">Nhập Ngày Sinh</string>
+    <string name="l5_textField3">Bằng Cấp</string>
+    <string name="l5_textField4">Đại Học</string>
+    <string name="l5_textField5">Cao Đẳng</string>
+    <string name="l5_textField6">Trung Cấp</string>
+    <string name="l5_textField7">Thông Tin Khác</string>
+    <string name="l5_textField8">Nhập Thông tin khác</string>
+    <string name="l5_textField9">Sở Thích</string>
+    <string name="l5_textField10">Chơi game</string>
+    <string name="l5_textField11">Đọc sách</string>
+    <string name="l5_textField12">Đọc báo</string>
+
 </resources>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "722701345856",
+    "project_id": "series-firebase-project",
+    "storage_bucket": "series-firebase-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722701345856:android:5d0b6d4884be6f23acaba5",
+        "android_client_info": {
+          "package_name": "com.group11.shoppuka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "722701345856-kq5rl03tf965r2nc95t2f9ecnd8hdgtp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGoMuO0oSsKNNBRP1z-0gOZAPGwioi6hQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "722701345856-kq5rl03tf965r2nc95t2f9ecnd8hdgtp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
