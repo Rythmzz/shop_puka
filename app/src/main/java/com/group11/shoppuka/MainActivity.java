@@ -55,24 +55,24 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()){
                     case R.id.Home:
-                        Toast.makeText(MainActivity.this,"Hello Home",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"Home",Toast.LENGTH_LONG).show();
                             fragmentDangNhap = new LoginFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.content1,fragmentDangNhap).commit();
                         break;
                     case R.id.Cate:
-                        getSupportActionBar().setTitle("Category");
-                        return true;
+                        Toast.makeText(MainActivity.this,"Category",Toast.LENGTH_LONG).show();
+                        break;
                     case R.id.Search:
-                        getSupportActionBar().setTitle("Search");
-                        return true;
+                        Toast.makeText(MainActivity.this,"Search",Toast.LENGTH_LONG).show();
+                        break;
                     case R.id.Order:
-                        getSupportActionBar().setTitle("Order");
-                        return true;
+                        Toast.makeText(MainActivity.this,"Order",Toast.LENGTH_LONG).show();
+                        break;
                     case R.id.Account:
-                        getSupportActionBar().setTitle("Account");
-                        return true;
+                        Toast.makeText(MainActivity.this,"Account",Toast.LENGTH_LONG).show();
+                        break;
                     default:
-                        Toast.makeText(MainActivity.this,"Hello Home",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"Not choice",Toast.LENGTH_LONG).show();
                 }
 
                 drawerLayout.closeDrawers();

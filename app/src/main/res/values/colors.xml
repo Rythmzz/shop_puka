@@ -12,5 +12,15 @@
     <color name="chestnut">#954535</color>
     <color name="green">#00FF00</color>
     <color name="mainColor">#F87217</color>
+    <color name="blue">#015bea</color>
+    <color name="grayblue">#aed4ed</color>
+    <color name="yellowsolf">#fec202</color>
+    <color name="yellowdeep">#ff9900</color>
+    <color name="brownsolf">#9b6150</color>
+    <color name="blueclick">#0099ff</color>
+    <color name="bluedeep">#0041c4</color>
+    <color name="blue_slient">#5e76cc</color>
+    <color name="blood">#870009</color>
+    <color name="graywhite">#F2F3F5</color>
 
 </resources>

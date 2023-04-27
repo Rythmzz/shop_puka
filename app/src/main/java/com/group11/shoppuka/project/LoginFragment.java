@@ -1,14 +1,26 @@
 package com.group11.shoppuka.project;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.group11.shoppuka.R;
+import com.group11.shoppuka.databinding.FragmentHomePageBinding;
+import com.group11.shoppuka.databinding.FragmentLoginBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +40,35 @@ public class LoginFragment extends Fragment {
 
     public LoginFragment() {
         // Required empty public constructor
+    }
+    public class StartGameDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Xác Nhận Đăng Nhập")
+                    .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            if(TextUtils.isEmpty(binding.l4TextTaiKhoan.getText()) || TextUtils.isEmpty(binding.l4TextMatKhau.getText())){
+                                binding.textError.setVisibility(View.VISIBLE);
+                                binding.layoutInfo.setVisibility(View.GONE);
+                            }
+                            else{
+                                binding.textUser.setText(binding.l4TextTaiKhoan.getText());
+                                binding.textPassword.setText(binding.l4TextMatKhau.getText());
+                                binding.textError.setVisibility(View.GONE);
+                                binding.layoutInfo.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    })
+                    .setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
     }
 
     /**
@@ -56,11 +97,112 @@ public class LoginFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    private FragmentLoginBinding binding;
+    ProgressDialog progressdialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        binding = FragmentLoginBinding.inflate(inflater,container,false);
+        View view = binding.getRoot();
+
+        binding.btnLogin.setOnClickListener(view1 ->
+        {
+            progressdialog = new ProgressDialog(getContext());
+            progressdialog.setTitle("Đăng Nhập");
+            progressdialog.setMessage("Loading....");
+            progressdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressdialog.setMax(100);
+            progressdialog.show();
+            handle.sendMessage(handle.obtainMessage());
+            new CountDownTimer(5000, 1000) {
+                                public void onTick(long millisUntilFinished) {
+//                                    binding.progressBarCyclic.setVisibility(View.VISIBLE);
+                                }
+
+                                public void onFinish() {
+                                    progressdialog.dismiss();
+//                                    binding.progressBarCyclic.setVisibility(View.GONE);
+                                    if(TextUtils.isEmpty(binding.l4TextTaiKhoan.getText()) || TextUtils.isEmpty(binding.l4TextMatKhau.getText())){
+                                        binding.textError.setVisibility(View.VISIBLE);
+                                        binding.layoutInfo.setVisibility(View.GONE);
+                                    }
+                                    else{
+                                        binding.textUser.setText(binding.l4TextTaiKhoan.getText());
+                                        binding.textPassword.setText(binding.l4TextMatKhau.getText());
+                                        binding.textError.setVisibility(View.GONE);
+                                        binding.layoutInfo.setVisibility(View.VISIBLE);
+                                    }
+                                }
+
+                            }.start();
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        while (progressdialog.getProgress() <= progressdialog
+//                                .getMax()) {
+//                            Thread.sleep(200);
+//                            handle.sendMessage(handle.obtainMessage());
+//                            if (progressdialog.getProgress() == progressdialog
+//                                    .getMax()) {
+//                                progressdialog.dismiss();
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+
+
+//            new ProgressDialog.Builder(getContext())
+//                    .setTitle("Đăng Nhập")
+//                    .setMessage("Xác nhận Đăng Nhập")
+//
+//                    // Specifying a listener allows you to take an action before dismissing the dialog.
+//                    // The dialog is automatically dismissed when a dialog button is clicked.
+//                    .setPositiveButton("xác nhận", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            new CountDownTimer(5000, 1000) {
+//
+//                                public void onTick(long millisUntilFinished) {
+//                                    binding.progressBarCyclic.setVisibility(View.VISIBLE);
+//                                }
+//
+//                                public void onFinish() {
+//                                    binding.progressBarCyclic.setVisibility(View.GONE);
+//                                    if(TextUtils.isEmpty(binding.l4TextTaiKhoan.getText()) || TextUtils.isEmpty(binding.l4TextMatKhau.getText())){
+//                                        binding.textError.setVisibility(View.VISIBLE);
+//                                        binding.layoutInfo.setVisibility(View.GONE);
+//                                    }
+//                                    else{
+//                                        binding.textUser.setText(binding.l4TextTaiKhoan.getText());
+//                                        binding.textPassword.setText(binding.l4TextMatKhau.getText());
+//                                        binding.textError.setVisibility(View.GONE);
+//                                        binding.layoutInfo.setVisibility(View.VISIBLE);
+//                                    }
+//                                }
+//
+//                            }.start();
+//                        }
+//                    })
+//
+//                    // A null listener allows the button to dismiss the dialog and take no further action.
+//                    .setNegativeButton("hủy bỏ", null)
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .show();
+        });
+
+
+        return view;
     }
+    Handler handle = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            progressdialog.incrementProgressBy(1);
+        }
+    };
+
+
 }
