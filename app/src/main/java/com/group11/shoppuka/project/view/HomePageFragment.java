@@ -3,6 +3,8 @@ package com.group11.shoppuka.project.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -126,6 +128,18 @@ public class HomePageFragment extends Fragment {
         LinearLayoutManager layoutManagerProduct = new LinearLayoutManager(this.getContext(),LinearLayoutManager.HORIZONTAL,false);
 
         binding.imageItem1.setLayoutManager(layoutManagerProduct);
+
+        binding.etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Fragment newFragment = new SearchPageFragment();
+                fragmentTransaction.replace(R.id.frame_layout,newFragment);
+                fragmentTransaction.commit();
+            }
+        });
         return view;
     }
 
