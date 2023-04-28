@@ -17,6 +17,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
         </activity>
         <activity android:name=".baitap_thuchanh.bt1.L1FrameLayoutActivity"
             android:exported="true">
@@ -30,12 +31,12 @@
         <activity android:name=".baitap_thuchanh.bt5.L5InformationRegisterP2" android:exported="true">
         </activity>
         <activity android:name=".project.view.MainPageActivity" android:exported="true">
+        </activity>
+        <activity android:name=".project.view.LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".project.view.LoginActivity" android:exported="true">
         </activity>
         <activity android:name=".project.view.RegisterActivity" android:exported="true">
 
