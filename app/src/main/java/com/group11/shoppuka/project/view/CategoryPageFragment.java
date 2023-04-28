@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
+import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentCategoryPageBinding;
 
 import java.util.HashMap;
