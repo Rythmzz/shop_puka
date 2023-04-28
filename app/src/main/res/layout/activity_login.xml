@@ -50,6 +50,7 @@
                 />
 
             <EditText
+                android:inputType="number"
                 android:drawableStart="@drawable/tmuser16"
                 android:id="@+id/etAccount"
                 android:background="@drawable/borderfillwhite"

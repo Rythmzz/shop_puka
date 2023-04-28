@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -43,7 +44,18 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.btnLogin.setOnClickListener(view1 -> {
             try {
-                confirmOtp();
+                if (binding.etAccount.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Vui lòng không để trống số điện thoại!",Toast.LENGTH_LONG);
+                    binding.etAccount.setError("Vui lòng không để trống số điện thoại!");
+                }
+                else if (binding.etPassword.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Vui lòng không để trống mật khẩu!",Toast.LENGTH_LONG);
+                    binding.etPassword.setError("Vui lòng không để trống mật khẩu!");
+                }
+                else {
+                    confirmOtp();
+                }
+
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -82,12 +94,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Lấy mã OTP do người dùng nhập từ EditText
 //                final String otp = editTextConfirmOtp.getText().toString().trim();
-
-
-//                System.out.println(otp.toString());
-
-                //Kiểm tra mã OTP
-                //...
+                Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
+                startActivity(intent);
             }
         });
 

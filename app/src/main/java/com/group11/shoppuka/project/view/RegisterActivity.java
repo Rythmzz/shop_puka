@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,32 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        binding.btnRegister.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if (binding.etPhoneNumber.getText().toString().isEmpty()){
+                    binding.etPhoneNumber.setError("Số điện thoại không được bỏ trống");
+                }
+                else if (binding.etFullName.getText().toString().isEmpty()){
+                    binding.etFullName.setError("Tên không được bỏ trống");
+                }
+                else if (binding.etPassword.getText().toString().isEmpty()){
+                    binding.etPassword.setError("Password không được bỏ trống");
+                }
+                else if (binding.etConfirmPassword.getText().toString().isEmpty()){
+                    binding.etConfirmPassword.setError("Xác Nhận Password không được bỏ trống");
+                }
+                else if (!binding.etPassword.getText().toString().matches(binding.etConfirmPassword.getText().toString())){
+                    binding.etConfirmPassword.setError("Password không trùng khớp");
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Đăng ký thành công",Toast.LENGTH_LONG);
+                    finish();
+
+                }
             }
         });
     }
