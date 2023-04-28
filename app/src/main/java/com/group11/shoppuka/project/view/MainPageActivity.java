@@ -41,6 +41,7 @@ public class MainPageActivity extends AppCompatActivity {
             transaction.commit();
 
         }
+        binding.bottomNavigationView.setBackgroundColor(Color.WHITE);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
