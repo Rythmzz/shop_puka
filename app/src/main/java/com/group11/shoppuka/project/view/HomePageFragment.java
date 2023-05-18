@@ -17,18 +17,17 @@ import com.group11.shoppuka.project.adapter.CategoryAdapter;
 import com.group11.shoppuka.project.adapter.ProductListAdapter;
 import com.group11.shoppuka.project.adapter.SliderAdapter;
 import com.group11.shoppuka.project.model.Product;
+import com.group11.shoppuka.project.model.ProductTest;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
-
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomePageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment  {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +40,9 @@ public class HomePageFragment extends Fragment {
 
     public HomePageFragment() {
         // Required empty public constructor
+    }
+    interface OnItemSelectedListener {
+        void onItemSelected(int itemID);
     }
 
     /**
@@ -91,14 +93,14 @@ public class HomePageFragment extends Fragment {
             "Nội Thất"
     };
 
-    Product[] listProduct ={
-            new Product("Áo thun màu trơn Cơ bản","114.000VNĐ",R.drawable.pk_product_aothun),
-            new Product("EMERY ROSE Áo thun Gân đan màu trơn Giải trí","201.000VNĐ",R.drawable.pk_product_aothun1),
-            new Product("Sofa giường thông minh ZD120A","12.500.000VNĐ",R.drawable.pk_product_sofa),
-            new Product("Bộ khay trà tráng men cao cấp 43x26cm 0096","680.000VNĐ",R.drawable.pk_product_khaytra),
-            new Product("KỆ DAO THỚT ĐA NĂNG","280.000VNĐ",R.drawable.pk_product_kedaothot),
-            new Product("Laptop Gaming MSI Raider GE78 HX 13VH-076VN","118.990.000VNĐ",R.drawable.pk_product_lapge78),
-            new Product("Dây chuyền bạc nữ khắc tên hình trái tim DCN0620","479.000VNĐ",R.drawable.pk_product_vongtay)
+    ProductTest[] listProduct ={
+            new ProductTest("Áo thun màu trơn Cơ bản","114.000VNĐ",R.drawable.pk_product_aothun),
+            new ProductTest("EMERY ROSE Áo thun Gân đan màu trơn Giải trí","201.000VNĐ",R.drawable.pk_product_aothun1),
+            new ProductTest("Sofa giường thông minh ZD120A","12.500.000VNĐ",R.drawable.pk_product_sofa),
+            new ProductTest("Bộ khay trà tráng men cao cấp 43x26cm 0096","680.000VNĐ",R.drawable.pk_product_khaytra),
+            new ProductTest("KỆ DAO THỚT ĐA NĂNG","280.000VNĐ",R.drawable.pk_product_kedaothot),
+            new ProductTest("Laptop Gaming MSI Raider GE78 HX 13VH-076VN","118.990.000VNĐ",R.drawable.pk_product_lapge78),
+            new ProductTest("Dây chuyền bạc nữ khắc tên hình trái tim DCN0620","479.000VNĐ",R.drawable.pk_product_vongtay)
     };
 
     @Override
@@ -138,6 +140,10 @@ public class HomePageFragment extends Fragment {
                 Fragment newFragment = new SearchPageFragment();
                 fragmentTransaction.replace(R.id.frame_layout,newFragment);
                 fragmentTransaction.commit();
+                if (getActivity() instanceof OnItemSelectedListener) {
+                    ((OnItemSelectedListener) getActivity()).onItemSelected(R.id.Search);
+                }
+
             }
         });
         return view;

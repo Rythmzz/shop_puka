@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,9 +15,9 @@ import android.view.ViewGroup;
 
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentSearchPageBinding;
-import com.group11.shoppuka.project.adapter.ProductListAdapter;
 import com.group11.shoppuka.project.adapter.ProductListFilterAdapter;
 import com.group11.shoppuka.project.model.Product;
+import com.group11.shoppuka.project.model.ProductTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,13 +41,13 @@ public class SearchPageFragment extends Fragment {
     private String mParam2;
 
 
-    List<Product> listProduct = Arrays.asList(new Product("Áo thun màu trơn Cơ bản","114.000VNĐ",R.drawable.pk_product_aothun),
-            new Product("EMERY ROSE Áo thun Gân đan màu trơn Giải trí","201.000VNĐ",R.drawable.pk_product_aothun1),
-            new Product("Sofa giường thông minh ZD120A","12.500.000VNĐ",R.drawable.pk_product_sofa),
-            new Product("Bộ khay trà tráng men cao cấp 43x26cm 0096","680.000VNĐ",R.drawable.pk_product_khaytra),
-            new Product("KỆ DAO THỚT ĐA NĂNG","280.000VNĐ",R.drawable.pk_product_kedaothot),
-            new Product("Laptop Gaming MSI Raider GE78 HX 13VH-076VN","118.990.000VNĐ",R.drawable.pk_product_lapge78),
-            new Product("Dây chuyền bạc nữ khắc tên hình trái tim DCN0620","479.000VNĐ",R.drawable.pk_product_vongtay));
+    List<ProductTest> listProduct = Arrays.asList(new ProductTest("Áo thun màu trơn Cơ bản","114.000VNĐ",R.drawable.pk_product_aothun),
+            new ProductTest("EMERY ROSE Áo thun Gân đan màu trơn Giải trí","201.000VNĐ",R.drawable.pk_product_aothun1),
+            new ProductTest("Sofa giường thông minh ZD120A","12.500.000VNĐ",R.drawable.pk_product_sofa),
+            new ProductTest("Bộ khay trà tráng men cao cấp 43x26cm 0096","680.000VNĐ",R.drawable.pk_product_khaytra),
+            new ProductTest("KỆ DAO THỚT ĐA NĂNG","280.000VNĐ",R.drawable.pk_product_kedaothot),
+            new ProductTest("Laptop Gaming MSI Raider GE78 HX 13VH-076VN","118.990.000VNĐ",R.drawable.pk_product_lapge78),
+            new ProductTest("Dây chuyền bạc nữ khắc tên hình trái tim DCN0620","479.000VNĐ",R.drawable.pk_product_vongtay));
 
     public static SearchPageFragment newInstance(String param1, String param2) {
         SearchPageFragment fragment = new SearchPageFragment();
@@ -75,7 +74,7 @@ public class SearchPageFragment extends Fragment {
         binding = FragmentSearchPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
         binding.etSearch.requestFocus();
-        ProductListFilterAdapter listProductAdapter = new ProductListFilterAdapter(new ArrayList<Product>());
+        ProductListFilterAdapter listProductAdapter = new ProductListFilterAdapter(new ArrayList<ProductTest>());
 
         binding.imageItem1.setAdapter(listProductAdapter);
         GridLayoutManager layoutManagerProduct = new GridLayoutManager(getContext(),2);
@@ -96,7 +95,7 @@ public class SearchPageFragment extends Fragment {
                 }
                 else {
                     binding.tvSearch.setText("Search Result For Keyword \""+s.toString()+"\"");
-                    List<Product> filteredProducts =  listProduct.stream().filter(product -> product.getName().contains(filterString)).collect(Collectors.toList());
+                    List<ProductTest> filteredProducts =  listProduct.stream().filter(product -> product.getName().contains(filterString)).collect(Collectors.toList());
                     listProductAdapter.setProducts(filteredProducts);
                     listProductAdapter.notifyDataSetChanged();
                 }
