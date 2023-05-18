@@ -1,37 +1,14 @@
 package com.group11.shoppuka.project.model;
 
 public class Product {
-    String name;
-    String price;
-    int image;
+   private Data data;
 
-    public Product(String name,String price, int image){
-        this.name = name;
-        this.price = price;
-        this.image = image;
+    public Data getData() {
+        return data;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
+    public void setData(Data data) {
+        this.data = data;
     }
 }
+

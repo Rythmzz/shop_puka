@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.Product;
+import com.group11.shoppuka.project.model.ProductTest;
 
 import java.util.List;
 
-import kotlin.sequences.Sequence;
-
 public class ProductListFilterAdapter extends RecyclerView.Adapter<ProductListFilterAdapter.Holder> {
-    List<Product> listProduct;
+    List<ProductTest> listProduct;
     String s;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -26,14 +25,14 @@ public class ProductListFilterAdapter extends RecyclerView.Adapter<ProductListFi
         this.s = s;
         notifyDataSetChanged();
     }
-    public ProductListFilterAdapter(List<Product> listProduct){
+    public ProductListFilterAdapter(List<ProductTest> listProduct){
         this.listProduct = listProduct;
 
     }
 
-    public void setProducts(List<Product> listProductFilter){
+    public void setProducts(List<ProductTest> listProductFilter){
         this.listProduct = listProductFilter;
-        for (Product product :this.listProduct){
+        for (ProductTest product :this.listProduct){
             System.out.println(product.getName());
         }
     }

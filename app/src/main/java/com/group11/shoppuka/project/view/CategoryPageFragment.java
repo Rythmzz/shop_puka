@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentCategoryPageBinding;
+import com.group11.shoppuka.project.model.Attributes;
+import com.group11.shoppuka.project.model.Product;
+import com.group11.shoppuka.project.service.ApiService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +28,8 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,25 +83,48 @@ public class CategoryPageFragment extends Fragment {
         binding = FragmentCategoryPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(getContext(),"DocumentSnapshot added with ID: " + documentReference.getId(),Toast.LENGTH_LONG);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(),"DocumentSnapshot added with ID: " + e.getMessage(),Toast.LENGTH_LONG);
-                    }
-                });
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.0.103:1337/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService myApi = retrofit.create(ApiService.class);
+
+        myApi.getProduct(2).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                Product product = response.body();
+                Attributes attributes = product.getData().getAttributes();
+                System.out.println(attributes.getName());
+                Log.i("API",product.toString());
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        Map<String, Object> user = new HashMap<>();
+//        user.put("first", "Ada");
+//        user.put("last", "Lovelace");
+//        user.put("born", 1815);
+//        db.collection("users")
+//                .add(user)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Toast.makeText(getContext(),"DocumentSnapshot added with ID: " + documentReference.getId(),Toast.LENGTH_LONG);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(getContext(),"DocumentSnapshot added with ID: " + e.getMessage(),Toast.LENGTH_LONG);
+//                    }
+//                });
         return view;
 
 

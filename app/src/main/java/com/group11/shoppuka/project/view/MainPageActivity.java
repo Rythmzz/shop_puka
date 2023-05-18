@@ -19,7 +19,7 @@ import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 
 
-public class MainPageActivity extends AppCompatActivity {
+public class MainPageActivity extends AppCompatActivity implements HomePageFragment.OnItemSelectedListener {
     ActivityHomepageBinding binding;
 
     @Override
@@ -110,6 +110,10 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemSelected(int itemID) {
+        binding.bottomNavigationView.setSelectedItemId(itemID);
+    }
 }
 
 //    SliderAdapter sliderAdapter = new SliderAdapter(images);
