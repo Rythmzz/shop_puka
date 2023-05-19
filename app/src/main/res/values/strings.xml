@@ -30,6 +30,16 @@
     <string name="l5_textField10">Chơi game</string>
     <string name="l5_textField11">Đọc sách</string>
     <string name="l5_textField12">Đọc báo</string>
+    <string name="rmb_X">%1$.3f đ</string>
+    <string name="cart">CART(%1$d)</string>
+    <string name="all_select">All</string>
+    <string name="edit_done">Done</string>
+    <string name="go_settle_X">Buy(%1$d)</string>
+    <string name="go_settle"></string>
+    <string name="delete_X">Delete(%1$d)</string>
+    <string name="total_">Total：</string>
+    <string name="edit">Edit</string>
+    <string name="normal_tip_X" />
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

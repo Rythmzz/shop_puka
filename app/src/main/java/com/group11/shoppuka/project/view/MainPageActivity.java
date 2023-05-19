@@ -1,5 +1,6 @@
 package com.group11.shoppuka.project.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 
@@ -98,6 +100,8 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_menu){
+            Intent intent = new Intent(this, CartActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
