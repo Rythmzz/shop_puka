@@ -13,6 +13,8 @@ import com.group11.shoppuka.project.viewholder.CartViewHolder;
 import com.group11.shoppuka.project.viewholder.ChildViewHolder;
 import com.group11.shoppuka.project.viewholder.GroupViewHolder;
 
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.List;
 
 public class MainAdapter extends CartAdapter<CartViewHolder> {
@@ -60,7 +62,12 @@ public class MainAdapter extends CartAdapter<CartViewHolder> {
         if (holder instanceof ChildViewHolder) {
             ChildViewHolder childViewHolder = (ChildViewHolder) holder;
             childViewHolder.textView.setText(((GoodsBean) mData.get(position)).getGoods_name());
-            childViewHolder.textViewPrice.setText(mContext.getString(R.string.rmb_X, ((GoodsBean) mData.get(position)).getGoods_price()));
+            //Quy đổi tiền tệ
+            NumberFormat nf = NumberFormat.getCurrencyInstance();
+            nf.setMaximumFractionDigits(0);
+            nf.setCurrency(Currency.getInstance("VND"));
+            String formattedPrice = nf.format(((GoodsBean) mData.get(position)).getGoods_price());
+            childViewHolder.textViewPrice.setText(formattedPrice);
             childViewHolder.textViewNum.setText(String.valueOf(((GoodsBean) mData.get(position)).getGoods_amount()));
             String imageUrl = ((GoodsBean) mData.get(position)).getImage();
             Glide.with(mContext)

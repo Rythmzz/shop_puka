@@ -1,8 +1,12 @@
 package com.group11.shoppuka.project.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class Order {
+public class Order implements Parcelable {
     private String productName;
     private int quantity;
     private double totalPrice;
@@ -23,7 +27,36 @@ public class Order {
     public Order() {
 
     }
+    protected Order(Parcel in) {
+        productName = in.readString();
+        quantity = in.readInt();
+        totalPrice = in.readDouble();
+        imageUrl = in.readString();
+    }
 
+    public static final Creator<Order> CREATOR = new Creator<Order>() {
+        @Override
+        public Order createFromParcel(Parcel in) {
+            return new Order(in);
+        }
+
+        @Override
+        public Order[] newArray(int size) {
+            return new Order[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productName);
+        dest.writeInt(quantity);
+        dest.writeDouble(totalPrice);
+        dest.writeString(imageUrl);
+    }
     public String getProductName() {
         return productName;
     }
@@ -63,4 +96,5 @@ public class Order {
     public void setOrderAt(Date orderAt) {
         this.orderAt = orderAt;
     }
+
 }

@@ -2,6 +2,7 @@ package com.group11.shoppuka;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
@@ -31,9 +32,12 @@ import com.group11.shoppuka.project.listener.CartOnCheckChangeListener;
 import com.group11.shoppuka.project.adapter.MainAdapter;
 import com.group11.shoppuka.project.model.Order;
 
+import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -118,7 +122,12 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
         mTvTitle.setText(getString(R.string.cart, totalCount));
         mBtnSubmit.setText(getString(isEditing ? R.string.delete_X : R.string.go_settle_X, totalCheckedCount));
-        mTvTotal.setText(getString(R.string.rmb_X, totalPrice));
+        //Quy đổi tiền tệ
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        nf.setMaximumFractionDigits(0);
+        nf.setCurrency(Currency.getInstance("VND"));
+        String formattedPrice = nf.format(totalPrice);
+        mTvTotal.setText(formattedPrice);
         if (mCheckBoxAll.isChecked() && (totalCheckedCount == 0 || (totalCheckedCount + notChildTotalCount) != mAdapter.getData().size())) {
             mCheckBoxAll.setChecked(false);
         }
@@ -132,7 +141,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
 
             case R.id.tv_edit:
-                Log.d("TEST","vao khong xoa");
                 isEditing = !isEditing;
                 mTvEdit.setText(getString(isEditing ? R.string.edit_done : R.string.edit));
                 mBtnSubmit.setText(getString(isEditing ? R.string.delete_X : R.string.go_settle_X, totalCheckedCount));
@@ -152,53 +160,39 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     private void submitEvent() {
         // chế độ chỉnh sửa đơn hàng
         if (isEditing) {
-            if (totalCheckedCount == 0) {
-
-            } else {
-
+            if (totalCheckedCount == 0) {}
+            else {
                 mAdapter.removeChecked();
             }
-
         }
         // chế độ mua hàng
         else {
-
-            if (totalCheckedCount == 0) {
-                Log.d("TEST","vao khong1");
-            }
+            if (totalCheckedCount == 0) {}
             // kiểm tra các đơn hàng được chọn và gán danh sách vào orderList
             else {
                 if (mAdapter.getData() != null) {
-                    for (ICartItem iCartItem : mAdapter.getData()) {
-                        if (iCartItem.getItemType() == ICartItem.TYPE_CHILD) {
-                            if (iCartItem.isChecked()) {
-                                Order order = new Order();
-                                order.setImageUrl(((GoodsBean)iCartItem).getImage());
-                                order.setProductName(((GoodsBean)iCartItem).getGoods_name());
-                                order.setOrderAt(currentTime);
-                                order.setQuantity(((GoodsBean)iCartItem).getGoods_amount());
-                                order.setTotalPrice(((GoodsBean)iCartItem).getGoods_price()*((GoodsBean)iCartItem).getGoods_amount());
-                                oderList.add(order);
-                            }
-                        } else {
-
+                for (ICartItem iCartItem : mAdapter.getData()) {
+                    if (iCartItem.getItemType() == ICartItem.TYPE_CHILD) {
+                        if (iCartItem.isChecked()) {
+                            Order order = new Order();
+                            order.setImageUrl(((GoodsBean)iCartItem).getImage());
+                            order.setProductName(((GoodsBean)iCartItem).getGoods_name());
+                            order.setOrderAt(currentTime);
+                            order.setQuantity(((GoodsBean)iCartItem).getGoods_amount());
+                            order.setTotalPrice(((GoodsBean)iCartItem).getGoods_price()*((GoodsBean)iCartItem).getGoods_amount());
+                            oderList.add(order);
                         }
-                    }
-                    CheckoutFragment checkoutFragment = new CheckoutFragment(oderList);
-
-                    Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
-                    Log.d("TEST","vao khong");
-                    startActivity(intent);
-
-
-                }
-
-
+                }}
+                //CheckoutActivity checkoutActivity = new CheckoutActivity();
+                //checkoutActivity.setListOrder(oderList);
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                    intent.putParcelableArrayListExtra("order_list", (ArrayList<? extends Parcelable>) oderList);
+                startActivity(intent);
             }
-        }
-    }
+            }
+        }}
 
-    public void firebase() {
+    /*public void firebase() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference cartCollectionRef = db.collection("cart");
         DocumentReference document = cartCollectionRef.document("pP3gqPQkyB3Xp302LdLs");
@@ -240,7 +234,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-    }
+    }*/
 
     private List<CartItemBean> getData() {
 
@@ -255,10 +249,21 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         goodsBean1.setGoods_name("Áo thun MARVEL Craft Logo Graphic");
         goodsBean1.setItemType(CartItemBean.TYPE_CHILD);
         goodsBean1.setItemId(21);
-        goodsBean1.setGoods_price(250.);
+        goodsBean1.setGoods_price(250000.);
         goodsBean1.setImage("https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/November2022/ao-thun-marvel-craft-logo-graphic-nau-1_84.jpg");
         goodsBean1.setGroupId(1);
         cartItemBeans.add(goodsBean1);
+
+        GoodsBean goodsBean2 = new GoodsBean();
+        goodsBean2.setGoods_name("Áo sát nách thể thao nam Dri-Breathe thoáng mát");
+        goodsBean2.setItemType(CartItemBean.TYPE_CHILD);
+        goodsBean2.setItemId(21);
+        goodsBean2.setGoods_price(189000.);
+        goodsBean2.setImage("https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/May2023/drixam.jpg");
+        goodsBean2.setGroupId(1);
+        cartItemBeans.add(goodsBean2);
+        cartItemBeans.add(goodsBean2);
+        cartItemBeans.add(goodsBean2);
 
         return cartItemBeans;
 
