@@ -45,6 +45,7 @@ public class HomePageFragment extends Fragment  {
         void onItemSelected(int itemID);
     }
 
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.

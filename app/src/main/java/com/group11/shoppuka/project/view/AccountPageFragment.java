@@ -1,5 +1,8 @@
 package com.group11.shoppuka.project.view;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.group11.shoppuka.R;
+import com.group11.shoppuka.databinding.FragmentAccountPageBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +61,35 @@ public class AccountPageFragment extends Fragment {
         }
     }
 
+    private FragmentAccountPageBinding binding;
+
+    private static String LOGIN_KEY = "login_info";
+    private static String ACCOUNT_PHONE = "phone_info";
+    private static String PASSWORD_PHONE = "password_phone_info";
+
+    private void logOutAccount(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(ACCOUNT_PHONE);
+        editor.remove(PASSWORD_PHONE);
+        editor.apply();
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account_page, container, false);
+        binding = FragmentAccountPageBinding.inflate(inflater,container,false);
+        View view = binding.getRoot();
+        binding.btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logOutAccount(getActivity());
+                Intent intent = new Intent(getActivity(),LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        return view;
+
     }
 }

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +44,7 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
         }
         binding.bottomNavigationView.setBackgroundColor(Color.WHITE);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        Log.i("FragmentManager",String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
@@ -109,6 +110,10 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     @Override
     public void onItemSelected(int itemID) {
