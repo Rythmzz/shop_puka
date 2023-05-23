@@ -1,6 +1,7 @@
 package com.group11.shoppuka.project.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.Product;
 import com.group11.shoppuka.project.model.ProductTest;
 
 
@@ -27,7 +27,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item_saleprice,parent,false);
         context = parent.getContext();
         return new Holder(view);
     }
@@ -35,8 +35,10 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         holder.imageView.setImageResource(listProduct[position].getImage());
-        holder.textView.setText(listProduct[position].getName());
-        holder.textView1.setText(listProduct[position].getPrice());
+        if (listProduct[position].getName().length() <= 15) holder.textView.setText(listProduct[position].getName());
+    else holder.textView.setText((listProduct[position].getName()).substring(0,Math.min(listProduct[position].getName().length(),15))+"...");
+        holder.textView1.setText((listProduct[position].getPrice()));
+        holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.imageView.setOnClickListener(new View.OnClickListener(){
 
             @Override
