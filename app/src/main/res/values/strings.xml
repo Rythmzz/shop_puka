@@ -1,3 +1,47 @@
 <resources>
-    <string name="app_name">shoppuka</string>
+    <string name="app_name">SHOP PUKA</string>
+    <string name="l1_textField">Học viện BCVT</string>
+    <string name="l2_textField">nhập tiêu đề</string>
+    <string name="l2_textField1">nhập nội dung</string>
+    <string name="l2_textField2">send</string>
+    <string name="l3_textField">Thực hiện phép tính</string>
+    <string name="l3_textField1">Nhập số 1</string>
+    <string name="l3_textField2">Nhập số 2</string>
+    <string name="l3_textField3">Kết Quả</string>
+    <string name="l3_btn">Cộng</string>
+    <string name="l3_btn1">Trừ</string>
+    <string name="l3_btn2">Nhân</string>
+    <string name="l3_btn3">Chia</string>
+    <string name="l4_textField">Nhập Thông tin đăng ký</string>
+    <string name="l4_textField1">Nhập tài khoản</string>
+    <string name="l4_textField2">Nhập mật khẩu</string>
+    <string name="l4_textField3">Nhập ngày sinh</string>
+    <string name="l4_textField4">Nhập Email</string>
+    <string name="l5_textField">Thông Tin Cá Nhân</string>
+    <string name="l5_textField1">Nhập Họ Tên</string>
+    <string name="l5_textField2">Nhập Ngày Sinh</string>
+    <string name="l5_textField3">Bằng Cấp</string>
+    <string name="l5_textField4">Đại Học</string>
+    <string name="l5_textField5">Cao Đẳng</string>
+    <string name="l5_textField6">Trung Cấp</string>
+    <string name="l5_textField7">Thông Tin Khác</string>
+    <string name="l5_textField8">Nhập Thông tin khác</string>
+    <string name="l5_textField9">Sở Thích</string>
+    <string name="l5_textField10">Chơi game</string>
+    <string name="l5_textField11">Đọc sách</string>
+    <string name="l5_textField12">Đọc báo</string>
+    <string name="rmb_X">%1$.3f đ</string>
+    <string name="cart">CART(%1$d)</string>
+    <string name="all_select">All</string>
+    <string name="edit_done">Done</string>
+    <string name="go_settle_X">Buy(%1$d)</string>
+    <string name="go_settle"></string>
+    <string name="delete_X">Delete(%1$d)</string>
+    <string name="total_">Total：</string>
+    <string name="edit">Edit</string>
+    <string name="normal_tip_X" />
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

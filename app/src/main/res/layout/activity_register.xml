@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/mainColor"
+    >
+
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/csBody"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintHeight_percent="0.8"
+        >
+
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/tvTitleRegister2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Sign up with your phone"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toTopOf="@id/etFullName"
+            />
+        <EditText
+            android:inputType="text"
+            android:drawableStart="@drawable/tmtagname16"
+            android:id="@+id/etFullName"
+            android:background="@drawable/borderfillwhite"
+            android:padding="8dp"
+            android:textColorHint="@color/grayblue"
+            android:hint="Enter FullName"
+            android:drawablePadding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleRegister2"
+            app:layout_constraintBottom_toTopOf="@id/etPhoneNumber"
+            />
+
+        <EditText
+            android:inputType="textPassword"
+            android:drawableStart="@drawable/tmpass16"
+            android:id="@+id/etPassword"
+            android:background="@drawable/borderfillwhite"
+            android:padding="8dp"
+            android:textColorHint="@color/grayblue"
+            android:hint="Enter Password"
+            android:drawablePadding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/etConfirmPassword"
+            app:layout_constraintTop_toBottomOf="@id/etPhoneNumber"
+            />
+        <EditText
+            android:inputType="textPassword"
+            android:drawableStart="@drawable/tmpass16"
+            android:id="@+id/etConfirmPassword"
+            android:background="@drawable/borderfillwhite"
+            android:padding="8dp"
+            android:textColorHint="@color/grayblue"
+            android:hint="Enter Confirm Password"
+            android:drawablePadding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/rlRegister"
+            app:layout_constraintTop_toBottomOf="@id/etPassword"
+            />
+        <EditText
+            android:inputType="textPhonetic"
+            android:drawableStart="@drawable/tmphone16"
+            android:id="@+id/etPhoneNumber"
+            android:background="@drawable/borderfillwhite"
+            android:padding="8dp"
+            android:textColorHint="@color/grayblue"
+            android:hint="Enter Phone Number"
+            android:drawablePadding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/etFullName"
+            app:layout_constraintTop_toBottomOf="@id/etPassword"
+            />
+        <RelativeLayout
+            android:id="@+id/rlRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/etConfirmPassword"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <Button
+                android:inputType="number"
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/borderfillbtn"
+                android:padding="1dp"
+                android:text="Register Now"
+                android:textAllCaps="false"
+                android:textColor="@color/brownsolf"
+
+                android:textSize="20dp"
+
+                />
+            <LinearLayout
+                android:padding="15dp"
+                android:id="@+id/llLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_below="@+id/btnRegister"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do you have a account? "
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/tvLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Login"
+                    android:gravity="center"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    />
+
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ivMask"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:orientation="horizontal"/>
+    <ProgressBar
+        android:id="@+id/progress_Loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

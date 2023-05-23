@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/Home"
+        android:title="Home"
+        android:icon="@drawable/baseline_settings_24"/>
+    <item
+        android:id="@+id/Cate"
+        android:title="Category"
+        android:icon="@drawable/pk_icon_category"/>
+    <item
+        android:id="@+id/Search"
+        android:title="Search"
+        android:icon="@drawable/pk_icon_search"/>
+    <item
+        android:id="@+id/Order"
+        android:title="Order"
+        android:icon="@drawable/pk_icon_order"/>
+    <item
+        android:id="@+id/Account"
+        android:title="Account"
+        android:icon="@drawable/pk_icon_account"/>
+</menu>

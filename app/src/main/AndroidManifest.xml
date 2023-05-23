@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.group11.shoppuka">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,11 +17,46 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+        </activity>
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".CartActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".baitap_thuchanh.bt1.L1FrameLayoutActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".baitap_thuchanh.bt2.L2LinearLayout" android:exported="true">
+        </activity>
+        <activity android:name=".baitap_thuchanh.bt3.L3Calculation" android:exported="true">
+        </activity>
+        <activity android:name=".baitap_thuchanh.bt4.L4InformationRegister" android:exported="true">
+        </activity>
+        <activity android:name=".baitap_thuchanh.bt5.L5InformationRegisterP2" android:exported="true">
+        </activity>
+        <activity android:name=".project.view.MainPageActivity" android:exported="true">
+        </activity>
+        <activity android:name=".project.view.LoginActivity" android:exported="true">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity android:name=".project.view.RegisterActivity" android:exported="true">
+        </activity>
+        <activity android:name=".project.taskdetail.MainActivity" android:exported="true">
+        </activity>
+        <activity android:name=".project.taskdetail.CartActivity" android:exported="true">
+
+        </activity>
+        <activity android:name=".project.taskdetail.ProductDetail" android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>
