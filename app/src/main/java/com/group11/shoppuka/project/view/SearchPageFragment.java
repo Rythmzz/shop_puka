@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentSearchPageBinding;
 import com.group11.shoppuka.project.adapter.ProductListFilterAdapter;
-import com.group11.shoppuka.project.model.Product;
 import com.group11.shoppuka.project.model.ProductTest;
 
 import java.util.ArrayList;

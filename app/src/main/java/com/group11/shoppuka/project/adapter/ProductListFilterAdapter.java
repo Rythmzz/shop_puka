@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.Product;
 import com.group11.shoppuka.project.model.ProductTest;
 
 import java.util.List;
@@ -41,14 +40,15 @@ public class ProductListFilterAdapter extends RecyclerView.Adapter<ProductListFi
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item_saleprice,parent,false);
         return new Holder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
             holder.imageView.setImageResource(listProduct.get(position).getImage());
-            holder.textView.setText(listProduct.get(position).getName());
+        if (listProduct.get(position).getName().length() <= 15) holder.textView.setText(listProduct.get(position).getName());
+        else holder.textView.setText((listProduct.get(position).getName()).substring(0,Math.min(listProduct.get(position).getName().length(),15))+"...");
             holder.textView1.setText(listProduct.get(position).getPrice());
     }
 

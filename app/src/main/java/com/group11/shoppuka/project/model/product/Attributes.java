@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.model;
+package com.group11.shoppuka.project.model.product;
 
 public class Attributes {
     private String name;
@@ -9,6 +9,26 @@ public class Attributes {
     private String updatedAt;
     private String publishedAt;
     private String imageURL;
+
+    private int countSearch;
+
+    private int idCategory;
+
+    public int getCountSearch() {
+        return countSearch;
+    }
+
+    public void setCountSearch(int countSearch) {
+        this.countSearch = countSearch;
+    }
+
+    public int getIdCategory() {
+        return idCategory;
+    }
+
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
+    }
 
     public String getName() {
         return name;

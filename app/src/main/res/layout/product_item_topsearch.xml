@@ -18,15 +18,14 @@
                 android:scaleType="fitCenter"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:background="@color/mainColor"
+                android:background="@color/white"
                 android:padding="16dp"
                 >
             </ImageView>
             <ImageView
-
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/sale_price"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:background="@drawable/tm_bestseller"
                 />
 
         </FrameLayout>

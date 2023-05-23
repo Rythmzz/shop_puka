@@ -2,34 +2,27 @@ package com.group11.shoppuka.project.view;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonObject;
-import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentCategoryPageBinding;
-import com.group11.shoppuka.project.model.Attributes;
-import com.group11.shoppuka.project.model.Product;
+import com.group11.shoppuka.project.model.category.AttributesCategory;
+import com.group11.shoppuka.project.model.category.Category;
+import com.group11.shoppuka.project.model.category.CategoryResponse;
+import com.group11.shoppuka.project.model.product.Attributes;
+import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.service.ApiService;
+import com.group11.shoppuka.project.service.RetrofitService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,14 +76,33 @@ public class CategoryPageFragment extends Fragment {
         binding = FragmentCategoryPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.103:1337/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        ApiService myApi = retrofit.create(ApiService.class);
 
-        myApi.getProduct(2).enqueue(new Callback<Product>() {
+        RetrofitService retrofitService = new RetrofitService();
+
+        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
+
+        myApi.getListCategory().enqueue(new Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                CategoryResponse categoryResponse = response.body();
+                List<Category> categories = categoryResponse.getData();
+                for (Category category : categories) {
+                    System.out.println("ID: " + category.getId());
+                    System.out.println("Name: " + category.getAttributes().getName());
+                    System.out.println("Price: " + category.getAttributes().getPrice());
+                    // In ra các thuộc tính khác của đối tượng Category
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                    t.printStackTrace();
+            }
+        });
+
+        myApi.getProduct(4).enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
                 Product product = response.body();

@@ -11,7 +11,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -34,6 +37,11 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
         binding = ActivityHomepageBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,binding.drawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         if (savedInstanceState == null){
             Fragment fragment = new HomePageFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -45,7 +53,10 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
         binding.bottomNavigationView.setBackgroundColor(Color.WHITE);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Log.i("FragmentManager",String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+
+
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener(){
@@ -99,6 +110,7 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_menu){
+            binding.drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
         return super.onOptionsItemSelected(item);

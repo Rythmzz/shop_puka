@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         binding.btnLogin.setOnClickListener(view1 -> {
             try {
                 if (binding.etAccount.getText().toString().isEmpty()){
@@ -144,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Lấy mã OTP do người dùng nhập từ EditText
 //                final String otp = editTextConfirmOtp.getText().toString().trim();
-                if (binding.cbRemember.isEnabled()){
+                if (binding.cbRemember.isChecked()){
                     saveLoginInfo(context,binding.etAccount.getText().toString(),binding.etPassword.getText().toString());
                 }
                 alertDialog.dismiss();

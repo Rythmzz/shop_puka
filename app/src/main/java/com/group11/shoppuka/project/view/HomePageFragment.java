@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentHomePageBinding;
 import com.group11.shoppuka.project.adapter.CategoryAdapter;
-import com.group11.shoppuka.project.adapter.ProductListAdapter;
+import com.group11.shoppuka.project.adapter.ProductListSalePriceAdapter;
+import com.group11.shoppuka.project.adapter.ProductListTopSearchAdapter;
 import com.group11.shoppuka.project.adapter.SliderAdapter;
-import com.group11.shoppuka.project.model.Product;
 import com.group11.shoppuka.project.model.ProductTest;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -125,12 +125,18 @@ public class HomePageFragment extends Fragment  {
                 = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         binding.imageItem.setLayoutManager(layoutManager);
 
-        ProductListAdapter listProductAdapter = new ProductListAdapter(listProduct);
+        ProductListSalePriceAdapter listProductSalePriceAdapter = new ProductListSalePriceAdapter(listProduct);
+        ProductListTopSearchAdapter listProductTopSearchAdapter = new ProductListTopSearchAdapter(listProduct);
 
-        binding.imageItem1.setAdapter(listProductAdapter);
+        binding.imageItem1.setAdapter(listProductSalePriceAdapter);
         LinearLayoutManager layoutManagerProduct = new LinearLayoutManager(this.getContext(),LinearLayoutManager.HORIZONTAL,false);
 
         binding.imageItem1.setLayoutManager(layoutManagerProduct);
+
+        binding.imageItem2.setAdapter(listProductTopSearchAdapter);
+        LinearLayoutManager layoutManagerProduct1 = new LinearLayoutManager(this.getContext(),LinearLayoutManager.HORIZONTAL,false);
+
+        binding.imageItem2.setLayoutManager(layoutManagerProduct1);
 
         binding.etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener(){
 

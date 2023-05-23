@@ -1,8 +1,8 @@
-package com.group11.shoppuka.project.model.product;
+package com.group11.shoppuka.project.model.category;
 
 public class Data {
     private int id;
-    private Attributes attributes;
+    private AttributesCategory attributes;
 
     public int getId() {
         return id;
@@ -12,11 +12,11 @@ public class Data {
         this.id = id;
     }
 
-    public Attributes getAttributes() {
+    public AttributesCategory getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Attributes attributes) {
+    public void setAttributes(AttributesCategory attributes) {
         this.attributes = attributes;
     }
 }

@@ -15,11 +15,11 @@ import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.ProductTest;
 
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.Holder> {
+public class ProductListSalePriceAdapter extends RecyclerView.Adapter<ProductListSalePriceAdapter.Holder> {
     ProductTest listProduct[];
     private Context context;
 
-    public ProductListAdapter(ProductTest listProduct[]){
+    public ProductListSalePriceAdapter(ProductTest listProduct[]){
         this.listProduct = listProduct;
     }
 

@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.model;
+package com.group11.shoppuka.project.model.product;
 
 public class Product {
    private Data data;

@@ -1,6 +1,6 @@
 package com.group11.shoppuka.project.model.category;
 
-public class Attributes {
+public class AttributesCategory {
     private String name;
     private int price;
     private int salePrice;
