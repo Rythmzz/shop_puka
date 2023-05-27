@@ -20,6 +20,7 @@
                     android:layout_width="0dp"/>
             <EditText
                     android:background="@android:color/transparent"
+                    android:id="@+id/editPhone"
                     android:hint="Phone Number"
                     android:layout_width="160dp"
                     android:layout_weight="5"
@@ -60,6 +61,7 @@
                     android:layout_width="0dp"/>
             <EditText
                     android:hint="Street"
+                    android:id="@+id/editStreet"
                     android:background="@android:color/transparent"
                     android:layout_width="160dp"
                     android:layout_weight="5"
@@ -106,7 +108,7 @@
 
             <Button
                 android:background="@drawable/borderfillbtn"
-                android:id="@+id/checkout_paypal"
+                android:id="@+id/checkout_pay"
                 android:layout_width="280dp"
                 android:layout_height="50dp"
                 android:backgroundTint="@color/mainColor"

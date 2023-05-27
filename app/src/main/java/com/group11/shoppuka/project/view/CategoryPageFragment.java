@@ -95,7 +95,6 @@ public class CategoryPageFragment extends Fragment {
             public void onResponse(Call<Product> call, Response<Product> response) {
                 Product product = response.body();
                 Attributes attributes = product.getData().getAttributes();
-                System.out.println(attributes.getName());
                 Log.i("API",product.toString());
             }
 

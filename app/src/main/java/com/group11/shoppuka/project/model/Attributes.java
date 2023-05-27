@@ -1,29 +1,30 @@
 package com.group11.shoppuka.project.model;
 
 public class Attributes {
-    private String name;
-    private int price;
+    private String ProductName;
+    private int Price;
     private int salePrice;
     private String description;
     private String createdAt;
     private String updatedAt;
     private String publishedAt;
     private String imageURL;
+    private String brandName;
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return ProductName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductName(String productName) {
+        ProductName = productName;
     }
 
     public int getPrice() {
-        return price;
+        return Price;
     }
 
     public void setPrice(int price) {
-        this.price = price;
+        Price = price;
     }
 
     public int getSalePrice() {
@@ -72,5 +73,13 @@ public class Attributes {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 }

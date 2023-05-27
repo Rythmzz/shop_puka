@@ -8,17 +8,26 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,9 +45,12 @@ import com.google.android.gms.common.util.IOUtils;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.group11.shoppuka.CartActivity;
+import com.group11.shoppuka.CheckoutActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.adapter.CheckoutItemAdapter;
 import com.group11.shoppuka.project.model.Order;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,6 +73,7 @@ public class CheckoutFragment extends Fragment {
     private Context mContext;
     private Button mButtonConfirm, mButtonCancel;
     private TextView mTextTotal;
+    private EditText editPhone,editStreet;
     List<Order> ListOrder ;
     // Contructors
     public CheckoutFragment(List<Order> listOrder) {
@@ -156,51 +169,6 @@ public class CheckoutFragment extends Fragment {
                 // Xử lý khi không có tỉnh nào được chọn
             }
         });
-        /*Gson gson = new Gson();
-        String jsonString = "{\"name\":\"Hồ Chí Minh\",\"districts\":[{\"name\":\"Quận 1\"},{\"name\":\"Quận 2\"},{\"name\":\"Quận 3\"},{\"name\":\"Quận 4\"},{\"name\":\"Quận 5\"},{\"name\":\"Quận 6\"},{\"name\":\"Quận 7\"},{\"name\":\"Quận 8\"},{\"name\":\"Quận 10\"},{\"name\":\"Quận 11\"},{\"name\":\"Quận 12\"},{\"name\":\"Quận Tân Bình\"},{\"name\":\"Quận Nhà Bè\"}]}";
-
-        Type listType = new TypeToken<ArrayList<City>>() {}.getType();
-        List<City> cities = new Gson().fromJson(jsonString, listType);
-        Log.d("TEST",cities.toString());
-        List<String> cityNames = new ArrayList<>();
-        for (City city : cities) {
-            cityNames.add(city.name);
-        }
-        Spinner spinnerCity = view.findViewById(R.id.spinner_province);
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, cityNames);
-        spinnerCity.setAdapter(cityAdapter);
-        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                City selectedCity = cities.get(pos);
-                Spinner spinnerDistrict = view.findViewById(R.id.spinner_district);
-                List<District> districts = selectedCity.districts;
-                List<String> districtNames = new ArrayList<>();
-                for (District district : districts) {
-                    districtNames.add(district.name);
-                }
-                ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, districtNames);
-                spinnerDistrict.setAdapter(districtAdapter);
-                spinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                        District selectedDistrict = districts.get(pos);
-                        // ...
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-                // Tạo danh sách quận huyện từ thành phố đã chọn
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
 
         //
         mButtonCancel = (Button) view.findViewById(R.id.checkout_cancel);
@@ -211,6 +179,31 @@ public class CheckoutFragment extends Fragment {
                 startActivity(new Intent(getContext(), CartActivity.class));
             }
         });
+        editPhone = view.findViewById(R.id.editPhone);
+        editStreet = view.findViewById(R.id.editStreet);
+        mButtonConfirm = (Button) view.findViewById(R.id.checkout_pay);
+        mButtonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (editPhone.getText().toString().isEmpty()){
+                   // Toast.makeText(mContext.getApplicationContext(),"Vui lòng không để trống số điện thoại!",Toast.LENGTH_LONG);
+                    editPhone.setError("Vui lòng không để trống số điện thoại!");
+                }
+                else if (!editPhone.getText().toString().matches("^0\\d{9}$")) {
+                    editPhone.setError("Vui lòng nhập số điện thoại hợp lệ!");}
+                else if (editStreet.getText().toString().isEmpty()){
+                    //Toast.makeText(mContext.getApplicationContext(),"Vui lòng không để trống địa chỉ!",Toast.LENGTH_LONG);
+                    editStreet.setError("Vui lòng không để trống địa chỉ!");
+                }
+                else
+                {
+                        getActivity().finish();
+                        Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getContext(), CartActivity.class));
+                }
+            }
+        });
+
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         nf.setMaximumFractionDigits(0);
         nf.setCurrency(Currency.getInstance("VND"));
@@ -219,6 +212,7 @@ public class CheckoutFragment extends Fragment {
         mTextTotal.setText(formattedPrice);
         return view;
     }
+
 
     //  Tính toán tổng tiền thanh toán
     private double calculateTotal(List<Order> orderList) {

@@ -9,4 +9,7 @@ import retrofit2.http.Path;
 public interface ApiService {
     @GET("api/products/{id}")
     Call<Product> getProduct(@Path("id") int id);
+
+    @GET("api/products/count")
+    Call<Integer> getProductCount();
 }

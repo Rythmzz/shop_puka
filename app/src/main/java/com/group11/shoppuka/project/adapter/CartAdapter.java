@@ -268,13 +268,6 @@ public abstract class CartAdapter<VH extends CartViewHolder> extends RecyclerVie
         notifyItemRangeChanged(addPosition, mData.size() - addPosition);
     }
 
-    /**
-     * add normal
-     *
-     * @param addPosition
-     * @param itemBean
-     */
-
 
     /**
      * add group

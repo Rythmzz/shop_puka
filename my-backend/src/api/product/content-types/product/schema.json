@@ -26,6 +26,9 @@
     },
     "imageURL": {
       "type": "text"
+    },
+    "brandName": {
+      "type": "string"
     }
   }
 }
