@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -24,5 +25,8 @@
     <color name="graywhite">#F2F3F5</color>
     <color name="orange">#F87217</color>
     <color name="pastelgreen">#71F9A9</color>
+    <color name="colorPrimary">#f9c00c</color>
+    <color name="colorPrimaryDark">#e2ae0c</color>
+    <color name="colorAccent">#f9320c</color>
 
 </resources>
