@@ -18,9 +18,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityLoginBinding;
+import com.group11.shoppuka.project.model.account.AttributesUser;
+import com.group11.shoppuka.project.model.account.User;
+import com.group11.shoppuka.project.model.account.UserResponse;
+import com.group11.shoppuka.project.viewmodel.LoginViewModel;
 
 import org.json.JSONException;
 
@@ -31,33 +37,66 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private static String LOGIN_KEY = "login_info";
     private static String ACCOUNT_PHONE = "phone_info";
-    private static String PASSWORD_PHONE = "password_phone_info";
-    private void saveLoginInfo(Context context, String phoneNumber, String password){
+    private static String FULL_NAME_PHONE = "fullName_phone_info";
+    private static String ID_MODE = "id_mode_info";
+
+    private UserResponse userCurrentResponse;
+
+
+    private AttributesUser userCurrent;
+
+    private LoginViewModel viewModel;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.fetchUser();
+    }
+
+    private void saveLoginInfo(Context context, String phoneNumber, String fullName, int idMode){
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(ACCOUNT_PHONE, phoneNumber);
-        editor.putString(PASSWORD_PHONE,password);
+        editor.putString(FULL_NAME_PHONE,fullName);
+        editor.putInt(ID_MODE,idMode);
         editor.apply();
     }
 
     private String[] getLoginInfo(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY,Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString(ACCOUNT_PHONE,null);
-        String password = sharedPreferences.getString(PASSWORD_PHONE,null);
-        return new String[]{phoneNumber,password};
+        String fullName = sharedPreferences.getString(FULL_NAME_PHONE,null);
+        int idMode = sharedPreferences.getInt(ID_MODE,-1);
+        return new String[]{phoneNumber,fullName,String.valueOf(idMode)};
     }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String[] loginInfo = getLoginInfo(this);
-        System.out.println("LUU DU LIEU " + loginInfo[0]);
-        System.out.println("LUU DU LIEU " +loginInfo[1]);
+        System.out.println("PHONE NUMBER " + loginInfo[0]);
+        System.out.println("FULL NAME " +loginInfo[1]);
+        System.out.println("ID MODE:" + loginInfo[2]);
         if (loginInfo[0] != null && loginInfo[1] != null){
             Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Bundle infoUser = new Bundle();
+            infoUser.putString(ACCOUNT_PHONE,loginInfo[0]);
+            infoUser.putString(FULL_NAME_PHONE,loginInfo[1]);
+            infoUser.putString(ID_MODE,loginInfo[2]);
+            intent.putExtras(infoUser);
             startActivity(intent);
             finish();
         }
+        viewModel = new ViewModelProvider(LoginActivity.this).get(LoginViewModel.class);
+        userCurrentResponse = new UserResponse();
+        viewModel.getListUser().observe(LoginActivity.this, new Observer<UserResponse>() {
+            @Override
+            public void onChanged(UserResponse userResponse) {
+                userCurrentResponse = userResponse;
+            }
+        });
+        viewModel.fetchUser();
+
         getSupportActionBar().setTitle("Login");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#F87217"));
@@ -84,13 +123,19 @@ public class LoginActivity extends AppCompatActivity {
                     binding.etPassword.setError("Vui lòng không để trống mật khẩu!");
                 }
                 else {
-                    if (String.valueOf(binding.etAccount.getText()).equals("123456")
-                            && String.valueOf(binding.etPassword.getText()).equals("123456")){
+                    for (User user : userCurrentResponse.getData()){
+                        if (String.valueOf(binding.etAccount.getText()).equals(user.getAttributes().phoneNumber)
+                                && String.valueOf(binding.etPassword.getText()).equals(user.getAttributes().password)){
+                            userCurrent = user.getAttributes();
+                            break;
+                        }
+                    }
+                    if (userCurrent != null) {
                         confirmOtp(this);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(LoginActivity.this,"Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
 
             } catch (JSONException e) {
@@ -146,11 +191,16 @@ public class LoginActivity extends AppCompatActivity {
                 //Lấy mã OTP do người dùng nhập từ EditText
 //                final String otp = editTextConfirmOtp.getText().toString().trim();
                 if (binding.cbRemember.isChecked()){
-                    saveLoginInfo(context,binding.etAccount.getText().toString(),binding.etPassword.getText().toString());
+                    saveLoginInfo(context,userCurrent.phoneNumber, userCurrent.fullName, userCurrent.idMode);
                 }
                 alertDialog.dismiss();
                 Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle infoUser = new Bundle();
+                infoUser.putString(ACCOUNT_PHONE,userCurrent.getPhoneNumber());
+                infoUser.putString(FULL_NAME_PHONE,userCurrent.getFullName());
+                infoUser.putString(ID_MODE,String.valueOf(userCurrent.getIdMode()));
+                intent.putExtras(infoUser);
                 startActivity(intent);
                 finish();
 

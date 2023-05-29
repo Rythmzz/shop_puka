@@ -4,6 +4,7 @@
     package="com.group11.shoppuka">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:name=".project.other.MyApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -49,14 +50,10 @@
         </activity>
         <activity android:name=".project.view.RegisterActivity" android:exported="true">
         </activity>
-        <activity android:name=".project.taskdetail.MainActivity" android:exported="true">
-        </activity>
-        <activity android:name=".project.taskdetail.CartActivity" android:exported="true">
-
-        </activity>
-        <activity android:name=".project.taskdetail.ProductDetail" android:exported="true">
-        </activity>
-
+        <activity android:name=".project.view.DetailProductPageActivity" android:exported="true"/>
+        <activity android:name=".project.view.ManagePageActivity" android:exported="true"/>
+        <activity android:name=".project.view.ModifyProductActivity" android:exported="true"/>
+        <activity android:name=".project.view.AddProductPageActivity" android:exported="true"/>
     </application>
 
 </manifest>

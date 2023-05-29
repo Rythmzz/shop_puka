@@ -1,34 +1,18 @@
 package com.group11.shoppuka.project.model.product;
 
-public class Attributes {
+import java.io.Serializable;
+
+public class AttributesProduct implements Serializable {
     private String name;
     private int price;
     private int salePrice;
     private String description;
+    private String imageURL;
+    private int countSearch;
+    private int idCategory;
     private String createdAt;
     private String updatedAt;
     private String publishedAt;
-    private String imageURL;
-
-    private int countSearch;
-
-    private int idCategory;
-
-    public int getCountSearch() {
-        return countSearch;
-    }
-
-    public void setCountSearch(int countSearch) {
-        this.countSearch = countSearch;
-    }
-
-    public int getIdCategory() {
-        return idCategory;
-    }
-
-    public void setIdCategory(int idCategory) {
-        this.idCategory = idCategory;
-    }
 
     public String getName() {
         return name;
@@ -62,6 +46,30 @@ public class Attributes {
         this.description = description;
     }
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public int getCountSearch() {
+        return countSearch;
+    }
+
+    public void setCountSearch(int countSearch) {
+        this.countSearch = countSearch;
+    }
+
+    public int getIdCategory() {
+        return idCategory;
+    }
+
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -84,13 +92,5 @@ public class Attributes {
 
     public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
     }
 }

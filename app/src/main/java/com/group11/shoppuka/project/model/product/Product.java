@@ -1,14 +1,25 @@
 package com.group11.shoppuka.project.model.product;
 
-public class Product {
-   private Data data;
+import java.io.Serializable;
 
-    public Data getData() {
-        return data;
+public class Product implements Serializable {
+   private int id;
+   private AttributesProduct attributes;
+
+    public int getId() {
+        return id;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public AttributesProduct getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributesProduct(AttributesProduct attributesProduct) {
+        this.attributes = attributesProduct;
     }
 }
 

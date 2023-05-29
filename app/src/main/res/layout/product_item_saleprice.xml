@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="15dp"
+    android:id="@+id/relativeLayout"
     >
     <LinearLayout
         android:padding="15dp"
@@ -65,5 +66,35 @@
        </LinearLayout>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutMore"
+        android:visibility="gone"
+        android:layout_width="180dp"
+        android:layout_height="210dp">
+        <ImageView
+            android:id="@+id/imageViewMore"
+            android:scaleType="fitCenter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/tm_viewall"
+            android:background="@color/white"
+            android:padding="16dp"
+            >
+    </ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xem thêm"
+        android:textSize="25dp"
+        android:layout_marginTop="50dp"
+        android:padding="15dp"
+        android:layout_gravity="center"
+        />
+
+    </FrameLayout>
+
+
 
 </RelativeLayout>
