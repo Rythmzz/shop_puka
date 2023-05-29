@@ -3,7 +3,9 @@ package com.group11.shoppuka.project;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -96,6 +98,24 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+    private static String LOGIN_KEY = "login_info";
+    private static String ACCOUNT_PHONE = "phone_info";
+    private static String PASSWORD_PHONE = "password_phone_info";
+
+    private void saveLoginInfo(Context context, String phoneNumber, String password){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(ACCOUNT_PHONE, phoneNumber);
+        editor.putString("password",password);
+        editor.apply();
+    }
+
+    private String[] getLoginInfo(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY,Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString(ACCOUNT_PHONE,null);
+        String password = sharedPreferences.getString(PASSWORD_PHONE,null);
+        return new String[]{phoneNumber,password};
     }
     private FragmentLoginBinding binding;
     ProgressDialog progressdialog;

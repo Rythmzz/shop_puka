@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+my-backend-new/
+my-backend/data.db

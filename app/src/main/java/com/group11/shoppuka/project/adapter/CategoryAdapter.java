@@ -10,17 +10,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
+import com.group11.shoppuka.project.model.category.CategoryResponse;
+import com.group11.shoppuka.project.other.MyApplication;
+
+import java.util.List;
 
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder> {
 
-    int images[];
-    String text[];
+    CategoryResponse categoryResponseList;
 
-    public CategoryAdapter(int images[], String text[]){
-        this.images = images;
-        this.text = text;
+    public CategoryAdapter(CategoryResponse categoryResponseList){
+        this.categoryResponseList = categoryResponseList;
+    }
+
+    public void setCategoryResponseList(CategoryResponse categoryResponseList) {
+        this.categoryResponseList = categoryResponseList;
     }
 
     @NonNull
@@ -32,14 +39,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.imageView.setImageResource(this.images[position]);
-        holder.textView.setText(this.text[position]);
+        String url = MyApplication.localHost + categoryResponseList.getData().get(position).getAttributes().getImageURL();
+        Glide.with(holder.itemView.getContext()).load(url).into(holder.imageView);
+        holder.textView.setText(categoryResponseList.getData().get(position).getAttributes().getName());
 
     }
 
     @Override
     public int getItemCount() {
-        return images.length;
+        if (categoryResponseList.getData() != null){
+            return categoryResponseList.getData().size();
+        }
+        return 0;
     }
 
     public class Holder extends RecyclerView.ViewHolder {

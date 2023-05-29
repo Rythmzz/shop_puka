@@ -26,6 +26,12 @@
     },
     "imageURL": {
       "type": "text"
+    },
+    "countSearch": {
+      "type": "integer"
+    },
+    "idCategory": {
+      "type": "integer"
     }
   }
 }

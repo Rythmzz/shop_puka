@@ -9,13 +9,21 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityRegisterBinding;
+import com.group11.shoppuka.project.model.account.UserData;
+import com.group11.shoppuka.project.model.account.UserRequest;
+import com.group11.shoppuka.project.viewmodel.LoginViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private ActivityRegisterBinding binding;
+
+    private LoginViewModel viewModel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +35,34 @@ public class RegisterActivity extends AppCompatActivity {
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        viewModel = new ViewModelProvider(RegisterActivity.this).get(LoginViewModel.class);
         binding.tvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        viewModel.getProgressLoading().observe(RegisterActivity.this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    binding.ivMask.setVisibility(View.GONE);
+                    binding.progressLoading.setVisibility(View.GONE);
+                }
+                else {
+                    binding.ivMask.setVisibility(View.VISIBLE);
+                    binding.progressLoading.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        viewModel.getSignUpSuccess().observe(RegisterActivity.this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    Toast.makeText(getApplicationContext(), "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
         });
         binding.btnRegister.setOnClickListener(new View.OnClickListener(){
@@ -53,8 +85,19 @@ public class RegisterActivity extends AppCompatActivity {
                     binding.etConfirmPassword.setError("Password không trùng khớp");
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),"Đăng ký thành công",Toast.LENGTH_LONG);
-                    finish();
+                    binding.ivMask.setVisibility(View.VISIBLE);
+                    binding.progressLoading.setVisibility(View.VISIBLE);
+
+                    UserData userData = new UserData();
+                    userData.setPhoneNumber(String.valueOf(binding.etPhoneNumber.getText()));
+                    userData.setFullName(String.valueOf(binding.etFullName.getText()));
+                    userData.setPassword(String.valueOf(binding.etPassword.getText()));
+                    userData.setIdMode(1);
+
+                    UserRequest userRequest = new UserRequest();
+                    userRequest.setData(userData);
+                    viewModel.signUpUser(userRequest,getApplicationContext());
+
 
                 }
             }

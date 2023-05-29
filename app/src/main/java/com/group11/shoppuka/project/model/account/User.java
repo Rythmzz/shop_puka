@@ -1,8 +1,8 @@
-package com.group11.shoppuka.project.model;
+package com.group11.shoppuka.project.model.account;
 
-public class Data {
+public class User {
     private int id;
-    private Attributes attributes;
+    private AttributesUser attributes;
 
     public int getId() {
         return id;
@@ -12,11 +12,11 @@ public class Data {
         this.id = id;
     }
 
-    public Attributes getAttributes() {
+    public AttributesUser getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Attributes attributes) {
+    public void setAttributes(AttributesUser attributes) {
         this.attributes = attributes;
     }
 }

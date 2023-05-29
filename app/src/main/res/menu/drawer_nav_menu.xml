@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/notify"
+        android:title="Thông báo"
+        />
+    <item
+        android:id="@+id/setting"
+        android:title="Quản lý đơn hàng"
+        />
+    <item
+        android:id="@+id/modeAuthentication"
+        android:title="Quản lý sản phẩm"
+        />
+    <item
+        android:id="@+id/logOut"
+        android:title="Đăng xuất"
+        />
+</menu>
