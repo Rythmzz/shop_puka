@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product",
+    "displayName": "Cart",
     "description": ""
   },
   "options": {
@@ -12,16 +12,16 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
+    "ProductName": {
       "type": "string"
     },
-    "price": {
+    "Price": {
       "type": "integer"
     },
     "salePrice": {
       "type": "integer"
     },
-    "description": {
+    "Description": {
       "type": "text"
     },
     "imageURL": {

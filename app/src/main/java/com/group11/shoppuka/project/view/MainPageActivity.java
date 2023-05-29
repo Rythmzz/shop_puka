@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 import com.group11.shoppuka.databinding.HeaderDrawerBinding;
@@ -155,6 +156,8 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
 
         if (id == R.id.action_menu){
             binding.drawerLayout.openDrawer(GravityCompat.START);
+            Intent intent = new Intent(this, CartActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
