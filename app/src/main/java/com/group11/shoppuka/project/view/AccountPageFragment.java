@@ -65,13 +65,15 @@ public class AccountPageFragment extends Fragment {
 
     private static String LOGIN_KEY = "login_info";
     private static String ACCOUNT_PHONE = "phone_info";
-    private static String PASSWORD_PHONE = "password_phone_info";
+    private static String FULL_NAME_PHONE = "fullName_phone_info";
+    private static String ID_MODE = "id_mode_info";
 
     private void logOutAccount(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(ACCOUNT_PHONE);
-        editor.remove(PASSWORD_PHONE);
+        editor.remove(FULL_NAME_PHONE);
+        editor.remove(ID_MODE);
         editor.apply();
 
     }

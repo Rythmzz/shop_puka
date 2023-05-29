@@ -161,48 +161,49 @@
                     />
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_image_item3"
                 app:layout_constraintTop_toBottomOf="@id/layout_image_item2"
-                app:layout_constraintBottom_toBottomOf="parent"
                 >
-                <TextView
-                    android:id="@+id/tvTextDeal"
-                    android:padding="15dp"
-                    android:text="Gợi ý hôm nay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:textColor="@color/white"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    />
-
-                <RelativeLayout
-                    android:padding="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:id="@+id/tvViewAll"
+                        android:padding="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Gợi ý hôm nay"
+                        android:textColor="@color/white"
+                        android:textStyle="bold|italic"
+                        android:textSize="20dp"
+                        />
                     <Button
+                        android:padding="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         android:id="@+id/btnViewAll"
                         android:text="Xem tất cả"
                         android:backgroundTint="@color/white"
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                         />
-
-                </RelativeLayout>
+                        android:layout_height="match_parent"
+                        />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/image_item3"
+                    android:background="@color/white"
 
-
-
+                    />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

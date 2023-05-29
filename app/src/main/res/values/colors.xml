@@ -24,5 +24,19 @@
     <color name="graywhite">#F2F3F5</color>
     <color name="orange">#F87217</color>
     <color name="pastelgreen">#71F9A9</color>
+    <color name="not_active">#DCD9D9</color>
+    <color name="bg_body">#CCF4F0F0</color>
+    <color name="product_detail">#DEBBBB</color>
+    <color name="primary_blue">#4285F4</color>
+    <color name="primary_red">#EA4335</color>
+    <color name="text_red">#D9534F</color>
+    <color name="button_red">#EA4335</color>
+    <color name="button_blue">#4E85D7</color>
+    <color name="light_grey">#F4F4F4</color>
+    <color name="grey">#767676</color>
+    <color name="text_grey">#ACABAB</color>
+    <color name="middle_grey">#969696</color>
+    <color name="warning">#F6DF12</color>
+    <color name="primary_color">#FF5722</color>
 
 </resources>

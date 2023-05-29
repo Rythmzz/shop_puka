@@ -12,14 +12,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.group11.shoppuka.project.LoginFragment;
-import com.group11.shoppuka.project.view.AccountPageFragment;
-import com.group11.shoppuka.project.view.CategoryPageFragment;
-import com.group11.shoppuka.project.view.HomePageFragment;
-import com.group11.shoppuka.project.view.OrderPageFragment;
-import com.group11.shoppuka.project.view.SearchPageFragment;
 
 public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
@@ -59,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
                             fragmentDangNhap = new LoginFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.content1,fragmentDangNhap).commit();
                         break;
-                    case R.id.Cate:
-                        Toast.makeText(MainActivity.this,"Category",Toast.LENGTH_LONG).show();
+                    case R.id.Cart:
+                        Toast.makeText(MainActivity.this,"Cart",Toast.LENGTH_LONG).show();
                         break;
                     case R.id.Search:
                         Toast.makeText(MainActivity.this,"Search",Toast.LENGTH_LONG).show();

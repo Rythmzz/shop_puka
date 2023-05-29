@@ -5,16 +5,12 @@
         android:title="Thông báo"
         />
     <item
-        android:id="@+id/myCart"
-        android:title="Giỏ hàng của tôi"
-        />
-    <item
         android:id="@+id/setting"
-        android:title="Cài Đặt"
+        android:title="Quản lý đơn hàng"
         />
     <item
         android:id="@+id/modeAuthentication"
-        android:title="Chế độ"
+        android:title="Quản lý sản phẩm"
         />
     <item
         android:id="@+id/logOut"
