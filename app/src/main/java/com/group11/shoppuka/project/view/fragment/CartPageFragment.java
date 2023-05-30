@@ -1,12 +1,9 @@
-package com.group11.shoppuka.project.view;
+package com.group11.shoppuka.project.view.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,29 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.group11.shoppuka.project.view.CheckoutActivity;
 import com.group11.shoppuka.databinding.FragmentCartPageBinding;
 import com.group11.shoppuka.project.adapter.CartListAdapter;
-import com.group11.shoppuka.project.model.account.UserData;
-import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.service.ApiService;
-import com.group11.shoppuka.project.service.RetrofitService;
+import com.group11.shoppuka.project.other.MyApplication;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,6 +77,13 @@ public class CartPageFragment extends Fragment {
     private CartResponse currentCartResponse;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        productViewModel.fetchData();
+        cartViewModel.fetchListCart(getActivity());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -103,8 +93,6 @@ public class CartPageFragment extends Fragment {
         cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
         productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
 
-        productViewModel.fetchData();
-        cartViewModel.fetchListCart(getActivity());
 
         adapter = new CartListAdapter(new CartResponse(), new ProductResponse());
         binding.recyclerViewCart.setAdapter(adapter);
@@ -115,7 +103,14 @@ public class CartPageFragment extends Fragment {
         cartViewModel.getCartResponseMutableLiveData().observe(getActivity(), new Observer<CartResponse>() {
             @Override
             public void onChanged(CartResponse cartResponse) {
+                if (cartResponse.getData().size() == 0 ) binding.csNotCart.setVisibility(View.VISIBLE);
+                else binding.csNotCart.setVisibility(View.GONE);
                 adapter.setCartResponse(cartResponse);
+                int totalPrice = 0;
+                currentCartResponse = new CartResponse();
+                currentCartResponse.setData(cartResponse.getData());
+                for (Cart cart : cartResponse.getData()) totalPrice+= (cart.getAttributes().getTotalPrice() * cart.getAttributes().getCount());
+                binding.totalPrice.setText(String.valueOf(totalPrice) + " VNĐ");
                 adapter.notifyDataSetChanged();
             }
         });
@@ -125,6 +120,15 @@ public class CartPageFragment extends Fragment {
             public void onChanged(ProductResponse productResponse) {
                 adapter.setProductResponse(productResponse);
                 adapter.notifyDataSetChanged();
+            }
+        });
+
+        binding.btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), CheckoutActivity.class);
+                intent.putExtra(MyApplication.KEY_GET_LISTCART,currentCartResponse);
+                view.getContext().startActivity(intent);
             }
         });
 

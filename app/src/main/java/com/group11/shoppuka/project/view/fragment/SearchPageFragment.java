@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.view;
+package com.group11.shoppuka.project.view.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,14 +17,12 @@ import android.view.ViewGroup;
 
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentSearchPageBinding;
-import com.group11.shoppuka.project.adapter.ProductListAllAdapter;
 import com.group11.shoppuka.project.adapter.ProductListFilterAdapter;
 import com.group11.shoppuka.project.model.ProductTest;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

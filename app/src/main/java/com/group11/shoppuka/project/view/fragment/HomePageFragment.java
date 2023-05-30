@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.view;
+package com.group11.shoppuka.project.view.fragment;
 
 import android.os.Bundle;
 
@@ -22,27 +22,17 @@ import com.group11.shoppuka.project.adapter.ProductListSalePriceAdapter;
 import com.group11.shoppuka.project.adapter.ProductListTopSearchAdapter;
 import com.group11.shoppuka.project.adapter.SliderAdapter;
 import com.group11.shoppuka.project.model.ProductTest;
-import com.group11.shoppuka.project.model.category.Category;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
-import com.group11.shoppuka.project.model.product.AttributesProduct;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.service.ApiService;
-import com.group11.shoppuka.project.service.RetrofitService;
 import com.group11.shoppuka.project.viewmodel.CategoryViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +53,7 @@ public class HomePageFragment extends Fragment  {
     public HomePageFragment() {
         // Required empty public constructor
     }
-    interface OnItemSelectedListener {
+    public interface OnItemSelectedListener {
         void onItemSelected(int itemID);
     }
 

@@ -14,11 +14,13 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent" android:layout_height="wrap_content">
             <TextView
+
                     android:text="Phone"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:layout_width="0dp"/>
-            <EditText
+            <TextView
+                    android:id="@+id/tvPhoneNumber"
                     android:background="@android:color/transparent"
                     android:hint="Phone Number"
                     android:layout_width="160dp"
@@ -30,6 +32,7 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tvCity"
                 android:layout_width="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -41,6 +44,7 @@
                 android:layout_height="30dp" />
 
             <TextView
+                    android:id="@+id/tvDistrict"
                     android:text="District"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -59,6 +63,8 @@
                     android:layout_weight="2"
                     android:layout_width="0dp"/>
             <EditText
+                    android:inputType="text"
+                    android:id="@+id/etStreet"
                     android:hint="Street"
                     android:background="@android:color/transparent"
                     android:layout_width="160dp"
@@ -73,7 +79,7 @@
                 android:background="@android:color/darker_gray"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/checkout_items_container"
+                android:id="@+id/recyclerViewCart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -89,7 +95,7 @@
                     android:textSize="20sp"
                     android:text="Total : "/>
             <TextView
-                    android:id="@+id/checkout_total"
+                    android:id="@+id/totalPrice"
                     android:paddingTop="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimary"
@@ -106,7 +112,7 @@
 
             <Button
                 android:background="@drawable/borderfillbtn"
-                android:id="@+id/checkout_paypal"
+                android:id="@+id/btnPaypal"
                 android:layout_width="280dp"
                 android:layout_height="50dp"
                 android:backgroundTint="@color/mainColor"
@@ -116,7 +122,7 @@
 
             <Button
                 android:background="@drawable/borderfillbtn"
-                android:id="@+id/checkout_cancel"
+                android:id="@+id/btnCancel"
                 android:layout_marginTop="10dp"
                 android:layout_width="280dp"
                 android:layout_height="50dp"

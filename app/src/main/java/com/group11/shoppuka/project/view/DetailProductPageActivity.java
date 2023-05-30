@@ -12,6 +12,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +20,7 @@ import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityDetailBinding;
 import com.group11.shoppuka.project.model.cart.CartData;
 import com.group11.shoppuka.project.model.cart.CartRequest;
+import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.other.MyApplication;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
@@ -72,6 +74,36 @@ public class DetailProductPageActivity extends AppCompatActivity {
                 cartRequest.setData(cartData);
 
                 cartViewModel.addCart(cartRequest,view.getContext());
+                finish();
+            }
+        });
+        binding.btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CartData cartData = new CartData();
+                cartData.setIdProduct(product.getId());
+                cartData.setPhoneNumber(phoneNumber);
+                cartData.setCount(1);
+                if (product.getAttributes().getSalePrice() != 0) {
+                    cartData.setTotalPrice(product.getAttributes().getSalePrice());
+                } else {
+                    cartData.setTotalPrice(product.getAttributes().getPrice());
+                }
+                CartRequest cartRequest = new CartRequest();
+                cartRequest.setData(cartData);
+
+                cartViewModel.addCart(cartRequest,view.getContext());
+                cartViewModel.fetchListCart(view.getContext());
+
+                cartViewModel.getCartResponseMutableLiveData().observe(DetailProductPageActivity.this, new Observer<CartResponse>() {
+                    @Override
+                    public void onChanged(CartResponse cartResponse) {
+                        Intent intent = new Intent(view.getContext(), CheckoutActivity.class);
+                        intent.putExtra(MyApplication.KEY_GET_LISTCART,cartResponse);
+                        view.getContext().startActivity(intent);
+                        finish();
+                    }
+                });
             }
         });
 

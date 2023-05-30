@@ -1,7 +1,8 @@
-package com.group11.shoppuka.project;
+package com.group11.shoppuka.project.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +20,12 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,8 +41,20 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
+import com.group11.shoppuka.databinding.FragmentCheckoutBinding;
 import com.group11.shoppuka.project.adapter.CheckoutItemAdapter;
 import com.group11.shoppuka.project.model.Order;
+import com.group11.shoppuka.project.model.cart.Cart;
+import com.group11.shoppuka.project.model.cart.CartResponse;
+import com.group11.shoppuka.project.model.order.OrderData;
+import com.group11.shoppuka.project.model.order.OrderRequest;
+import com.group11.shoppuka.project.model.product.ProductResponse;
+import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.viewmodel.CartViewModel;
+import com.group11.shoppuka.project.viewmodel.OrderViewModel;
+import com.group11.shoppuka.project.viewmodel.ProductViewModel;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,36 +67,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
 public class CheckoutFragment extends Fragment {
-    private Context mContext;
-    private Button mButtonConfirm, mButtonCancel;
-    private TextView mTextTotal;
-    List<Order> ListOrder ;
-    // Contructors
-    public CheckoutFragment(List<Order> listOrder) {
-        this.ListOrder = listOrder;
-        Log.d("TEST2", String.valueOf(ListOrder.size())+" + "+ListOrder.get(0).getProductName());
-    }
+
+
 
     private RecyclerView mRecyclerView;
     @Override
     public void onResume() {
         super.onResume();
         getActivity().setTitle("Checkout");
+        productViewModel.fetchData();
+        cartViewModel.fetchListCart(getContext());
     }
+    String selectedDic;
 
-    private void setupRecyclerView(List<Order> orderList) {
-        // Khởi tạo adapter và thiết lập dữ liệu
-        CheckoutItemAdapter adapter = new CheckoutItemAdapter(orderList, getContext());
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
+
     private void setupSpinnerDis(String [] Dis,Spinner spinnerDic) {
         // Khởi tạo adapter và thiết lập dữ liệu
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, Dis);
@@ -89,7 +99,7 @@ public class CheckoutFragment extends Fragment {
         spinnerDic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedDic = (String) parent.getItemAtPosition(position);
+                selectedDic = (String) parent.getItemAtPosition(position);
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -98,16 +108,35 @@ public class CheckoutFragment extends Fragment {
             // Xử lý khi một tỉnh được chọn
         });
     }
+    private FragmentCheckoutBinding binding;
+
+    private CheckoutItemAdapter checkoutItemAdapter;
+
+    private CartViewModel cartViewModel;
+
+    private ProductViewModel productViewModel;
+
+    private OrderViewModel orderViewModel;
+
+    private OrderData orderData = new OrderData();
+
+    private String selectedAddress;
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_checkout, container, false);
         super.onCreate(savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.checkout_items_container);
-        Log.d("TEST1", String.valueOf(ListOrder.size()));
-        setupRecyclerView(ListOrder);
+        binding = FragmentCheckoutBinding.inflate(inflater,container,false);
+        View view = binding.getRoot();
+        mRecyclerView = view.findViewById(R.id.recyclerViewCart);
+
+//        Log.d("TEST1", String.valueOf(ListOrder.size()));
+//        setupRecyclerView(ListOrder);
         //
+
         String[] provinceNames = {"Hà Nội", "TP Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ","Vĩnh Long"};
         Spinner spinnerProvince = view.findViewById(R.id.spinner_province);
         Spinner spinnerDic= view.findViewById(R.id.spinner_district);
@@ -117,7 +146,7 @@ public class CheckoutFragment extends Fragment {
         spinnerProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedProvince = (String) parent.getItemAtPosition(position);
+                selectedAddress = (String) parent.getItemAtPosition(position);
                 switch (position){
                     case 0: if(position==0){
                         String[] provinceDic = {"Ba Đình", "Hoàn Kiếm", "Hai Bà Trưng", "Đống Đa", "Tây Hồ", "Cầu Giấy", "Thanh Xuân", "Hoàng Mai", "Long Biên", "Bắc Từ Liêm", "Nam Từ Liêm", "Hà Đông", "Sơn Tây", "Ba Vì", "Phúc Thọ", "Đan Phượng", "Hoài Đức", "Quốc Oai", "Thạch Thất", "Chương Mỹ", "Thanh Oai", "Thường Tín", "Phú Xuyên", "Ứng Hòa", "Mỹ Đức"};
@@ -156,69 +185,83 @@ public class CheckoutFragment extends Fragment {
                 // Xử lý khi không có tỉnh nào được chọn
             }
         });
-        /*Gson gson = new Gson();
-        String jsonString = "{\"name\":\"Hồ Chí Minh\",\"districts\":[{\"name\":\"Quận 1\"},{\"name\":\"Quận 2\"},{\"name\":\"Quận 3\"},{\"name\":\"Quận 4\"},{\"name\":\"Quận 5\"},{\"name\":\"Quận 6\"},{\"name\":\"Quận 7\"},{\"name\":\"Quận 8\"},{\"name\":\"Quận 10\"},{\"name\":\"Quận 11\"},{\"name\":\"Quận 12\"},{\"name\":\"Quận Tân Bình\"},{\"name\":\"Quận Nhà Bè\"}]}";
 
-        Type listType = new TypeToken<ArrayList<City>>() {}.getType();
-        List<City> cities = new Gson().fromJson(jsonString, listType);
-        Log.d("TEST",cities.toString());
-        List<String> cityNames = new ArrayList<>();
-        for (City city : cities) {
-            cityNames.add(city.name);
-        }
-        Spinner spinnerCity = view.findViewById(R.id.spinner_province);
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, cityNames);
-        spinnerCity.setAdapter(cityAdapter);
-        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Intent intent = getActivity().getIntent();
+        CartResponse intentCart = (CartResponse) intent.getSerializableExtra(MyApplication.KEY_GET_LISTCART);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MyApplication.KEY_LOGIN, Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
+        binding.tvPhoneNumber.setText(phoneNumber);
+        cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        orderViewModel = new ViewModelProvider(getActivity()).get(OrderViewModel.class);
 
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                City selectedCity = cities.get(pos);
-                Spinner spinnerDistrict = view.findViewById(R.id.spinner_district);
-                List<District> districts = selectedCity.districts;
-                List<String> districtNames = new ArrayList<>();
-                for (District district : districts) {
-                    districtNames.add(district.name);
-                }
-                ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, districtNames);
-                spinnerDistrict.setAdapter(districtAdapter);
-                spinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                        District selectedDistrict = districts.get(pos);
-                        // ...
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-                // Tạo danh sách quận huyện từ thành phố đã chọn
-            }
-
+        checkoutItemAdapter = new CheckoutItemAdapter(new CartResponse(), new ProductResponse());
+        productViewModel.getProductResponseLiveData().observe(getActivity(), new Observer<ProductResponse>() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onChanged(ProductResponse productResponse) {
+                checkoutItemAdapter.setProductResponse(productResponse);
+                checkoutItemAdapter.setCartResponse(intentCart);
+                int price = 0;
+                for (Cart cart : intentCart.getData()) price += (cart.getAttributes().getTotalPrice() * cart.getAttributes().getCount());
+                binding.totalPrice.setText(String.valueOf(price) + " VNĐ");
+                checkoutItemAdapter.notifyDataSetChanged();
             }
-        });*/
+        });
 
-        //
-        mButtonCancel = (Button) view.findViewById(R.id.checkout_cancel);
-        mButtonCancel.setOnClickListener(new View.OnClickListener() {
+        binding.recyclerViewCart.setAdapter(checkoutItemAdapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        binding.recyclerViewCart.setLayoutManager(linearLayoutManager);
+
+
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().finish();
-                startActivity(new Intent(getContext(), CartActivity.class));
             }
         });
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
-        nf.setMaximumFractionDigits(0);
-        nf.setCurrency(Currency.getInstance("VND"));
-        String formattedPrice = nf.format((calculateTotal(ListOrder)));
-        mTextTotal = (TextView) view.findViewById(R.id.checkout_total);
-        mTextTotal.setText(formattedPrice);
+
+        binding.btnPaypal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (binding.etStreet.getText().toString().isEmpty()){
+                    binding.etStreet.setError("Không để trống tên đường !!");
+                }
+                else {
+                    Date date = new Date();
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    for (Cart cart : intentCart.getData()){
+                        UUID uuid = UUID.randomUUID();
+                        int count = cart.getAttributes().getCount();
+                        OrderData currentOrderData = new OrderData();
+                        OrderRequest currentOrderRequest = new OrderRequest();
+                        for (int id : cart.getAttributes().getIdResource()){
+                            cartViewModel.deleteIdCart(id);
+                        }
+                        currentOrderData.setIdProduct(cart.getAttributes().getIdProduct());
+                        currentOrderData.setQuantity(count);
+                        currentOrderData.setTotalPrice(cart.getAttributes().getTotalPrice() * count);
+                        currentOrderData.setStatus(0);
+                        currentOrderData.setPhoneNumber(phoneNumber);
+                        currentOrderData.setAddress(selectedAddress + ", " + selectedDic + ", " + binding.etStreet.getText().toString());
+                        currentOrderRequest.setData(currentOrderData);
+                        currentOrderData.setDateCreate(formatter.format(date));
+                        currentOrderData.setOrderCode(uuid.toString());
+                        orderViewModel.createOrder(currentOrderRequest);
+                        cartViewModel.deleteIdCart(cart.getId());
+
+
+
+                    }
+                    Toast.makeText(getActivity().getApplicationContext(), "Thanh toán thành công",Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+            }
+        });
+
         return view;
     }
+
 
     //  Tính toán tổng tiền thanh toán
     private double calculateTotal(List<Order> orderList) {

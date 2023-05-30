@@ -1,17 +1,11 @@
-package com.group11.shoppuka;
+package com.group11.shoppuka.project.view;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.group11.shoppuka.project.CheckoutFragment;
-import com.group11.shoppuka.project.model.Order;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.group11.shoppuka.R;
+import com.group11.shoppuka.project.view.fragment.CheckoutFragment;
 
 public class CheckoutActivity extends AppCompatActivity  {
     /*public void setListOrder(List<Order> listOrder) {
@@ -24,10 +18,10 @@ public class CheckoutActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
-        List<Order> orderList = getIntent().getParcelableArrayListExtra("order_list");
-        Log.d("TEST3", orderList.get(0).getProductName());
+//        List<Order> orderList = getIntent().getParcelableArrayListExtra("order_list");
+//        Log.d("TEST3", orderList.get(0).getProductName());
         //findViewById(R.id.checkout_fragment_container);
-        CheckoutFragment checkoutFragment = new CheckoutFragment(orderList);
+        CheckoutFragment checkoutFragment = new CheckoutFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.checkout_fragment_container, checkoutFragment).commit();
     }
 }

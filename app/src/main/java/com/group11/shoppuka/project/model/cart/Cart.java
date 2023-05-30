@@ -1,6 +1,8 @@
 package com.group11.shoppuka.project.model.cart;
 
-public class Cart {
+import java.io.Serializable;
+
+public class Cart implements Serializable {
     private int id;
     private AttributesCart attributes;
 

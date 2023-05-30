@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.view;
+package com.group11.shoppuka.project.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentAccountPageBinding;
+import com.group11.shoppuka.project.view.LoginActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,7 +87,7 @@ public class AccountPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 logOutAccount(getActivity());
-                Intent intent = new Intent(getActivity(),LoginActivity.class);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });

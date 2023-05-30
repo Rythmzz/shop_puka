@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,16 +61,16 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
         System.out.println(cartResponse.getData().get(position).getId() + " TOTAL ID");
         if (productResponse.getData().get(positionCart).getAttributes().getSalePrice() != 0) {
             holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.textView2.setText(String.valueOf(salePrice*count) + "VNĐ");
+            holder.textView2.setText(String.valueOf(salePrice*count) + " VNĐ");
             holder.textView2.setVisibility(View.VISIBLE);
         }
         String url = MyApplication.localHost + productResponse.getData().get(positionCart).getAttributes().getImageURL();
         Glide.with(holder.itemView.getContext()).load(url).into(holder.imageView);
-        if (productResponse.getData().get(positionCart).getAttributes().getName().length() <= 15)
+        if (productResponse.getData().get(positionCart).getAttributes().getName().length() <= 20)
             holder.textView.setText(productResponse.getData().get(positionCart).getAttributes().getName());
         else
-            holder.textView.setText((productResponse.getData().get(positionCart).getAttributes().getName()).substring(0, Math.min(productResponse.getData().get(position).getAttributes().getName().length(), 15)) + "...");
-        holder.textView1.setText(String.valueOf(price*count) + "VNĐ");
+            holder.textView.setText((productResponse.getData().get(positionCart).getAttributes().getName()).substring(0, Math.min(productResponse.getData().get(position).getAttributes().getName().length(), 20)) + "...");
+        holder.textView1.setText(String.valueOf(price) + " VNĐ");
 
         holder.tvCount.setText(String.valueOf(cartResponse.getData().get(position).getAttributes().getCount()));
         holder.btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +91,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
                 holder.tvCount.setText(String.valueOf(Integer.valueOf(currentCount)+1));
                 holder.textView1.setText(String.valueOf(price*currentCount) + "VNĐ");
                 holder.textView2.setText(String.valueOf(salePrice*currentCount)+"VNĐ");
+                cartViewModel.fetchListCart(view.getContext());
             }
         });
         holder.btnSub.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +122,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
                 holder.tvCount.setText(String.valueOf(currentCount));
                 holder.textView1.setText(String.valueOf(currentCount*price) + "VNĐ");
                 holder.textView2.setText(String.valueOf(currentCount*salePrice)+"VNĐ");
+                cartViewModel.fetchListCart(view.getContext());
             }
         });
 
@@ -158,9 +161,11 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
 
         FrameLayout frameLayout;
 
-        ImageView btnAdd;
-        ImageView btnSub;
+        TextView btnAdd;
+        TextView btnSub;
         TextView tvCount;
+
+        ConstraintLayout clNoCart;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
@@ -173,6 +178,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
             btnAdd = itemView.findViewById(R.id.btnAdd);
             btnSub = itemView.findViewById(R.id.btnSub);
             tvCount = itemView.findViewById(R.id.numberCount);
+            clNoCart = itemView.findViewById(R.id.csNotCart);
         }
     }
 }

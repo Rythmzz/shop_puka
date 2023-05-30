@@ -1,9 +1,10 @@
 package com.group11.shoppuka.project.model.cart;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AttributesCart {
+public class AttributesCart implements Serializable {
     private int idProduct;
     private int count;
     private int totalPrice;

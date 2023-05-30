@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.group11.shoppuka.project.bean.GoodsBean;
 import com.group11.shoppuka.project.model.Order;
+import com.group11.shoppuka.project.model.cart.CartResponse;
+import com.group11.shoppuka.project.model.product.ProductResponse;
+import com.group11.shoppuka.project.other.MyApplication;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -22,58 +25,52 @@ import java.util.Currency;
 import java.util.List;
 
 public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapter.ViewHolder> {
-    private Context mContext;
-    private LayoutInflater inflater;
-    private ImageLoader mImageLoader;
-    private List<Order> ListOrder;
 
-    public CheckoutItemAdapter(List<Order> orderList, Context context) {
-        this.ListOrder = orderList;
-        this.mContext = context;
-        inflater = LayoutInflater.from(mContext);
+
+    private CartResponse cartResponse;
+    private ProductResponse productResponse;
+
+    public CheckoutItemAdapter(CartResponse cartResponse, ProductResponse productResponse) {
+        this.cartResponse = cartResponse;
+        this.productResponse = productResponse;
+    }
+
+    public void setCartResponse(CartResponse cartResponse) {
+        this.cartResponse = cartResponse;
+    }
+
+    public void setProductResponse(ProductResponse productResponse) {
+        this.productResponse = productResponse;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Tạo view item cho RecyclerView
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_manage_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        int positionCart = cartResponse.getData().get(position).getAttributes().getIdProduct() - 1;
+        int count = cartResponse.getData().get(position).getAttributes().getCount();
 
-        // Thiết lập dữ liệu cho từng view item
-        Order order = ListOrder.get(position);
-        Log.d("TESTHT",order.getProductName());
-        holder.orderProductName.setText(order.getProductName());
-        //Quy đổi tiền tệ
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
-        nf.setMaximumFractionDigits(0);
-        nf.setCurrency(Currency.getInstance("VND"));
-        String formattedPrice = nf.format(order.getTotalPrice());
-        holder.orderPrice.setText(formattedPrice);
-        holder.orderType.setText("Color : "+"xanh");
-        holder.orderQuantity.setText("Quantity : "+String.valueOf(order.getQuantity()));
-        String imageUrl = order.getImageUrl();
-        Glide.with(mContext)
-               .load(imageUrl)
-                .into(holder.orderImage);
+        String url = productResponse.getData().get(positionCart).getAttributes().getImageURL();
+        Glide.with(holder.itemView.getContext()).load(MyApplication.localHost + url).into(holder.orderImage);
+        holder.orderPrice.setText(String.valueOf(cartResponse.getData().get(position).getAttributes().getTotalPrice() * count) + " VNĐ");
+        holder.orderQuantity.setText(String.valueOf(count));
+        holder.orderProductName.setText(productResponse.getData().get(positionCart).getAttributes().getName());
 
-    }
-
-    private Context requireContext() {
-        return null;
     }
 
     @Override
     public int getItemCount() {
-        return ListOrder.size();
+        return cartResponse.getData() != null ? cartResponse.getData().size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView orderProductName,orderPrice,orderQuantity,orderType;
+        TextView orderProductName,orderPrice,orderQuantity;
         ImageView orderImage;
 
         public ViewHolder(@NonNull View itemView) {
@@ -82,7 +79,6 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
             orderPrice = itemView.findViewById(R.id.order_price);
             orderQuantity = itemView.findViewById(R.id.Quantity);
             orderProductName = itemView.findViewById(R.id.order_name);
-            orderType = itemView.findViewById(R.id.order_type);
         }
     }
 }

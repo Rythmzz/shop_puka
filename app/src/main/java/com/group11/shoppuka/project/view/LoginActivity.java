@@ -26,6 +26,7 @@ import com.group11.shoppuka.databinding.ActivityLoginBinding;
 import com.group11.shoppuka.project.model.account.AttributesUser;
 import com.group11.shoppuka.project.model.account.User;
 import com.group11.shoppuka.project.model.account.UserResponse;
+import com.group11.shoppuka.project.other.MyApplication;
 import com.group11.shoppuka.project.viewmodel.LoginViewModel;
 
 import org.json.JSONException;
@@ -35,8 +36,7 @@ import java.util.Random;
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
-    private static String LOGIN_KEY = "login_info";
-    private static String ACCOUNT_PHONE = "phone_info";
+
     private static String FULL_NAME_PHONE = "fullName_phone_info";
     private static String ID_MODE = "id_mode_info";
 
@@ -54,17 +54,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveLoginInfo(Context context, String phoneNumber, String fullName, int idMode){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(MyApplication.KEY_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(ACCOUNT_PHONE, phoneNumber);
+        editor.putString(MyApplication.KEY_ACCOUNT_PHONE, phoneNumber);
         editor.putString(FULL_NAME_PHONE,fullName);
         editor.putInt(ID_MODE,idMode);
         editor.apply();
     }
 
     private String[] getLoginInfo(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_KEY,Context.MODE_PRIVATE);
-        String phoneNumber = sharedPreferences.getString(ACCOUNT_PHONE,null);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(MyApplication.KEY_LOGIN,Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
         String fullName = sharedPreferences.getString(FULL_NAME_PHONE,null);
         int idMode = sharedPreferences.getInt(ID_MODE,-1);
         return new String[]{phoneNumber,fullName,String.valueOf(idMode)};
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             Bundle infoUser = new Bundle();
-            infoUser.putString(ACCOUNT_PHONE,loginInfo[0]);
+            infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,loginInfo[0]);
             infoUser.putString(FULL_NAME_PHONE,loginInfo[1]);
             infoUser.putString(ID_MODE,loginInfo[2]);
             intent.putExtras(infoUser);
@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle infoUser = new Bundle();
-                infoUser.putString(ACCOUNT_PHONE,userCurrent.getPhoneNumber());
+                infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,userCurrent.getPhoneNumber());
                 infoUser.putString(FULL_NAME_PHONE,userCurrent.getFullName());
                 infoUser.putString(ID_MODE,String.valueOf(userCurrent.getIdMode()));
                 intent.putExtras(infoUser);

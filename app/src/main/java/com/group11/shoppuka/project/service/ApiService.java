@@ -9,6 +9,8 @@ import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartRequest;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
+import com.group11.shoppuka.project.model.order.OrderRequest;
+import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductRequest;
 import com.group11.shoppuka.project.model.product.ProductResponse;
@@ -65,5 +67,11 @@ public interface    ApiService {
 
     @DELETE("/api/products/{id}")
     Call<Product> deleteProduct(@Path("id") int id);
+
+    @POST("/api/orders")
+    Call<ResponseBody> createOrder(@Body OrderRequest orderRequest);
+
+    @GET("/api/orders")
+    Call<OrderResponse> getListOrderWithNumberPhone();
 
 }
