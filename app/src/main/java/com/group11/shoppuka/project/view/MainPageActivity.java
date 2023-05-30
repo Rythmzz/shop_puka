@@ -25,6 +25,11 @@ import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 import com.group11.shoppuka.databinding.HeaderDrawerBinding;
+import com.group11.shoppuka.project.view.fragment.AccountPageFragment;
+import com.group11.shoppuka.project.view.fragment.CartPageFragment;
+import com.group11.shoppuka.project.view.fragment.HomePageFragment;
+import com.group11.shoppuka.project.view.fragment.OrderPageFragment;
+import com.group11.shoppuka.project.view.fragment.SearchPageFragment;
 
 
 public class MainPageActivity extends AppCompatActivity implements HomePageFragment.OnItemSelectedListener {
@@ -34,6 +39,14 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
     private static String ACCOUNT_PHONE = "phone_info";
     private static String FULL_NAME_PHONE = "fullName_phone_info";
     private static String ID_MODE = "id_mode_info";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,13 +100,18 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
 
     }
 
+
     private NavigationView.OnNavigationItemSelectedListener mOnDrawerLayoutItemSelectedListener =
             new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()){
                         case R.id.modeAuthentication:{
-                            Intent intent = new Intent(MainPageActivity.this,ManagePageActivity.class);
+                            Intent intent = new Intent(MainPageActivity.this, ManageProductPageActivity.class);
+                            startActivity(intent);
+                        }
+                        case R.id.manageOrder:{
+                            Intent intent = new Intent(MainPageActivity.this,ManageOrderPageActivity.class);
                             startActivity(intent);
                         }
                     }

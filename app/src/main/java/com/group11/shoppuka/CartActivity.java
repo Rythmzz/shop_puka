@@ -2,28 +2,18 @@ package com.group11.shoppuka;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.group11.shoppuka.project.CheckoutFragment;
 import com.group11.shoppuka.project.bean.CartItemBean;
 import com.group11.shoppuka.project.bean.GoodsBean;
 import com.group11.shoppuka.project.bean.ICartItem;
@@ -31,12 +21,11 @@ import com.group11.shoppuka.project.bean.ShopBean;
 import com.group11.shoppuka.project.listener.CartOnCheckChangeListener;
 import com.group11.shoppuka.project.adapter.MainAdapter;
 import com.group11.shoppuka.project.model.Order;
+import com.group11.shoppuka.project.view.CheckoutActivity;
 
-import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
