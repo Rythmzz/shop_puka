@@ -3,43 +3,27 @@ package com.group11.shoppuka.project.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import com.google.android.gms.common.util.IOUtils;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.FragmentCheckoutBinding;
 import com.group11.shoppuka.project.adapter.CheckoutItemAdapter;
@@ -54,26 +38,10 @@ import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 
-import org.checkerframework.checker.units.qual.C;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 public class CheckoutFragment extends Fragment {

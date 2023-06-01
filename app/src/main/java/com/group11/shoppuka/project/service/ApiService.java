@@ -2,6 +2,7 @@ package com.group11.shoppuka.project.service;
 
 import android.net.Uri;
 
+import com.group11.shoppuka.project.model.account.User;
 import com.group11.shoppuka.project.model.account.UserData;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.account.UserResponse;
@@ -9,6 +10,7 @@ import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartRequest;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
+import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderRequest;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.Product;
@@ -73,5 +75,11 @@ public interface    ApiService {
 
     @GET("/api/orders")
     Call<OrderResponse> getListOrderWithNumberPhone();
+
+    @PUT("/api/orders/{id}")
+    Call<Order> updateOrder(@Path(("id")) int id, @Body OrderRequest orderRequest);
+
+    @PUT("/api/accounts/{id}")
+    Call<User> updateAvatar(@Path(("id")) int id, @Body UserRequest userRequest);
 
 }

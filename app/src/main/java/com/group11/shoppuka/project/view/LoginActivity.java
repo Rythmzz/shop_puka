@@ -2,6 +2,7 @@ package com.group11.shoppuka.project.view;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -36,14 +37,11 @@ import java.util.Random;
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
-
-    private static String FULL_NAME_PHONE = "fullName_phone_info";
-    private static String ID_MODE = "id_mode_info";
-
     private UserResponse userCurrentResponse;
 
 
     private AttributesUser userCurrent;
+    int idAccount= -1;
 
     private LoginViewModel viewModel;
 
@@ -53,36 +51,35 @@ public class LoginActivity extends AppCompatActivity {
         viewModel.fetchUser();
     }
 
-    private void saveLoginInfo(Context context, String phoneNumber, String fullName, int idMode){
+    private void saveLoginInfo(Context context, String phoneNumber, String fullName, int idMode, int statusLogin){
         SharedPreferences sharedPreferences = context.getSharedPreferences(MyApplication.KEY_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(MyApplication.KEY_ACCOUNT_PHONE, phoneNumber);
-        editor.putString(FULL_NAME_PHONE,fullName);
-        editor.putInt(ID_MODE,idMode);
+        editor.putString(MyApplication.FULL_NAME_PHONE,fullName);
+        editor.putInt(MyApplication.ID_MODE,idMode);
+        editor.putInt(MyApplication.STATUS_LOGIN,statusLogin);
         editor.apply();
     }
 
     private String[] getLoginInfo(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(MyApplication.KEY_LOGIN,Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
-        String fullName = sharedPreferences.getString(FULL_NAME_PHONE,null);
-        int idMode = sharedPreferences.getInt(ID_MODE,-1);
-        return new String[]{phoneNumber,fullName,String.valueOf(idMode)};
+        String fullName = sharedPreferences.getString(MyApplication.FULL_NAME_PHONE,null);
+        int idMode = sharedPreferences.getInt(MyApplication.ID_MODE,-1);
+        int statusLogin = sharedPreferences.getInt(MyApplication.STATUS_LOGIN,-1);
+        return new String[]{phoneNumber,fullName,String.valueOf(idMode),String.valueOf(statusLogin)};
     }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String[] loginInfo = getLoginInfo(this);
-        System.out.println("PHONE NUMBER " + loginInfo[0]);
-        System.out.println("FULL NAME " +loginInfo[1]);
-        System.out.println("ID MODE:" + loginInfo[2]);
-        if (loginInfo[0] != null && loginInfo[1] != null){
+        if (loginInfo[0] != null && loginInfo[1] != null && loginInfo[3].equals("1")){
             Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             Bundle infoUser = new Bundle();
             infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,loginInfo[0]);
-            infoUser.putString(FULL_NAME_PHONE,loginInfo[1]);
-            infoUser.putString(ID_MODE,loginInfo[2]);
+            infoUser.putString(MyApplication.FULL_NAME_PHONE,loginInfo[1]);
+            infoUser.putString(MyApplication.ID_MODE,loginInfo[2]);
             intent.putExtras(infoUser);
             startActivity(intent);
             finish();
@@ -123,17 +120,23 @@ public class LoginActivity extends AppCompatActivity {
                     binding.etPassword.setError("Vui lòng không để trống mật khẩu!");
                 }
                 else {
-                    for (User user : userCurrentResponse.getData()){
-                        if (String.valueOf(binding.etAccount.getText()).equals(user.getAttributes().phoneNumber)
-                                && String.valueOf(binding.etPassword.getText()).equals(user.getAttributes().password)){
-                            userCurrent = user.getAttributes();
-                            break;
+                    if (userCurrentResponse.getData() != null){
+                        for (User user : userCurrentResponse.getData()){
+                            if (String.valueOf(binding.etAccount.getText()).equals(user.getAttributes().phoneNumber)
+                                    && String.valueOf(binding.etPassword.getText()).equals(user.getAttributes().password)){
+                                userCurrent = user.getAttributes();
+                                idAccount = user.getId();
+                                break;
+                            }
+                        }
+                        if (userCurrent != null) {
+                            confirmOtp(this);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    if (userCurrent != null) {
-                        confirmOtp(this);
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(this,"Kiểm tra IP ở other/MyApplication.class/localHost !!", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -155,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //Khởi tạo nút xác nhận cho hộp thoại và EditText của hộp thoại
         Button buttonConfirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
-//        EditText editTextConfirmOtp = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         Button buttonResend = (Button) confirmDialog.findViewById(R.id.buttonResend);
 
         EditText otpNumber1 = (EditText) confirmDialog.findViewById(R.id.otpNumber1);
@@ -184,28 +186,42 @@ public class LoginActivity extends AppCompatActivity {
         otpNumber5.setText("0");
         otpNumber6.setText("1");
 
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                userCurrent = null;
+            }
+        });
+
         //Khi nhấn nút xác nhận từ hộp thoại cảnh báo
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Lấy mã OTP do người dùng nhập từ EditText
 //                final String otp = editTextConfirmOtp.getText().toString().trim();
-                if (binding.cbRemember.isChecked()){
-                    saveLoginInfo(context,userCurrent.phoneNumber, userCurrent.fullName, userCurrent.idMode);
-                }
+                if (binding.cbRemember.isChecked())
+                    saveLoginInfo(context,userCurrent.phoneNumber, userCurrent.fullName, userCurrent.idMode, 1);
+                else saveLoginInfo(context,userCurrent.phoneNumber,userCurrent.fullName, userCurrent.idMode, -1);
                 alertDialog.dismiss();
                 Intent intent =new Intent(getApplicationContext(),MainPageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle infoUser = new Bundle();
                 infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,userCurrent.getPhoneNumber());
-                infoUser.putString(FULL_NAME_PHONE,userCurrent.getFullName());
-                infoUser.putString(ID_MODE,String.valueOf(userCurrent.getIdMode()));
+                infoUser.putString(MyApplication.FULL_NAME_PHONE,userCurrent.getFullName());
+                infoUser.putString(MyApplication.ID_MODE,String.valueOf(userCurrent.getIdMode()));
+                infoUser.putString(MyApplication.AVATAR_ACCOUNT,userCurrent.getImageURL());
+                infoUser.putInt(MyApplication.ID_ACCOUNT,idAccount);
                 intent.putExtras(infoUser);
                 startActivity(intent);
                 finish();
 
             }
         });
+
+
+
+
 
         buttonResend.setOnClickListener(new View.OnClickListener() {
             @Override

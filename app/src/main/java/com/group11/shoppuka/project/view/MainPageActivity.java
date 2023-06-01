@@ -1,15 +1,18 @@
 package com.group11.shoppuka.project.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,27 +21,56 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.group11.shoppuka.CartActivity;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 import com.group11.shoppuka.databinding.HeaderDrawerBinding;
+import com.group11.shoppuka.project.model.account.UserData;
+import com.group11.shoppuka.project.model.account.UserRequest;
+import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.service.ApiService;
+import com.group11.shoppuka.project.service.RetrofitService;
 import com.group11.shoppuka.project.view.fragment.AccountPageFragment;
 import com.group11.shoppuka.project.view.fragment.CartPageFragment;
 import com.group11.shoppuka.project.view.fragment.HomePageFragment;
 import com.group11.shoppuka.project.view.fragment.OrderPageFragment;
 import com.group11.shoppuka.project.view.fragment.SearchPageFragment;
+import com.group11.shoppuka.project.viewmodel.UserViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainPageActivity extends AppCompatActivity implements HomePageFragment.OnItemSelectedListener {
     ActivityHomepageBinding binding;
 
-    private static String LOGIN_KEY = "login_info";
-    private static String ACCOUNT_PHONE = "phone_info";
-    private static String FULL_NAME_PHONE = "fullName_phone_info";
-    private static String ID_MODE = "id_mode_info";
+    String imageUrl;
+
+    private UserData userData = new UserData();
+
+    private HeaderDrawerBinding headerDrawerBinding;
+
+    private UserViewModel viewModel;
+
+    private Bundle infoUser;
 
     @Override
     protected void onResume() {
@@ -78,25 +110,141 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
         Log.i("FragmentManager",String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
 
         View headerView = binding.navigationView.getHeaderView(0);
-        HeaderDrawerBinding headerDrawerBinding = HeaderDrawerBinding.bind(headerView);
+        headerDrawerBinding = HeaderDrawerBinding.bind(headerView);
         Intent intentInfoUser = getIntent();
-        Bundle infoUser = intentInfoUser.getExtras();
-        headerDrawerBinding.tvPhoneNumber.setText("Số điện thoại: "+infoUser.getString(ACCOUNT_PHONE));
-        headerDrawerBinding.tvFullName.setText("Tên người dùng: "+ infoUser.get(FULL_NAME_PHONE));
+        infoUser = intentInfoUser.getExtras();
+        headerDrawerBinding.tvPhoneNumber.setText("Số điện thoại: "+infoUser.getString(MyApplication.KEY_ACCOUNT_PHONE));
+        headerDrawerBinding.tvFullName.setText("Tên người dùng: "+ infoUser.get(MyApplication.FULL_NAME_PHONE));
+        if (!infoUser.getString(MyApplication.AVATAR_ACCOUNT).equals("none")){
+            Glide.with(this).load(MyApplication.localHost + infoUser.getString(MyApplication.AVATAR_ACCOUNT)).into(headerDrawerBinding.avatarAccount);
+        }
+        headerDrawerBinding.avatarAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"), MyApplication.PICK_IMAGE);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(LOGIN_KEY,MODE_PRIVATE);
-        int idMode = sharedPreferences.getInt(ID_MODE,-1);
+
+            }
+        });
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences(MyApplication.KEY_LOGIN,MODE_PRIVATE);
+        int idMode = sharedPreferences.getInt(MyApplication.ID_MODE,-1);
 
         if (idMode != 0){
             Menu menu = binding.navigationView.getMenu();
             MenuItem menuItem = menu.findItem(R.id.modeAuthentication);
             menuItem.setVisible(false);
-
+            menuItem = menu.findItem(R.id.manageOrder);
+            menuItem.setVisible(false);
+            Menu menuBottom = binding.bottomNavigationView.getMenu();
+            menuItem = menuBottom.findItem(R.id.Order);
+            menuItem.setVisible(true);
         }
         binding.navigationView.setNavigationItemSelectedListener(mOnDrawerLayoutItemSelectedListener);
 
 
 
+
+    }
+    private byte[] readBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == MyApplication.PICK_IMAGE){
+           if (resultCode == RESULT_OK){
+               Uri imageUri = data.getData();
+               headerDrawerBinding.avatarAccount.setImageURI(imageUri);
+               try {
+                   InputStream inputStream =getContentResolver().openInputStream(imageUri);
+                   byte[] imageData = readBytes(inputStream);
+                   RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)),imageData);
+                   MultipartBody.Part image = MultipartBody.Part.createFormData("files","image.jpg",requestFile);
+                   RetrofitService retrofitService = new RetrofitService();
+                   ApiService apiService = retrofitService.retrofit.create(ApiService.class);
+
+                   apiService.uploadImage(image).enqueue(new Callback<ResponseBody>() {
+                       @Override
+                       public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                           if (response.isSuccessful()) {
+                               try {
+                                   String responseBody = response.body().string();
+                                   JSONArray jsonArray = new JSONArray(responseBody);
+                                   JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                   imageUrl = jsonObject.getString("url");
+                                   userData.setImageURL(imageUrl);
+                                   System.out.println(imageUrl);
+                                   viewModel = new ViewModelProvider(MainPageActivity.this).get(UserViewModel.class);
+                                   UserRequest userRequest = new UserRequest();
+                                   userRequest.setData(userData);
+                                   System.out.println(infoUser.getInt(MyApplication.ID_ACCOUNT));
+                                   viewModel.updateAvatarUser(infoUser.getInt(MyApplication.ID_ACCOUNT), userRequest);
+
+                                   // Sử dụng imageUrl để cập nhật thuộc tính url trong bảng sản phẩm
+                               }  catch (JSONException e) {
+                                   throw new RuntimeException(e);
+                               } catch (IOException e) {
+                                   throw new RuntimeException(e);
+                               }
+                               System.out.println("upload hình thành công");
+                           } else {
+                               int statusCode = response.code();
+                               ResponseBody errorBody = response.errorBody();
+                               String errorMessage = null;
+                               try {
+                                   errorMessage = response.errorBody().string();
+                               } catch (IOException e) {
+                                   throw new RuntimeException(e);
+                               }
+                               System.out.println(statusCode);
+                               System.out.println(errorMessage);
+                               try {
+                                   errorMessage = errorBody != null ? errorBody.string() : "";
+                               } catch (IOException e) {
+                                   Toast.makeText(MainPageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                               }
+                           }
+                       }
+
+                       @Override
+                       public void onFailure(Call<ResponseBody> call, Throwable t) {
+                           t.printStackTrace();
+                       }
+                   });
+
+               } catch (FileNotFoundException e) {
+                   throw new RuntimeException(e);
+               } catch (IOException e) {
+                   throw new RuntimeException(e);
+               }
+           }
+
+
+
+        }
+    }
+
+    private void logOutAccount(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(MyApplication.KEY_LOGIN,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(MyApplication.KEY_ACCOUNT_PHONE);
+        editor.remove(MyApplication.FULL_NAME_PHONE);
+        editor.remove(MyApplication.ID_MODE);
+        editor.apply();
 
     }
 
@@ -109,11 +257,19 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
                         case R.id.modeAuthentication:{
                             Intent intent = new Intent(MainPageActivity.this, ManageProductPageActivity.class);
                             startActivity(intent);
+                            return true;
                         }
                         case R.id.manageOrder:{
                             Intent intent = new Intent(MainPageActivity.this,ManageOrderPageActivity.class);
                             startActivity(intent);
+                            return true;
                         }
+                        case R.id.logOut:
+                            logOutAccount(MainPageActivity.this);
+                            Intent intent = new Intent(MainPageActivity.this,LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                            return true;
                     }
                     return false;
                 }
@@ -174,8 +330,6 @@ public class MainPageActivity extends AppCompatActivity implements HomePageFragm
 
         if (id == R.id.action_menu){
             binding.drawerLayout.openDrawer(GravityCompat.START);
-            Intent intent = new Intent(this, CartActivity.class);
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

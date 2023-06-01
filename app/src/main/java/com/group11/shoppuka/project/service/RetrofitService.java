@@ -7,7 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitService {
      public Retrofit retrofit;
-
      public RetrofitService(){
          retrofit = new Retrofit.Builder().baseUrl(MyApplication.localHost + "/")
                  .addConverterFactory(GsonConverterFactory.create())

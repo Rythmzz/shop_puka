@@ -1,6 +1,9 @@
 package com.group11.shoppuka.project.model.product;
 
 public class ProductData {
+
+    private int idProduct;
+
     private String name;
     private int price;
     private int salePrice;
@@ -8,6 +11,14 @@ public class ProductData {
     private String imageURL;
     private int countSearch;
     private int idCategory;
+
+    public int getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
+    }
 
     public String getName() {
         return name;

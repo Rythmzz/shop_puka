@@ -8,7 +8,17 @@ public class AttributesUser {
     public String updatedAt;
     public String publishedAt;
 
+    public String imageURL;
+
     public int idMode;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public int getIdMode() {
         return idMode;

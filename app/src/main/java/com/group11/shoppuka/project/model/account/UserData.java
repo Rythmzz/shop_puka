@@ -5,7 +5,17 @@ public class UserData {
     private String password;
     private String fullName;
 
+    private String imageURL;
+
     private int idMode;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
