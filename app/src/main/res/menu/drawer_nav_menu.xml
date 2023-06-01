@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:icon="@drawable/ic_bell"
         android:id="@+id/notify"
         android:title="Thông báo"
         />
     <item
+        android:icon="@drawable/pk_icon_order"
         android:id="@+id/manageOrder"
         android:title="Quản lý đơn hàng"
         />
     <item
+        android:icon="@drawable/tmaddproduct48"
         android:id="@+id/modeAuthentication"
         android:title="Quản lý sản phẩm"
         />
     <item
+        android:icon="@drawable/tm_logout_32"
         android:id="@+id/logOut"
         android:title="Đăng xuất"
         />

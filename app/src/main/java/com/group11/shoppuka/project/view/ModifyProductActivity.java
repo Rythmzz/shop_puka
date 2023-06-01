@@ -60,6 +60,11 @@ public class ModifyProductActivity extends AppCompatActivity {
 
     private ProductData productData = new ProductData();
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     String imageUrl = "";
 
     @Override
@@ -107,7 +112,8 @@ public class ModifyProductActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedItem = data.get(i);
-                productData.setIdCategory(i);
+                productData.setIdCategory(i+1);
+                System.out.println("ID CATEGORY : "+ i);
             }
 
             @Override
@@ -147,7 +153,7 @@ public class ModifyProductActivity extends AppCompatActivity {
                     productRequest.setData(productData);
                     ProductViewModel productViewModel = new ViewModelProvider(ModifyProductActivity.this).get(ProductViewModel.class);
                     productViewModel.updateData(product.getId(),productRequest);
-                    Toast.makeText(getApplicationContext(),"Product được chỉnh sửa thành công !",Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Product được chỉnh sửa thành công !",Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -168,66 +174,69 @@ public class ModifyProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MyApplication.PICK_IMAGE){
-            Uri imageUri = data.getData();
-            binding.ivImageURL.setImageURI(imageUri);
-            try {
-                InputStream inputStream =getContentResolver().openInputStream(imageUri);
-                byte[] imageData = readBytes(inputStream);
-                RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)),imageData);
-                MultipartBody.Part image = MultipartBody.Part.createFormData("files","image.jpg",requestFile);
-                RetrofitService retrofitService = new RetrofitService();
-                ApiService apiService = retrofitService.retrofit.create(ApiService.class);
+            if (resultCode == RESULT_OK){
+                Uri imageUri = data.getData();
+                binding.ivImageURL.setImageURI(imageUri);
+                try {
+                    InputStream inputStream =getContentResolver().openInputStream(imageUri);
+                    byte[] imageData = readBytes(inputStream);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)),imageData);
+                    MultipartBody.Part image = MultipartBody.Part.createFormData("files","image.jpg",requestFile);
+                    RetrofitService retrofitService = new RetrofitService();
+                    ApiService apiService = retrofitService.retrofit.create(ApiService.class);
 
-                apiService.uploadImage(image).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    apiService.uploadImage(image).enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        if (response.isSuccessful()) {
-                            try {
-                                String responseBody = response.body().string();
-                                JSONArray jsonArray = new JSONArray(responseBody);
-                                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                imageUrl = jsonObject.getString("url");
-                                productData.setImageURL(imageUrl);
-                                System.out.println(imageUrl);
-                                // Sử dụng imageUrl để cập nhật thuộc tính url trong bảng sản phẩm
-                            }  catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                            if (response.isSuccessful()) {
+                                try {
+                                    String responseBody = response.body().string();
+                                    JSONArray jsonArray = new JSONArray(responseBody);
+                                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                    imageUrl = jsonObject.getString("url");
+                                    productData.setImageURL(imageUrl);
+                                    System.out.println(imageUrl);
+                                    // Sử dụng imageUrl để cập nhật thuộc tính url trong bảng sản phẩm
+                                }  catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
 
-                            System.out.println("upload hình thành công");
-                        } else {
-                            int statusCode = response.code();
-                            ResponseBody errorBody = response.errorBody();
-                            String errorMessage = null;
-                            try {
-                                errorMessage = response.errorBody().string();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            System.out.println(statusCode);
-                            System.out.println(errorMessage);
-                            try {
-                                errorMessage = errorBody != null ? errorBody.string() : "";
-                            } catch (IOException e) {
-                                Toast.makeText(ModifyProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                System.out.println("upload hình thành công");
+                            } else {
+                                int statusCode = response.code();
+                                ResponseBody errorBody = response.errorBody();
+                                String errorMessage = null;
+                                try {
+                                    errorMessage = response.errorBody().string();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                System.out.println(statusCode);
+                                System.out.println(errorMessage);
+                                try {
+                                    errorMessage = errorBody != null ? errorBody.string() : "";
+                                } catch (IOException e) {
+                                    Toast.makeText(ModifyProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
 
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+
 
 
         }

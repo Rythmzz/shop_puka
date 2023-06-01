@@ -32,7 +32,7 @@ public class ConfirmPageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         productViewModel.fetchData();
-        orderViewModel.fetchListData(0);
+        orderViewModel.fetchListData(0,0);
 
     }
 

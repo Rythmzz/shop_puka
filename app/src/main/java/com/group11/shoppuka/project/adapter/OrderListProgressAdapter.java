@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.order.AttributesOrder;
 import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderData;
 import com.group11.shoppuka.project.model.order.OrderRequest;
@@ -26,11 +24,11 @@ import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 
-public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfirmAdapter.Holder> {
+public class OrderListProgressAdapter extends RecyclerView.Adapter<OrderListProgressAdapter.Holder> {
     private OrderResponse orderResponse;
     private ProductResponse productResponse;
 
-    public OrderListConfirmAdapter(OrderResponse orderResponse, ProductResponse productResponse){
+    public OrderListProgressAdapter(OrderResponse orderResponse, ProductResponse productResponse){
         this.orderResponse = orderResponse;
         this.productResponse = productResponse;
     }
@@ -45,14 +43,13 @@ public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfi
 
     @NonNull
     @Override
-    public OrderListConfirmAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_confirm_item,parent,false);
-        return new OrderListConfirmAdapter.Holder(view);
+    public OrderListProgressAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_progress_item,parent,false);
+        return new OrderListProgressAdapter.Holder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderListConfirmAdapter.Holder holder, int position) {
-
+    public void onBindViewHolder(@NonNull OrderListProgressAdapter.Holder holder, int position) {
         Order order = orderResponse.getData().get(position);
         holder.orderCode.setText("OrderCode#"+order.getAttributes().getOrderCode().toString().substring(0,7));
         holder.nameProduct.setText(productResponse.getData().get(order.getAttributes().getIdProduct()-1).getAttributes().getName());
@@ -70,7 +67,7 @@ public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfi
                 if (b){
                     holder.checkSuccess.setChecked(false);
                     OrderData orderData = new OrderData();
-                    orderData.setStatus(1);
+                    orderData.setStatus(2);
                     orderData.setTotalPrice(order.getAttributes().getTotalPrice());
                     orderData.setQuantity(order.getAttributes().getQuantity());
                     orderData.setIdProduct(order.getAttributes().getIdProduct());
@@ -78,8 +75,7 @@ public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfi
                     orderRequest.setData(orderData);
                     OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
                     orderViewModel.updateData(order.getId(),orderRequest);
-                    orderViewModel.fetchListData(0,0);
-
+                    orderViewModel.fetchListData(1,1);
                 }
 
             }
@@ -98,7 +94,7 @@ public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfi
                     orderRequest.setData(orderData);
                     OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
                     orderViewModel.updateData(order.getId(),orderRequest);
-                    orderViewModel.fetchListData(0,0);
+                    orderViewModel.fetchListData(1,1);
                 }
 
             }
@@ -126,8 +122,8 @@ public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfi
             quantity = itemView.findViewById(R.id.tvQuantity);
             dateCreate = itemView.findViewById(R.id.tvOrderDate);
             imageProduct = itemView.findViewById(R.id.order_image);
-            checkSuccess = itemView.findViewById(R.id.btnConfirm);
-            checkFail = itemView.findViewById(R.id.btnCancel);
+            checkSuccess = itemView.findViewById(R.id.btnConfirmProgress);
+            checkFail = itemView.findViewById(R.id.btnCancelProgress);
 
         }
     }

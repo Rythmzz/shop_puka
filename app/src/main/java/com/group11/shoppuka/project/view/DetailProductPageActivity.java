@@ -30,7 +30,6 @@ public class DetailProductPageActivity extends AppCompatActivity {
 
     private CartViewModel cartViewModel;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +53,8 @@ public class DetailProductPageActivity extends AppCompatActivity {
 
         }
         binding.description.setText(product.getAttributes().getDescription());
-        SharedPreferences sharedPreferences = this.getSharedPreferences("login_info", Context.MODE_PRIVATE);
-        String phoneNumber = sharedPreferences.getString("phone_info",null);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(MyApplication.KEY_LOGIN, Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
 
         cartViewModel = new ViewModelProvider(DetailProductPageActivity.this).get(CartViewModel.class);
         binding.btnCart.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +62,7 @@ public class DetailProductPageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 CartData cartData = new CartData();
                 cartData.setIdProduct(product.getId());
+                System.out.println("Phone Number :"+phoneNumber);
                 cartData.setPhoneNumber(phoneNumber);
                 cartData.setCount(1);
                 if (product.getAttributes().getSalePrice() != 0) {

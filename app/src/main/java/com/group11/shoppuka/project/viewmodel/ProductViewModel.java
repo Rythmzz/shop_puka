@@ -31,6 +31,7 @@ public class ProductViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 ProductResponse productResponse = response.body();
+                System.out.println(response.body());
                 productResponseLiveData.setValue(productResponse);
             }
             @Override

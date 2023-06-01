@@ -40,6 +40,12 @@ public class ManageProductPageActivity extends AppCompatActivity {
     private ActivityManageProductBinding binding;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        productViewModel.fetchData();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityManageProductBinding.inflate(getLayoutInflater());

@@ -11,6 +11,8 @@ import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderRequest;
 import com.group11.shoppuka.project.model.order.OrderResponse;
+import com.group11.shoppuka.project.model.product.Product;
+import com.group11.shoppuka.project.model.product.ProductRequest;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 
@@ -76,7 +78,27 @@ public class OrderViewModel extends ViewModel {
             }
         });
     }
-    public void fetchListData(int status){
+    public void updateData(int id, OrderRequest orderRequest){
+        RetrofitService retrofitService = new RetrofitService();
+
+        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
+
+        apiService.updateOrder(id,orderRequest).enqueue(new Callback<Order>() {
+            @Override
+            public void onResponse(Call<Order> call, Response<Order> response) {
+                if (response.isSuccessful()){
+                    System.out.println("Update Order Thành Công");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Order> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+    public void fetchListData(int startStatus, int endStatus){
         RetrofitService retrofitService = new RetrofitService();
         ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
@@ -85,7 +107,7 @@ public class OrderViewModel extends ViewModel {
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 OrderResponse orderResponse = response.body();
-                List<Order> resultFull =orderResponse.getData().stream().filter(item -> item.getAttributes().getStatus() == status).collect(Collectors.toList());
+                List<Order> resultFull =orderResponse.getData().stream().filter(item -> (item.getAttributes().getStatus() >= startStatus && item.getAttributes().getStatus() <= endStatus)).collect(Collectors.toList());
                 for (Order order : resultFull) {
                     System.out.println(order.getAttributes().getPhoneNumber());
                     System.out.println(order.getAttributes().getIdProduct());

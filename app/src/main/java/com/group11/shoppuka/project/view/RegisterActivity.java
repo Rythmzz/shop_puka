@@ -93,6 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                     userData.setFullName(String.valueOf(binding.etFullName.getText()));
                     userData.setPassword(String.valueOf(binding.etPassword.getText()));
                     userData.setIdMode(1);
+                    userData.setImageURL("none");
 
                     UserRequest userRequest = new UserRequest();
                     userRequest.setData(userData);

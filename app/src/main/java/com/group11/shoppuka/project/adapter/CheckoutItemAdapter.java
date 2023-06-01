@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.group11.shoppuka.project.bean.GoodsBean;
 import com.group11.shoppuka.project.model.Order;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;

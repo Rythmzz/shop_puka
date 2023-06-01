@@ -3,6 +3,8 @@ package com.group11.shoppuka.project.model.product;
 import java.io.Serializable;
 
 public class AttributesProduct implements Serializable {
+
+    private int idProduct;
     private String name;
     private int price;
     private int salePrice;
@@ -13,6 +15,14 @@ public class AttributesProduct implements Serializable {
     private String createdAt;
     private String updatedAt;
     private String publishedAt;
+
+    public int getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
+    }
 
     public String getName() {
         return name;
