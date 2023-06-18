@@ -1,6 +1,5 @@
 package com.group11.shoppuka.project.adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
@@ -16,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.ProductTest;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
-import com.group11.shoppuka.project.view.DetailProductPageActivity;
+import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 
 
 public class ProductListSalePriceAdapter extends RecyclerView.Adapter<ProductListSalePriceAdapter.Holder> {

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,17 +24,12 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
-import com.group11.shoppuka.project.service.ApiService;
-import com.group11.shoppuka.project.view.DetailProductPageActivity;
-import com.group11.shoppuka.project.view.ModifyProductActivity;
+import com.group11.shoppuka.project.view.product.ModifyProductActivity;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
-
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

@@ -9,20 +9,26 @@ import com.group11.shoppuka.project.service.RetrofitService;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+@HiltViewModel
 public class UserViewModel extends ViewModel {
+    private ApiService apiService;
+    @Inject
+    public UserViewModel(ApiService apiService){
+        this.apiService = apiService;
+    }
     public void updateAvatarUser(int id ,UserRequest userRequest){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.updateAvatar(id,userRequest).enqueue(new Callback<User>() {
+        apiService.updateAvatar(id,userRequest).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()){
-                    System.out.println("Update avatar thành công");
+                    System.out.println("Cập nhật avatar thành công");
                 }
                 else {
                     try {

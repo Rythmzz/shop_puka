@@ -10,18 +10,23 @@ import androidx.lifecycle.ViewModel;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.account.UserResponse;
 import com.group11.shoppuka.project.service.ApiService;
-import com.group11.shoppuka.project.service.RetrofitService;
-import com.group11.shoppuka.project.view.LoginActivity;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+@HiltViewModel
 public class LoginViewModel extends ViewModel {
-//    private MutableLiveData<UserRequest> signUpUserLiveData = new MutableLiveData<>();
+    private ApiService apiService;
+    @Inject
+    public LoginViewModel(ApiService apiService){
+        this.apiService = apiService;
+    }
     private MutableLiveData<Boolean> signUpSuccessLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> progressLoading = new MutableLiveData<>();
 
@@ -38,10 +43,9 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void fetchUser(){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.getListUser().enqueue(new Callback<UserResponse>() {
+
+        apiService.getListUser().enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 UserResponse userResponse = response.body();
@@ -55,13 +59,9 @@ public class LoginViewModel extends ViewModel {
             }
         });
     }
-
-
     public void signUpUser(UserRequest userRequest, Context context){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        Call<ResponseBody> call = myApi.createUser(userRequest);
+        Call<ResponseBody> call = apiService.createUser(userRequest);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
