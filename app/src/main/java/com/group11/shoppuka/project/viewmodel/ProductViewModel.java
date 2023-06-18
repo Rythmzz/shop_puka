@@ -10,12 +10,21 @@ import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+@HiltViewModel
 public class ProductViewModel extends ViewModel {
+
+    private ApiService apiService;
+    @Inject
+    public ProductViewModel(ApiService apiService){
+        this.apiService = apiService;
+    }
     private MutableLiveData<ProductResponse> productResponseLiveData= new MutableLiveData<>();
 
     public LiveData<ProductResponse> getProductResponseLiveData(){
@@ -23,15 +32,10 @@ public class ProductViewModel extends ViewModel {
     }
 
     public void fetchData(){
-        RetrofitService retrofitService = new RetrofitService();
-
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
-
         apiService.getListProduct().enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 ProductResponse productResponse = response.body();
-                System.out.println(response.body());
                 productResponseLiveData.setValue(productResponse);
             }
             @Override
@@ -40,11 +44,7 @@ public class ProductViewModel extends ViewModel {
             }
         });
     }
-
     public void createNewProduct(ProductRequest productRequest){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
-
         apiService.createProduct(productRequest).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -52,18 +52,13 @@ public class ProductViewModel extends ViewModel {
                     System.out.println("Tạo product thành công");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                     t.printStackTrace();
             }
         });
     }
-
     public void updateData(int id, ProductRequest productRequest){
-        RetrofitService retrofitService = new RetrofitService();
-
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
 
         apiService.updateProduct(id,productRequest).enqueue(new Callback<Product>() {
             @Override
@@ -71,20 +66,14 @@ public class ProductViewModel extends ViewModel {
                 if (response.isSuccessful()){
                     System.out.println("Update sản phẩm thành công");
                 }
-
             }
-
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
-
     public void deleteData(int id){
-        RetrofitService retrofitService = new RetrofitService();
-
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
 
         apiService.deleteProduct(id).enqueue(new Callback<Product>() {
             @Override

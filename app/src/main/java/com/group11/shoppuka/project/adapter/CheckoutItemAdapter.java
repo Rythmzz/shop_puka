@@ -8,20 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.group11.shoppuka.project.model.Order;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+
 
 public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapter.ViewHolder> {
 

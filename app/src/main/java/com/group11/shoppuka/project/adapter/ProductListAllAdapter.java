@@ -1,8 +1,6 @@
 package com.group11.shoppuka.project.adapter;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,7 @@ import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
-import com.group11.shoppuka.project.view.DetailProductPageActivity;
+import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 
 public class ProductListAllAdapter extends RecyclerView.Adapter<ProductListAllAdapter.Holder> {
 

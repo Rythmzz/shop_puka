@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartRequest;
 import com.group11.shoppuka.project.model.cart.CartResponse;
+import com.group11.shoppuka.project.other.MyApplication;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 
@@ -21,13 +22,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+@HiltViewModel
 public class CartViewModel extends ViewModel {
 
+    private ApiService apiService;
+    private SharedPreferences sharedPreferences;
+
+    @Inject
+    public CartViewModel(ApiService apiService, SharedPreferences sharedPreferences){
+        this.apiService = apiService;
+        this.sharedPreferences = sharedPreferences;
+    }
     private MutableLiveData<CartResponse> cartResponseMutableLiveData = new MutableLiveData<>();
 
 
@@ -35,17 +47,11 @@ public class CartViewModel extends ViewModel {
         return cartResponseMutableLiveData;
     }
 
-    public void setCartResponseMutableLiveData(CartResponse cartResponseMutableLiveData){
-        this.cartResponseMutableLiveData.setValue(cartResponseMutableLiveData);
-    }
-
-
     public void addCart(CartRequest cartRequest, Context context){
 
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.addProductCart(cartRequest).enqueue(new Callback<ResponseBody>() {
+
+        apiService.addProductCart(cartRequest).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
@@ -66,10 +72,7 @@ public class CartViewModel extends ViewModel {
     }
 
     public void updateListCart(int id ,CartRequest cartRequest){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
-
-        myApi.updateCart(id,cartRequest).enqueue(new Callback<Cart>() {
+        apiService.updateCart(id,cartRequest).enqueue(new Callback<Cart>() {
             @Override
             public void onResponse(Call<Cart> call, Response<Cart> response) {
                 System.out.println("cập nhật thành công");
@@ -83,10 +86,8 @@ public class CartViewModel extends ViewModel {
     }
 
     public void deleteIdCart(int id){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.deleteCart(id).enqueue(new Callback<Cart>() {
+        apiService.deleteCart(id).enqueue(new Callback<Cart>() {
             @Override
             public void onResponse(Call<Cart> call, Response<Cart> response) {
                 System.out.println("Xóa thành công");
@@ -101,18 +102,12 @@ public class CartViewModel extends ViewModel {
     }
 
     public void fetchListCart(Context context){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("login_info", Context.MODE_PRIVATE);
-        String numberPhone = sharedPreferences.getString("phone_info",null);
-
+        String numberPhone = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
         apiService.getListCart().enqueue(new Callback<CartResponse>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
                 CartResponse cartResponse = response.body();
-
                 Map<String, Cart> map = new HashMap<>();
                 for (Cart item : cartResponse.getData()) {
                     String key = item.getAttributes().getIdProduct() + "-" + item.getAttributes().getPhoneNumber();
@@ -126,16 +121,9 @@ public class CartViewModel extends ViewModel {
                 }
                 List<Cart> result = new ArrayList<>(map.values());
                 List<Cart> resultFull = result.stream().filter(item -> item.getAttributes().getPhoneNumber().equals(numberPhone)).collect(Collectors.toList());
-                for (Cart cart : resultFull) {
-                    System.out.println(cart.getAttributes().getPhoneNumber());
-                    System.out.println(cart.getAttributes().getIdProduct());
-                    System.out.println(cart.getAttributes().getCount());
-                    System.out.println(cart.getAttributes().getIdResource());
-                }
                 CartResponse cartResponseFull = new CartResponse();
                 cartResponseFull.setData(resultFull);
                 cartResponseMutableLiveData.setValue(cartResponseFull);
-                // Sử dụng kết quả lọc ở đây
             }
 
             @Override

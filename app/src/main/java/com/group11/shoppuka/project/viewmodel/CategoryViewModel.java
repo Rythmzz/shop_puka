@@ -8,11 +8,21 @@ import com.group11.shoppuka.project.model.category.CategoryResponse;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@HiltViewModel
 public class CategoryViewModel extends ViewModel {
+    private ApiService apiService;
+
+    @Inject
+    public CategoryViewModel(ApiService apiService){
+        this.apiService = apiService;
+    }
     private MutableLiveData<CategoryResponse> categoryResponseLiveData = new MutableLiveData<>();
 
     public LiveData<CategoryResponse> getCategoryResponseLiveData(){
@@ -20,21 +30,12 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void fetchDataCategory(){
-        RetrofitService retrofitService = new RetrofitService();
 
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
-
-        myApi.getListCategory().enqueue(new Callback<CategoryResponse>() {
+        apiService.getListCategory().enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                 CategoryResponse categoryResponse = response.body();
                 categoryResponseLiveData.setValue(categoryResponse);
-//                for (Category category : categories) {
-//                    System.out.println("ID: " + category.getId());
-//                    System.out.println("Name: " + category.getAttributes().getName());
-//                    // In ra các thuộc tính khác của đối tượng Category
-//                }
-
             }
 
             @Override

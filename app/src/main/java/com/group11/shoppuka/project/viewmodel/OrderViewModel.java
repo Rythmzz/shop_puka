@@ -19,25 +19,30 @@ import com.group11.shoppuka.project.service.RetrofitService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+@HiltViewModel
 public class OrderViewModel extends ViewModel {
-
+    private ApiService apiService;
+    @Inject
+    public OrderViewModel(ApiService apiService){
+        this.apiService = apiService;
+    }
     private MutableLiveData<OrderResponse> orderResponseMutableLiveData = new MutableLiveData<>();
-
 
     public MutableLiveData<OrderResponse> getOrderResponseMutableLiveData() {
         return orderResponseMutableLiveData;
     }
 
     public void createOrder(OrderRequest orderRequest){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.createOrder(orderRequest).enqueue(new Callback<ResponseBody>() {
+
+        apiService.createOrder(orderRequest).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
@@ -53,20 +58,13 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void fetchData(String numberPhone){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
+        apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 OrderResponse orderResponse = response.body();
                 List<Order> resultFull =orderResponse.getData().stream().filter(item -> item.getAttributes().getPhoneNumber().equals(numberPhone)).collect(Collectors.toList());
-                for (Order order : resultFull) {
-                    System.out.println(order.getAttributes().getPhoneNumber());
-                    System.out.println(order.getAttributes().getIdProduct());
-                    System.out.println(order.getAttributes().getQuantity());
-                }
                 OrderResponse orderResponseFull = new OrderResponse();
                 orderResponseFull.setData(resultFull);
                 orderResponseMutableLiveData.setValue(orderResponseFull);
@@ -79,10 +77,6 @@ public class OrderViewModel extends ViewModel {
         });
     }
     public void updateData(int id, OrderRequest orderRequest){
-        RetrofitService retrofitService = new RetrofitService();
-
-        ApiService apiService = retrofitService.retrofit.create(ApiService.class);
-
         apiService.updateOrder(id,orderRequest).enqueue(new Callback<Order>() {
             @Override
             public void onResponse(Call<Order> call, Response<Order> response) {
@@ -99,10 +93,8 @@ public class OrderViewModel extends ViewModel {
         });
     }
     public void fetchListData(int startStatus, int endStatus){
-        RetrofitService retrofitService = new RetrofitService();
-        ApiService myApi = retrofitService.retrofit.create(ApiService.class);
 
-        myApi.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
+        apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {

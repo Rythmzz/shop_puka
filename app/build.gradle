@@ -1,17 +1,18 @@
 plugins {
     id 'com.android.application'
     id "com.google.gms.google-services"
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.group11.shoppuka"
-        minSdk 21
-        targetSdk 32
+        minSdk 28
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -36,6 +37,10 @@ android {
 
 
 dependencies {
+
+    // Hilt for Android
+    implementation "com.google.dagger:hilt-android:2.44"
+    annotationProcessor "com.google.dagger:hilt-compiler:2.44"
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"

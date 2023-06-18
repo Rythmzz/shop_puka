@@ -15,13 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.ProductTest;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
-import com.group11.shoppuka.project.view.DetailProductPageActivity;
-
-import java.util.List;
+import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 
 public class ProductListFilterAdapter extends RecyclerView.Adapter<ProductListFilterAdapter.Holder> {
     ProductResponse productResponse;

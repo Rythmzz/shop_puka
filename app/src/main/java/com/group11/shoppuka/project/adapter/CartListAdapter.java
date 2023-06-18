@@ -1,5 +1,6 @@
 package com.group11.shoppuka.project.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
@@ -25,16 +26,18 @@ import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.other.MyApplication;
-import com.group11.shoppuka.project.view.DetailProductPageActivity;
+import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 
 public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder> {
     CartResponse cartResponse;
     ProductResponse productResponse;
+    private Context context;
 
-    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse){
+    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse, Context context){
         this.cartResponse = cartResponse;
         this.productResponse = productResponse;
+        this.context = context;
     }
 
     public void setCartResponse(CartResponse cartResponse) {
@@ -56,7 +59,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
     public void onBindViewHolder(@NonNull CartListAdapter.Holder holder, int position) {
         holder.textView2.setVisibility(View.GONE);
         holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        CartViewModel cartViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(CartViewModel.class);
+        CartViewModel cartViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CartViewModel.class);
         Product currentProductSelect = new Product();
         for (Product product: productResponse.getData()){
             if (cartResponse.getData().get(position).getAttributes().getIdProduct() == product.getAttributes().getIdProduct())
@@ -154,14 +157,11 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
     }
 
     public class Holder extends RecyclerView.ViewHolder{
-
         RelativeLayout relativeLayout;
         ImageView imageView;
         TextView textView;
         TextView textView1;
-
         TextView textView2;
-
         FrameLayout frameLayout;
 
         TextView btnAdd;
