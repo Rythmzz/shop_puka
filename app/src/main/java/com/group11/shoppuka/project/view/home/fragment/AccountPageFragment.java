@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.group11.shoppuka.databinding.FragmentAccountPageBinding;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.login.LoginPageActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;

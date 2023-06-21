@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.group11.shoppuka.project.base.BaseCallback;
+import com.group11.shoppuka.project.base.BaseResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductRequest;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
+import com.group11.shoppuka.project.view.repo.Repository;
 
 import javax.inject.Inject;
 
@@ -20,10 +23,10 @@ import retrofit2.Response;
 @HiltViewModel
 public class ProductViewModel extends ViewModel {
 
-    private ApiService apiService;
+    private Repository repository;
     @Inject
-    public ProductViewModel(ApiService apiService){
-        this.apiService = apiService;
+    public ProductViewModel(Repository repository){
+        this.repository = repository;
     }
     private MutableLiveData<ProductResponse> productResponseLiveData= new MutableLiveData<>();
 
@@ -31,65 +34,79 @@ public class ProductViewModel extends ViewModel {
         return productResponseLiveData;
     }
 
+    private MutableLiveData<Boolean> productIsAvalible = new MutableLiveData<>(false);
+
+    public MutableLiveData<Boolean> getProductIsAvalible() {
+        return productIsAvalible;
+    }
+
     public void fetchData(){
-        apiService.getListProduct().enqueue(new Callback<ProductResponse>() {
+        repository.fetchDataProduct(new BaseCallback<ProductResponse>() {
             @Override
-            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
-                ProductResponse productResponse = response.body();
-                productResponseLiveData.setValue(productResponse);
+            public void onSuccess(BaseResponse<ProductResponse> responseSuccess) {
+                BaseResponse.Success<ProductResponse> currentResponse = (BaseResponse.Success<ProductResponse>) responseSuccess;
+                productResponseLiveData.setValue(currentResponse.getData());
+                productIsAvalible.setValue(true);
+            }
+
+            @Override
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
             }
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void createNewProduct(ProductRequest productRequest){
-        apiService.createProduct(productRequest).enqueue(new Callback<ResponseBody>() {
+        repository.createNewProduct(productRequest, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Tạo product thành công");
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void updateData(int id, ProductRequest productRequest){
 
-        apiService.updateProduct(id,productRequest).enqueue(new Callback<Product>() {
+        repository.updateDataProduct(id, productRequest, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Update sản phẩm thành công");
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void deleteData(int id){
-
-        apiService.deleteProduct(id).enqueue(new Callback<Product>() {
+        repository.deleteDataProduct(id, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Xóa hết sản phẩm thành công");
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
-
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
-
-
 
 }

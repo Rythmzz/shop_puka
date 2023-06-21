@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.group11.shoppuka.project.base.BaseCallback;
+import com.group11.shoppuka.project.base.BaseResponse;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
+import com.group11.shoppuka.project.view.repo.Repository;
 
 import javax.inject.Inject;
 
@@ -17,11 +20,11 @@ import retrofit2.Response;
 
 @HiltViewModel
 public class CategoryViewModel extends ViewModel {
-    private ApiService apiService;
 
+    private Repository repository;
     @Inject
-    public CategoryViewModel(ApiService apiService){
-        this.apiService = apiService;
+    public CategoryViewModel(Repository repository){
+        this.repository = repository;
     }
     private MutableLiveData<CategoryResponse> categoryResponseLiveData = new MutableLiveData<>();
 
@@ -30,17 +33,21 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void fetchDataCategory(){
-
-        apiService.getListCategory().enqueue(new Callback<CategoryResponse>() {
+        repository.fetchDataCategory(new BaseCallback<CategoryResponse>() {
             @Override
-            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
-                CategoryResponse categoryResponse = response.body();
-                categoryResponseLiveData.setValue(categoryResponse);
+            public void onSuccess(BaseResponse<CategoryResponse> responseSuccess) {
+                BaseResponse.Success<CategoryResponse> currentCategory = (BaseResponse.Success<CategoryResponse>) responseSuccess;
+                categoryResponseLiveData.setValue(currentCategory.getData());
             }
 
             @Override
-            public void onFailure(Call<CategoryResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }

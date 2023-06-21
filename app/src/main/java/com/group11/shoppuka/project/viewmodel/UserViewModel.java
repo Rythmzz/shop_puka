@@ -2,10 +2,13 @@ package com.group11.shoppuka.project.viewmodel;
 
 import androidx.lifecycle.ViewModel;
 
+import com.group11.shoppuka.project.base.BaseCallback;
+import com.group11.shoppuka.project.base.BaseResponse;
 import com.group11.shoppuka.project.model.account.User;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
+import com.group11.shoppuka.project.view.repo.Repository;
 
 import java.io.IOException;
 
@@ -17,34 +20,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 @HiltViewModel
 public class UserViewModel extends ViewModel {
-    private ApiService apiService;
+    private Repository repository;
     @Inject
-    public UserViewModel(ApiService apiService){
-        this.apiService = apiService;
+    public UserViewModel(Repository repository){
+        this.repository = repository;
     }
     public void updateAvatarUser(int id ,UserRequest userRequest){
-
-        apiService.updateAvatar(id,userRequest).enqueue(new Callback<User>() {
+        repository.updateAvatarUser(id, userRequest, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Cập nhật avatar thành công");
-                }
-                else {
-                    try {
-                        String errormessage = response.errorBody().string();
-                        System.out.println(errormessage);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
-
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                t.printStackTrace();
-
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }

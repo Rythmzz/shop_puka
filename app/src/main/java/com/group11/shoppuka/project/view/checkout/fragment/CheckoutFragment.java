@@ -29,7 +29,7 @@ import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.order.OrderData;
 import com.group11.shoppuka.project.model.order.OrderRequest;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
@@ -76,7 +76,7 @@ public class CheckoutFragment extends Fragment {
         super.onResume();
         getActivity().setTitle("Checkout");
         productViewModel.fetchData();
-        cartViewModel.fetchListCart(getContext());
+        cartViewModel.fetchListCart();
     }
 
 
@@ -193,7 +193,6 @@ public class CheckoutFragment extends Fragment {
                         currentOrderData.setOrderCode(uuid.toString());
                         orderViewModel.createOrder(currentOrderRequest);
                         cartViewModel.deleteIdCart(cart.getId());
-
 
 
                     }

@@ -18,9 +18,11 @@ import com.group11.shoppuka.project.adapter.CartListAdapter;
 import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -33,11 +35,13 @@ public class CartPageFragment extends Fragment {
     private ProductViewModel productViewModel;
     private CartResponse currentCartResponse;
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         productViewModel.fetchData();
-//        cartViewModel.fetchListCart(getActivity());
+       cartViewModel.fetchListCart();
     }
 
     @Override
@@ -46,7 +50,6 @@ public class CartPageFragment extends Fragment {
         binding = FragmentCartPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
         intialData();
-        setAdapter();
         setObserverData();
         setEventHandler();
         return view;
@@ -78,7 +81,7 @@ public class CartPageFragment extends Fragment {
                 cartListAdapter.notifyDataSetChanged();
             }
         });
-        cartViewModel.fetchListCart(getActivity());
+        cartViewModel.fetchListCart();
 
         productViewModel.getProductResponseLiveData().observe(getActivity(), new Observer<ProductResponse>() {
             @Override
@@ -87,10 +90,18 @@ public class CartPageFragment extends Fragment {
                 cartListAdapter.notifyDataSetChanged();
             }
         });
+
+        productViewModel.getProductIsAvalible().observe(getActivity(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    setAdapter();
+                }
+            }
+        });
     }
 
     private void setAdapter() {
-        cartListAdapter = new CartListAdapter(new CartResponse(), new ProductResponse(),getActivity());
         binding.recyclerViewCart.setAdapter(cartListAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false);
         binding.recyclerViewCart.setLayoutManager(layoutManager);
@@ -101,6 +112,8 @@ public class CartPageFragment extends Fragment {
     private void intialData() {
         cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
         productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+
+        cartListAdapter = new CartListAdapter(new CartResponse(),new ProductResponse(),getActivity(), cartViewModel);
 
 
     }

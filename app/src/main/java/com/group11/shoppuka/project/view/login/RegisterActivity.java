@@ -106,8 +106,6 @@ public class RegisterActivity extends AppCompatActivity {
                     UserRequest userRequest = new UserRequest();
                     userRequest.setData(userData);
                     viewModel.signUpUser(userRequest,getApplicationContext());
-
-
                 }
             }
         });

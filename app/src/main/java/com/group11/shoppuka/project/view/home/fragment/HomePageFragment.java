@@ -33,6 +33,8 @@ import com.smarteist.autoimageslider.SliderView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -54,9 +56,11 @@ public class HomePageFragment extends Fragment  {
     private ProductListAllAdapter productListAllAdapter;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         binding = FragmentHomePageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
         setIntialData();
@@ -91,7 +95,6 @@ public class HomePageFragment extends Fragment  {
     private void setAdapter() {
 
         // Set Silder Adapter
-
         binding.imageSlider.setSliderAdapter(sliderAdapter);
         binding.imageSlider.startAutoCycle();
         binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM);

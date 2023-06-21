@@ -25,18 +25,24 @@ import com.group11.shoppuka.project.model.cart.CartRequest;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
+
+import javax.inject.Inject;
 
 public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder> {
     CartResponse cartResponse;
     ProductResponse productResponse;
     private Context context;
 
-    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse, Context context){
+    CartViewModel cartViewModel;
+
+    @Inject
+    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse, Context context, CartViewModel cartViewModel){
         this.cartResponse = cartResponse;
         this.productResponse = productResponse;
+        this.cartViewModel = cartViewModel;
         this.context = context;
     }
 
@@ -59,13 +65,12 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
     public void onBindViewHolder(@NonNull CartListAdapter.Holder holder, int position) {
         holder.textView2.setVisibility(View.GONE);
         holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        CartViewModel cartViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CartViewModel.class);
         Product currentProductSelect = new Product();
-        for (Product product: productResponse.getData()){
-            if (cartResponse.getData().get(position).getAttributes().getIdProduct() == product.getAttributes().getIdProduct())
-                currentProductSelect = product;
-        }
-        if (currentProductSelect != null){
+        if (productResponse != null && cartResponse != null){
+            for (Product product: productResponse.getData()){
+                if (cartResponse.getData().get(position).getAttributes().getIdProduct() == product.getAttributes().getIdProduct())
+                    currentProductSelect = product;
+            }
             int currentCountProduct = cartResponse.getData().get(position).getAttributes().getCount();
             int currentPriceProduct = (currentProductSelect.getAttributes().getPrice()*currentCountProduct);
             int currentSalePriceProduct = (currentProductSelect.getAttributes().getSalePrice());
@@ -94,8 +99,8 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
                     cartData.setTotalPrice(totalPrice);
                     cartData.setCount(1);
                     cartRequest.setData(cartData);
-                    cartViewModel.addCart(cartRequest,holder.itemView.getContext());
-                    cartViewModel.fetchListCart(view.getContext());
+                    cartViewModel.addCart(cartRequest);
+                    cartViewModel.fetchListCart();
                     notifyItemChanged(position);
                 }
             });
@@ -123,11 +128,10 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
                     }
 
                     int currentCount = Integer.valueOf(holder.tvCount.getText().toString())-1;
-                    cartViewModel.fetchListCart(view.getContext());
+                    cartViewModel.fetchListCart();
                     notifyItemChanged(position);
                 }
             });
-
             Product finalCurrentProductSelect = currentProductSelect;
             holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 

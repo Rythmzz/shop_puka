@@ -31,7 +31,7 @@ import com.group11.shoppuka.databinding.ActivityHomepageBinding;
 import com.group11.shoppuka.databinding.HeaderDrawerBinding;
 import com.group11.shoppuka.project.model.account.UserData;
 import com.group11.shoppuka.project.model.account.UserRequest;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 import com.group11.shoppuka.project.view.login.LoginPageActivity;

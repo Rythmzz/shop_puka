@@ -1,13 +1,10 @@
 package com.group11.shoppuka.project.adapter;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -17,7 +14,7 @@ import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 
 public class OrderListDoneAdapter extends RecyclerView.Adapter<OrderListDoneAdapter.Holder> {
     private OrderResponse orderResponse;

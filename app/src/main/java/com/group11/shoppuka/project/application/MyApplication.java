@@ -1,4 +1,4 @@
-package com.group11.shoppuka.project.other;
+package com.group11.shoppuka.project.application;
 
 import android.app.Application;
 
@@ -8,8 +8,7 @@ import dagger.hilt.android.HiltAndroidApp;
 public class MyApplication extends Application {
 
 
-
-    public static String localHost = "http://192.168.1.4:1337";
+    public static String localHost = "http://192.168.1.3:1337";
     public static final int PICK_IMAGE = 1;
 
     public static String KEY_GET_LISTCART = "list_cart";

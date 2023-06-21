@@ -26,7 +26,7 @@ import com.group11.shoppuka.project.model.category.CategoryResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductData;
 import com.group11.shoppuka.project.model.product.ProductRequest;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
 import com.group11.shoppuka.project.viewmodel.CategoryViewModel;
