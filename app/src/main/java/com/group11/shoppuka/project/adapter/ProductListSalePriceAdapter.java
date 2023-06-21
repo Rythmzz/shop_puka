@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 
 

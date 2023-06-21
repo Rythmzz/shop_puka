@@ -2,6 +2,9 @@ package com.group11.shoppuka.project.model.product;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 public class ProductResponse  {
     private List<Product> data;
 

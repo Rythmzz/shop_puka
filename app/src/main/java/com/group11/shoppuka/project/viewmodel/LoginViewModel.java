@@ -7,9 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.group11.shoppuka.project.base.BaseCallback;
+import com.group11.shoppuka.project.base.BaseResponse;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.account.UserResponse;
 import com.group11.shoppuka.project.service.ApiService;
+import com.group11.shoppuka.project.view.repo.Repository;
 
 import java.io.IOException;
 
@@ -22,10 +25,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 @HiltViewModel
 public class LoginViewModel extends ViewModel {
-    private ApiService apiService;
+    private Repository repository;
     @Inject
-    public LoginViewModel(ApiService apiService){
-        this.apiService = apiService;
+    public LoginViewModel(Repository repository){
+        this.repository = repository;
     }
     private MutableLiveData<Boolean> signUpSuccessLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> progressLoading = new MutableLiveData<>();
@@ -43,62 +46,45 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void fetchUser(){
-
-
-        apiService.getListUser().enqueue(new Callback<UserResponse>() {
+        repository.fetchUser(new BaseCallback<UserResponse>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                UserResponse userResponse = response.body();
-                userResponseMutableLiveData.setValue(userResponse);
+            public void onSuccess(BaseResponse<UserResponse> responseSuccess) {
+                BaseResponse.Success<UserResponse> currentResponse = (BaseResponse.Success<UserResponse>) responseSuccess;
+                userResponseMutableLiveData.setValue(currentResponse.getData());
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
 
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void signUpUser(UserRequest userRequest, Context context){
-
-        Call<ResponseBody> call = apiService.createUser(userRequest);
-
-        call.enqueue(new Callback<ResponseBody>() {
+        repository.signUpUser(userRequest, context, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                progressLoading.setValue(false);
-
-
-                if (response.isSuccessful()) {
-                    signUpSuccessLiveData.setValue(true);
-                    progressLoading.setValue(true);
-                } else {
-                    int statusCode = response.code();
-                    progressLoading.setValue(true);
-                    if (statusCode == 400){
-                        Toast.makeText(context,"Số điện thoại đã được sử dụng !!",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        ResponseBody errorBody = response.errorBody();
-                        String errorMessage = "";
-                        try {
-                            errorMessage = errorBody != null ? errorBody.string() : "";
-                        } catch (IOException e) {
-                            progressLoading.setValue(true);
-                            Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    // In ra mã trạng thái HTTP và thông báo lỗi từ Strapi
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
+                signUpSuccessLiveData.setValue(true);
+                progressLoading.setValue(true);
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+            public void onError(BaseResponse<Exception> responseError) {
+                progressLoading.setValue(true);
+                System.out.println(responseError.toString());
+            }
+
+            @Override
+            public void onLoading() {
+                progressLoading.setValue(false);
+                System.out.println("Loading....");
             }
         });
-
-
 
     }
 }

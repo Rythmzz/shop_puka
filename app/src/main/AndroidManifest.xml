@@ -4,7 +4,7 @@
     package="com.group11.shoppuka">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:name=".project.other.MyApplication"
+        android:name=".project.application.MyApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

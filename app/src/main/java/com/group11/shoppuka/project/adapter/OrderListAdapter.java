@@ -4,9 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,10 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.order.Order;
-import com.group11.shoppuka.project.model.order.OrderData;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 
 public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Holder> {
 

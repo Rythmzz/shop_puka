@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.group11.shoppuka.project.base.BaseCallback;
+import com.group11.shoppuka.project.base.BaseResponse;
 import com.group11.shoppuka.project.model.cart.Cart;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.order.Order;
@@ -15,6 +17,7 @@ import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductRequest;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
+import com.group11.shoppuka.project.view.repo.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,10 +31,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 @HiltViewModel
 public class OrderViewModel extends ViewModel {
-    private ApiService apiService;
+    private Repository repository;
     @Inject
-    public OrderViewModel(ApiService apiService){
-        this.apiService = apiService;
+    public OrderViewModel(Repository repository){
+        this.repository = repository;
     }
     private MutableLiveData<OrderResponse> orderResponseMutableLiveData = new MutableLiveData<>();
 
@@ -40,79 +43,75 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void createOrder(OrderRequest orderRequest){
-
-
-        apiService.createOrder(orderRequest).enqueue(new Callback<ResponseBody>() {
+        repository.createOrder(orderRequest, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Tạo một order thành công");
-                }
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
-
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
 
     public void fetchData(String numberPhone){
 
-        apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
+        repository.fetchDataOrder(numberPhone, new BaseCallback<OrderResponse>() {
             @Override
-            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-                OrderResponse orderResponse = response.body();
-                List<Order> resultFull =orderResponse.getData().stream().filter(item -> item.getAttributes().getPhoneNumber().equals(numberPhone)).collect(Collectors.toList());
-                OrderResponse orderResponseFull = new OrderResponse();
-                orderResponseFull.setData(resultFull);
-                orderResponseMutableLiveData.setValue(orderResponseFull);
+            public void onSuccess(BaseResponse<OrderResponse> responseSuccess) {
+                BaseResponse.Success<OrderResponse> currentResponse = (BaseResponse.Success<OrderResponse>) responseSuccess;
+                orderResponseMutableLiveData.setValue(currentResponse.getData());
             }
 
             @Override
-            public void onFailure(Call<OrderResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void updateData(int id, OrderRequest orderRequest){
-        apiService.updateOrder(id,orderRequest).enqueue(new Callback<Order>() {
+        repository.updateDataOrder(id, orderRequest, new BaseCallback<String>() {
             @Override
-            public void onResponse(Call<Order> call, Response<Order> response) {
-                if (response.isSuccessful()){
-                    System.out.println("Update Order Thành Công");
-                }
-
+            public void onSuccess(BaseResponse<String> responseSuccess) {
+                System.out.println(responseSuccess.toString());
             }
-
             @Override
-            public void onFailure(Call<Order> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }
     public void fetchListData(int startStatus, int endStatus){
 
-        apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
+        repository.fetchListDataOrder(startStatus, endStatus, new BaseCallback<OrderResponse>() {
             @Override
-            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-                OrderResponse orderResponse = response.body();
-                List<Order> resultFull =orderResponse.getData().stream().filter(item -> (item.getAttributes().getStatus() >= startStatus && item.getAttributes().getStatus() <= endStatus)).collect(Collectors.toList());
-                for (Order order : resultFull) {
-                    System.out.println(order.getAttributes().getPhoneNumber());
-                    System.out.println(order.getAttributes().getIdProduct());
-                    System.out.println(order.getAttributes().getQuantity());
-                }
-                OrderResponse orderResponseFull = new OrderResponse();
-                orderResponseFull.setData(resultFull);
-                orderResponseMutableLiveData.setValue(orderResponseFull);
+            public void onSuccess(BaseResponse<OrderResponse> responseSuccess) {
+                BaseResponse.Success<OrderResponse> currentResponse = (BaseResponse.Success<OrderResponse>) responseSuccess;
+                orderResponseMutableLiveData.setValue(currentResponse.getData());
             }
 
             @Override
-            public void onFailure(Call<OrderResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(BaseResponse<Exception> responseError) {
+                System.out.println(responseError.toString());
+            }
+
+            @Override
+            public void onLoading() {
+                System.out.println("Loading....");
             }
         });
     }

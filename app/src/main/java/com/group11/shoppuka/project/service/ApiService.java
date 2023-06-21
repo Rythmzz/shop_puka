@@ -28,6 +28,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface    ApiService {
     @GET("api/products/{id}")
@@ -48,8 +49,8 @@ public interface    ApiService {
     @POST("/api/carts")
     Call<ResponseBody> addProductCart(@Body CartRequest cartRequest);
 
-    @GET("/api/carts/")
-    Call<CartResponse> getListCart();
+    @GET("/api/carts")
+    Call<CartResponse> getListCart(@Query("filters[phoneNumber][$eq]") String phoneNumber,@Query("pagination[start]") int start, @Query("pagination[limit]") int limit);
 
     @PUT("/api/carts/{id}")
     Call<Cart> updateCart(@Path("id") int id, @Body CartRequest cartRequest);

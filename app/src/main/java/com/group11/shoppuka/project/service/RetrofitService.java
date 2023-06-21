@@ -1,9 +1,6 @@
 package com.group11.shoppuka.project.service;
 
-import com.group11.shoppuka.project.other.MyApplication;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.group11.shoppuka.project.application.MyApplication;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

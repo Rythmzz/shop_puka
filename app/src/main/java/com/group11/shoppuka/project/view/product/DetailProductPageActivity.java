@@ -21,7 +21,7 @@ import com.group11.shoppuka.project.model.cart.CartData;
 import com.group11.shoppuka.project.model.cart.CartRequest;
 import com.group11.shoppuka.project.model.cart.CartResponse;
 import com.group11.shoppuka.project.model.product.Product;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.checkout.CheckoutPageActivity;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 
@@ -67,7 +67,7 @@ public class DetailProductPageActivity extends AppCompatActivity {
                 CartRequest cartRequest = new CartRequest();
                 cartRequest.setData(cartData);
 
-                cartViewModel.addCart(cartRequest,view.getContext());
+                cartViewModel.addCart(cartRequest);
                 finish();
             }
         });
@@ -86,8 +86,8 @@ public class DetailProductPageActivity extends AppCompatActivity {
                 CartRequest cartRequest = new CartRequest();
                 cartRequest.setData(cartData);
 
-                cartViewModel.addCart(cartRequest,view.getContext());
-                cartViewModel.fetchListCart(view.getContext());
+                cartViewModel.addCart(cartRequest);
+                cartViewModel.fetchListCart();
                 cartViewModel.getCartResponseMutableLiveData().observe(DetailProductPageActivity.this, new Observer<CartResponse>() {
                     @Override
                     public void onChanged(CartResponse cartResponse) {

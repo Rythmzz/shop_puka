@@ -1,7 +1,5 @@
 package com.group11.shoppuka.project.adapter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
-import com.group11.shoppuka.project.model.order.AttributesOrder;
 import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderData;
 import com.group11.shoppuka.project.model.order.OrderRequest;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 
 public class OrderListConfirmAdapter extends RecyclerView.Adapter<OrderListConfirmAdapter.Holder> {

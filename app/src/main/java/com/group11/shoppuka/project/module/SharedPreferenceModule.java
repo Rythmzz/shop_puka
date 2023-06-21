@@ -3,7 +3,7 @@ package com.group11.shoppuka.project.module;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 
 import javax.inject.Singleton;
 

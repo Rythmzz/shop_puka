@@ -26,7 +26,7 @@ import com.group11.shoppuka.databinding.ActivityLoginBinding;
 import com.group11.shoppuka.project.model.account.AttributesUser;
 import com.group11.shoppuka.project.model.account.User;
 import com.group11.shoppuka.project.model.account.UserResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.home.MainPageActivity;
 import com.group11.shoppuka.project.viewmodel.LoginViewModel;
 
@@ -119,10 +119,12 @@ public class LoginPageActivity extends AppCompatActivity {
                             confirmOtp(this);
                         } else {
                             Toast.makeText(LoginPageActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                            viewModel.fetchUser();
                         }
                     }
                     else {
                         Toast.makeText(this,"Kiểm tra IP ở other/MyApplication.class/localHost !!", Toast.LENGTH_LONG).show();
+                        viewModel.fetchUser();
                     }
 
                 }

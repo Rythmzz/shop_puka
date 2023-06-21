@@ -1,6 +1,5 @@
 package com.group11.shoppuka.project.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
-import com.group11.shoppuka.project.other.MyApplication;
-
-import java.util.List;
+import com.group11.shoppuka.project.application.MyApplication;
 
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder> {

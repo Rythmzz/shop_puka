@@ -1,6 +1,5 @@
 package com.group11.shoppuka.project.view.order.fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -17,7 +16,7 @@ import com.group11.shoppuka.databinding.FragmentOrderPageBinding;
 import com.group11.shoppuka.project.adapter.OrderListAdapter;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.other.MyApplication;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 
@@ -79,6 +78,7 @@ public class OrderPageFragment extends Fragment {
             public void onChanged(ProductResponse productResponse) {
                 orderListAdapter.setProductResponse(productResponse);
                 orderListAdapter.notifyDataSetChanged();
+                setAdapter();
             }
         });
     }
