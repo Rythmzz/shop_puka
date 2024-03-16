@@ -3,7 +3,6 @@ package com.group11.shoppuka.project.model.product;
 public class ProductData {
 
     private int idProduct;
-
     private String name;
     private int price;
     private int salePrice;

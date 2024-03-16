@@ -4,7 +4,7 @@ import java.util.List;
 
 public class OrderResponse {
 
-    List<Order> data;
+    private List<Order> data;
 
     public List<Order> getData() {
         return data;
@@ -12,5 +12,9 @@ public class OrderResponse {
 
     public void setData(List<Order> data) {
         this.data = data;
+    }
+
+    public void removeDataSpecific(int position){
+        this.data.remove(position);
     }
 }

@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
 
     </style>
+
+    <style name="Theme.Shoppuka.NewTheme">
+        <item name="android:fontFamily">@font/main_font</item>
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorSecondary">@color/mainColor</item>
+    </style>
 </resources>

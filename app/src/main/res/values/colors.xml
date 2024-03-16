@@ -12,7 +12,7 @@
     <color name="puce">#A95C68</color>
     <color name="chestnut">#954535</color>
     <color name="green">#00FF00</color>
-    <color name="mainColor">#F87217</color>
+    <color name="mainColor">#cf052d</color>
     <color name="blue">#015bea</color>
     <color name="grayblue">#aed4ed</color>
     <color name="yellowsolf">#fec202</color>
@@ -42,5 +42,6 @@
     <color name="colorPrimary">#f9c00c</color>
     <color name="colorPrimaryDark">#e2ae0c</color>
     <color name="colorAccent">#f9320c</color>
+    <color name="subColor">#1b1b1b</color>
 
 </resources>

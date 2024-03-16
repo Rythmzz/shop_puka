@@ -16,13 +16,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class CartViewModel extends ViewModel {
 
-    private Repository repository;
+    private final Repository repository;
 
     @Inject
     public CartViewModel(Repository repository){
         this.repository = repository;
     }
-    private MutableLiveData<CartResponse> cartResponseMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<CartResponse> cartResponseMutableLiveData = new MutableLiveData<>();
 
     public MutableLiveData<CartResponse> getCartResponseMutableLiveData() {
         return cartResponseMutableLiveData;
@@ -30,15 +30,15 @@ public class CartViewModel extends ViewModel {
 
 
     public void addCart(CartRequest cartRequest){
-        repository.addCart(cartRequest, new BaseCallback<String>() {
+        repository.addCart(cartRequest, new BaseCallback() {
             @Override
-            public void onSuccess(BaseResponse<String> responseSuccess) {
+            public void onSuccess(BaseResponse responseSuccess) {
                 System.out.println(responseSuccess.toString());
                 fetchListCart();
 
             }
             @Override
-            public void onError(BaseResponse<Exception> responseError) {
+            public void onError(BaseResponse responseError) {
                 System.out.println(responseError.toString());
             }
             @Override
@@ -49,34 +49,34 @@ public class CartViewModel extends ViewModel {
     }
 
 
-    public void updateListCart(int id ,CartRequest cartRequest,BaseCallback<String> callback){
-        repository.updateListCart(id, cartRequest, new BaseCallback<String>() {
-            @Override
-            public void onSuccess(BaseResponse<String> responseSuccess) {
-                System.out.println(responseSuccess.toString());
-            }
-
-            @Override
-            public void onError(BaseResponse<Exception> responseError) {
-                System.out.println(responseError.toString());
-            }
-
-            @Override
-            public void onLoading() {
-                System.out.println("Loading....");
-            }
-        });
-    }
+//    public void updateListCart(int id ,CartRequest cartRequest,BaseCallback callback){
+//        repository.updateListCart(id, cartRequest, new BaseCallback() {
+//            @Override
+//            public void onSuccess(BaseResponse responseSuccess) {
+//                System.out.println(responseSuccess.toString());
+//            }
+//
+//            @Override
+//            public void onError(BaseResponse responseError) {
+//                System.out.println(responseError.toString());
+//            }
+//
+//            @Override
+//            public void onLoading() {
+//                System.out.println("Loading....");
+//            }
+//        });
+//    }
 
     public void deleteIdCart(int id){
-        repository.deleteIdCart(id, new BaseCallback<String>() {
+        repository.deleteIdCart(id, new BaseCallback() {
             @Override
-            public void onSuccess(BaseResponse<String> responseSuccess) {
+            public void onSuccess(BaseResponse responseSuccess) {
                 System.out.println(responseSuccess.toString());
                 fetchListCart();
             }
             @Override
-            public void onError(BaseResponse<Exception> responseError) {
+            public void onError(BaseResponse responseError) {
                 System.out.println(responseError.toString());
             }
             @Override
@@ -87,15 +87,15 @@ public class CartViewModel extends ViewModel {
     }
 
     public void fetchListCart(){
-        repository.fetchListCart(new BaseCallback<CartResponse>() {
+        repository.fetchListCart(new BaseCallback() {
             @Override
-            public void onSuccess(BaseResponse<CartResponse> responseSuccess) {
+            public void onSuccess(BaseResponse responseSuccess) {
                 BaseResponse.Success<CartResponse> cartResponseSuccess = (BaseResponse.Success<CartResponse>) responseSuccess;
                 cartResponseMutableLiveData.setValue(cartResponseSuccess.getData());
             }
 
             @Override
-            public void onError(BaseResponse<Exception> responseError) {
+            public void onError(BaseResponse responseError) {
                 System.out.println(responseError.toString());
             }
 

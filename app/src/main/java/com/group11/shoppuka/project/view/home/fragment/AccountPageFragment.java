@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,9 +24,8 @@ public class AccountPageFragment extends Fragment {
     FragmentAccountPageBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentAccountPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
         setEventHandler();
@@ -34,13 +34,10 @@ public class AccountPageFragment extends Fragment {
     }
 
     private void setEventHandler() {
-        binding.btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logOutAccount(getActivity());
-                Intent intent = new Intent(getActivity(), LoginPageActivity.class);
-                startActivity(intent);
-            }
+        binding.btnLogOut.setOnClickListener(view -> {
+            logOutAccount(requireActivity());
+            Intent intent = new Intent(requireActivity(), LoginPageActivity.class);
+            startActivity(intent);
         });
     }
 

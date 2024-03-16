@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/Confirm"
-        android:title="Confirm"
+        android:title="Xác Nhận"
         android:icon="@drawable/pk_icon_order"/>
     <item
         android:id="@+id/Progress"
-        android:title="In Progress"
+        android:title="Vận Chuyển"
         android:icon="@drawable/ic_order"/>
     <item
         android:id="@+id/Done"
-        android:title="Done"
+        android:title="Trạng Thái"
         android:icon="@drawable/tm_done_32"/>
 </menu>

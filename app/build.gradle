@@ -37,7 +37,8 @@ android {
 
 
 dependencies {
-
+    // Rounded Image
+    implementation 'com.makeramen:roundedimageview:2.3.0'
     // Hilt for Android
     implementation "com.google.dagger:hilt-android:2.44"
     annotationProcessor "com.google.dagger:hilt-compiler:2.44"

@@ -1,11 +1,14 @@
 package com.group11.shoppuka.project.view.home.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,14 +24,16 @@ import com.group11.shoppuka.project.adapter.ProductListAllAdapter;
 import com.group11.shoppuka.project.adapter.ProductListSalePriceAdapter;
 import com.group11.shoppuka.project.adapter.ProductListTopSearchAdapter;
 import com.group11.shoppuka.project.adapter.SliderAdapter;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
 import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.model.product.ProductResponse;
+import com.group11.shoppuka.project.view.product.AllProductListPageActivity;
+import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.CategoryViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
-import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +48,11 @@ public class HomePageFragment extends Fragment  {
     public interface OnItemSelectedListener {
         void onItemSelected(int itemID);
     }
-    SliderView sliderView;
-    int[] images;
 
-    FragmentHomePageBinding binding;
+    private FragmentHomePageBinding binding;
+
+    @Inject
+    SharedPreferences sharedPreferences;
     private CategoryViewModel viewModelCategory;
     private ProductViewModel viewModelProduct;
     private CategoryAdapter categoryAdapter;
@@ -55,10 +61,11 @@ public class HomePageFragment extends Fragment  {
     private ProductListTopSearchAdapter productListTopSearchAdapter;
     private ProductListAllAdapter productListAllAdapter;
 
+    private ProductResponse currentProductResponse;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentHomePageBinding.inflate(inflater,container,false);
@@ -72,15 +79,15 @@ public class HomePageFragment extends Fragment  {
     }
     private void setIntialData() {
 
-        images = new int[]{
+        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+
+        int[] images = new int[]{
                 R.drawable.pk_slider_1,
                 R.drawable.pk_slider_2,
                 R.drawable.pk_slider_3,
                 R.drawable.pk_slider_4,
                 R.drawable.pk_slider_5
         };
-
-        sliderView = binding.imageSlider;
 
         viewModelCategory = new ViewModelProvider(this).get(CategoryViewModel.class);
         viewModelProduct = new ViewModelProvider(this).get(ProductViewModel.class);
@@ -89,7 +96,8 @@ public class HomePageFragment extends Fragment  {
         categoryAdapter = new CategoryAdapter(new CategoryResponse());
         productListSalePriceAdapter = new ProductListSalePriceAdapter(new ProductResponse());
         productListTopSearchAdapter = new ProductListTopSearchAdapter(new ProductResponse());
-        productListAllAdapter = new ProductListAllAdapter(new ProductResponse());
+
+        productListAllAdapter = new ProductListAllAdapter(new ProductResponse(), cartViewModel,sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,""));
 
     }
     private void setAdapter() {
@@ -121,49 +129,46 @@ public class HomePageFragment extends Fragment  {
         binding.imageItem3.setAdapter(productListAllAdapter);
         binding.imageItem3.setLayoutManager(layoutManagerProduct2);
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void setObserverData() {
-        // Observer Category
-        viewModelCategory.getCategoryResponseLiveData().observe(getViewLifecycleOwner(), new Observer<CategoryResponse>() {
-            @Override
-            public void onChanged(CategoryResponse categoryResponse) {
-                categoryAdapter.setCategoryResponseList(categoryResponse);
-                categoryAdapter.notifyDataSetChanged();
-            }
+        viewModelCategory.getCategoryResponseLiveData().observe(getViewLifecycleOwner(), categoryResponse -> {
+            categoryAdapter.setCategoryResponseList(categoryResponse);
+            categoryAdapter.notifyDataSetChanged();
         });
 
-        // Observer General Product
-        viewModelProduct.getProductResponseLiveData().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
-            @Override
-            public void onChanged(ProductResponse productResponse) {
-                List<Product> filterSalePriceProduct = new ArrayList<>();
-                List<Product> allProduct = viewModelProduct.getProductResponseLiveData().getValue().getData();
-                int count = 0;
-                for (Product product : viewModelProduct.getProductResponseLiveData().getValue().getData()) {
-                    if (product.getAttributes().getSalePrice() != 0 && count <= 5) {
-                        filterSalePriceProduct.add(product);
-                        count++;
-                    }
+        viewModelProduct.getProductResponseLiveData().observe(getViewLifecycleOwner(), productResponse -> {
+            currentProductResponse = productResponse;
+            categoryAdapter.setProductResponse(productResponse);
+            List<Product> filterSalePriceProduct = new ArrayList<>();
+            List<Product> allProduct = viewModelProduct.getProductResponseLiveData().getValue().getData();
+            int count = 0;
+            sliderAdapter.setProductResponse(productResponse);
+            for (Product product : viewModelProduct.getProductResponseLiveData().getValue().getData()) {
+                if (product.getAttributes().getSalePrice() != 0 && count <= 5) {
+                    filterSalePriceProduct.add(product);
+                    count++;
                 }
-                List<Product> filterTopSearchProductCopy = new ArrayList<>(allProduct);
-                for ( int i = 0 ; i < filterTopSearchProductCopy.size() ; i++){
-                    for (int j = i + 1 ; j < filterTopSearchProductCopy.size(); j++){
-                        if (filterTopSearchProductCopy.get(i).getAttributes().getCountSearch() > filterTopSearchProductCopy.get(j).getAttributes().getCountSearch()){
-                            Product temp = filterTopSearchProductCopy.get(i);
-                            filterTopSearchProductCopy.set(i,filterTopSearchProductCopy.get(j));
-                            filterTopSearchProductCopy.set(j,temp);
-                        }
-                    }
-                }
-                ProductResponse allProductResponse = new ProductResponse(allProduct);
-                ProductResponse filteredSalePriceProductResponse = new ProductResponse(filterSalePriceProduct);
-                ProductResponse filteredProductTopSearchResponse = new ProductResponse(filterTopSearchProductCopy.subList(0, Math.min(6, filterTopSearchProductCopy.size())));
-                productListSalePriceAdapter.setProductResponse(filteredSalePriceProductResponse);
-                productListSalePriceAdapter.notifyDataSetChanged();
-                productListTopSearchAdapter.setProductResponse(filteredProductTopSearchResponse);
-                productListTopSearchAdapter.notifyDataSetChanged();
-                productListAllAdapter.setProductResponse(allProductResponse);
-                productListAllAdapter.notifyDataSetChanged();
             }
+            List<Product> filterTopSearchProductCopy = new ArrayList<>(allProduct);
+            for ( int i = 0 ; i < filterTopSearchProductCopy.size() ; i++){
+                for (int j = i + 1 ; j < filterTopSearchProductCopy.size(); j++){
+                    if (filterTopSearchProductCopy.get(i).getAttributes().getCountSearch() > filterTopSearchProductCopy.get(j).getAttributes().getCountSearch()){
+                        Product temp = filterTopSearchProductCopy.get(i);
+                        filterTopSearchProductCopy.set(i,filterTopSearchProductCopy.get(j));
+                        filterTopSearchProductCopy.set(j,temp);
+                    }
+                }
+            }
+            ProductResponse allProductResponse = new ProductResponse(allProduct);
+            ProductResponse filteredSalePriceProductResponse = new ProductResponse(filterSalePriceProduct);
+            ProductResponse filteredProductTopSearchResponse = new ProductResponse(filterTopSearchProductCopy.subList(0, Math.min(6, filterTopSearchProductCopy.size())));
+            productListSalePriceAdapter.setProductResponse(filteredSalePriceProductResponse);
+            productListSalePriceAdapter.notifyDataSetChanged();
+            productListTopSearchAdapter.setProductResponse(filteredProductTopSearchResponse);
+            productListTopSearchAdapter.notifyDataSetChanged();
+
+            productListAllAdapter.setProductResponse(allProductResponse);
+            productListAllAdapter.notifyDataSetChanged();
         });
 
     }
@@ -172,20 +177,26 @@ public class HomePageFragment extends Fragment  {
         viewModelProduct.fetchData();
     }
     private void setEventHandler() {
-        binding.etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener(){
 
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                Fragment newFragment = new SearchPageFragment();
+        binding.btnViewAll.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AllProductListPageActivity.class);
+            intent.putExtra("product_list",currentProductResponse);
+            requireActivity().startActivity(intent);
+        });
+        binding.etSearch.setOnFocusChangeListener((view, b) -> {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager != null ? fragmentManager.beginTransaction() : null;
+            Fragment newFragment = new SearchPageFragment();
+            if (fragmentTransaction != null) {
                 fragmentTransaction.replace(R.id.frame_layout,newFragment);
-                fragmentTransaction.commit();
-                if (getActivity() instanceof OnItemSelectedListener) {
-                    ((OnItemSelectedListener) getActivity()).onItemSelected(R.id.Search);
-                }
-
             }
+            if (fragmentTransaction != null) {
+                fragmentTransaction.commit();
+            }
+            if (requireActivity() instanceof OnItemSelectedListener) {
+                ((OnItemSelectedListener) requireActivity()).onItemSelected(R.id.search);
+            }
+
         });
     }
 }

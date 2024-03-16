@@ -1,5 +1,6 @@
 package com.group11.shoppuka.project.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,15 +40,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Hold
     @Override
     public OrderListAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item,parent,false);
-        return new OrderListAdapter.Holder(view);
+        return new Holder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull OrderListAdapter.Holder holder, int position) {
         Order order = orderResponse.getData().get(position);
-        holder.orderCode.setText("OrderCode#"+order.getAttributes().getOrderCode().toString().substring(0,7));
+        holder.orderCode.setText("OrderCode#"+ order.getAttributes().getOrderCode().substring(0,7));
         holder.nameProduct.setText(productResponse.getData().get(order.getAttributes().getIdProduct()-1).getAttributes().getName());
-        holder.totalPrice.setText(String.valueOf(order.getAttributes().getTotalPrice()) + " VNĐ");
+        holder.totalPrice.setText(MyApplication.formatCurrency(String.valueOf(order.getAttributes().getTotalPrice())) + " VNĐ");
         holder.address.setText(order.getAttributes().getAddress());
         switch (order.getAttributes().getStatus()){
             case 0: holder.status.setText("Đơn hàng đang chờ xác nhận");
@@ -74,7 +76,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Hold
         return orderResponse.getData() != null && productResponse.getData() != null  ? orderResponse.getData().size() : 0;
     }
 
-    public class Holder extends RecyclerView.ViewHolder{
+    public static class Holder extends RecyclerView.ViewHolder{
         TextView orderCode, nameProduct, totalPrice, address, status, dateCreate, quantity;
         ImageView imageProduct;
 

@@ -1,12 +1,11 @@
 package com.group11.shoppuka.project.view.login;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.group11.shoppuka.R;
@@ -32,6 +30,7 @@ import com.group11.shoppuka.project.viewmodel.LoginViewModel;
 
 import org.json.JSONException;
 
+import java.util.Objects;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -90,66 +89,68 @@ public class LoginPageActivity extends AppCompatActivity {
 
     private void setEventHandler() {
         binding.tvRegister.setOnClickListener( view1 ->{
-            Intent intent = new Intent(this,RegisterActivity.class);
+            Intent intent = new Intent(this, RegisterPageActivity.class);
             startActivity(intent);
         });
 
 
         binding.btnLogin.setOnClickListener(view1 -> {
-            try {
-                if (binding.etAccount.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Vui lòng không để trống số điện thoại!",Toast.LENGTH_LONG);
-                    binding.etAccount.setError("Vui lòng không để trống số điện thoại!");
-                }
-                else if (binding.etPassword.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Vui lòng không để trống mật khẩu!",Toast.LENGTH_LONG);
-                    binding.etPassword.setError("Vui lòng không để trống mật khẩu!");
-                }
-                else {
-                    if (userCurrentResponse.getData() != null){
-                        for (User user : userCurrentResponse.getData()){
-                            if (String.valueOf(binding.etAccount.getText()).equals(user.getAttributes().phoneNumber)
-                                    && String.valueOf(binding.etPassword.getText()).equals(user.getAttributes().password)){
-                                userCurrent = user.getAttributes();
-                                idAccount = user.getId();
-                                break;
-                            }
-                        }
-                        if (userCurrent != null) {
-                            confirmOtp(this);
-                        } else {
-                            Toast.makeText(LoginPageActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
-                            viewModel.fetchUser();
+            if (binding.etAccount.getText().toString().isEmpty()){
+                Toast.makeText(getApplicationContext(),"Vui lòng không để trống số điện thoại!",Toast.LENGTH_LONG).show();
+                binding.etAccount.setError("Vui lòng không để trống số điện thoại!");
+            }
+            else if (binding.etPassword.getText().toString().isEmpty()){
+                Toast.makeText(getApplicationContext(),"Vui lòng không để trống mật khẩu!",Toast.LENGTH_LONG).show();
+                binding.etPassword.setError("Vui lòng không để trống mật khẩu!");
+            }
+            else {
+                if (userCurrentResponse.getData() != null){
+                    for (User user : userCurrentResponse.getData()){
+                        if (String.valueOf(binding.etAccount.getText()).equals(user.getAttributes().getPhoneNumber())
+                                && String.valueOf(binding.etPassword.getText()).equals(user.getAttributes().getPassword())){
+                            userCurrent = user.getAttributes();
+                            idAccount = user.getId();
+                            break;
                         }
                     }
-                    else {
-                        Toast.makeText(this,"Kiểm tra IP ở other/MyApplication.class/localHost !!", Toast.LENGTH_LONG).show();
+                    if (userCurrent != null) {
+                        if (binding.cbRemember.isChecked())
+                            saveLoginInfo(userCurrent.getPhoneNumber(), userCurrent.getImageURL(),userCurrent.getFullName(), userCurrent.getIdMode(), 1);
+                        else saveLoginInfo(userCurrent.getPhoneNumber(),userCurrent.getImageURL(),userCurrent.getFullName(), userCurrent.getIdMode(), -1);
+                        Intent intent =new Intent(getApplicationContext(), MainPageActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Bundle infoUser = new Bundle();
+                        infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,userCurrent.getPhoneNumber());
+                        infoUser.putString(MyApplication.FULL_NAME_PHONE,userCurrent.getFullName());
+                        infoUser.putString(MyApplication.ID_MODE,String.valueOf(userCurrent.getIdMode()));
+                        infoUser.putString(MyApplication.AVATAR_ACCOUNT,userCurrent.getImageURL());
+                        infoUser.putInt(MyApplication.ID_ACCOUNT,idAccount);
+                        intent.putExtras(infoUser);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginPageActivity.this, "Đăng nhập thất bại! Sai số điện thoại hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                         viewModel.fetchUser();
                     }
-
+                }
+                else {
+                    Toast.makeText(this,"Kiểm tra IP ở other/MyApplication.class/localHost !!", Toast.LENGTH_LONG).show();
+                    viewModel.fetchUser();
                 }
 
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
             }
+
         });
     }
 
     private void setUI() {
-        getSupportActionBar().setTitle("Login");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#F87217"));
-        }
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Đăng Nhập");
+        getWindow().setStatusBarColor(Color.parseColor("#cf052d"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.mainColor)));
     }
 
     private void setObserverData() {
-        viewModel.getListUser().observe(LoginPageActivity.this, new Observer<UserResponse>() {
-            @Override
-            public void onChanged(UserResponse userResponse) {
-                userCurrentResponse = userResponse;
-            }
-        });
+        viewModel.getListUser().observe(LoginPageActivity.this, userResponse -> userCurrentResponse = userResponse);
         viewModel.fetchUser();
     }
 
@@ -177,13 +178,10 @@ public class LoginPageActivity extends AppCompatActivity {
     }
 
     private void confirmOtp(Context context) throws JSONException {
-        //Tạo một LayoutInflater object cho hộp thoại
         LayoutInflater li = LayoutInflater.from(this);
-        //Tạo một view để lấy hộp thoại
         View confirmDialog = li.inflate(R.layout.dialog_confirm, null);
 
-        //Khởi tạo nút xác nhận cho hộp thoại và EditText của hộp thoại
-        Button buttonConfirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+       //  Button buttonConfirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         Button buttonResend = (Button) confirmDialog.findViewById(R.id.buttonResend);
 
         EditText otpNumber1 = (EditText) confirmDialog.findViewById(R.id.otpNumber1);
@@ -193,16 +191,12 @@ public class LoginPageActivity extends AppCompatActivity {
         EditText otpNumber5 = (EditText) confirmDialog.findViewById(R.id.otpNumber5);
         EditText otpNumber6 = (EditText) confirmDialog.findViewById(R.id.otpNumber6);
 
-        //Tạo một AlertDialog.Builder
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        //Thêm hộp thoại của chúng ta vào view của AlertDialog
         alert.setView(confirmDialog);
 
-        //Tạo một AlertDialog
         final AlertDialog alertDialog = alert.create();
 
-        //Hiển thị hộp thoại cảnh báo
         alertDialog.show();
 
         otpNumber1.setText("2");
@@ -213,69 +207,59 @@ public class LoginPageActivity extends AppCompatActivity {
         otpNumber6.setText("1");
 
 
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                userCurrent = null;
-            }
-        });
+        alertDialog.setOnDismissListener(dialogInterface -> userCurrent = null);
 
         //Khi nhấn nút xác nhận từ hộp thoại cảnh báo
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Lấy mã OTP do người dùng nhập từ EditText
-//                final String otp = editTextConfirmOtp.getText().toString().trim();
-                if (binding.cbRemember.isChecked())
-                    saveLoginInfo(userCurrent.phoneNumber, userCurrent.imageURL,userCurrent.fullName, userCurrent.idMode, 1);
-                else saveLoginInfo(userCurrent.phoneNumber,userCurrent.imageURL,userCurrent.fullName, userCurrent.idMode, -1);
-                alertDialog.dismiss();
-                Intent intent =new Intent(getApplicationContext(), MainPageActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                Bundle infoUser = new Bundle();
-                infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,userCurrent.getPhoneNumber());
-                infoUser.putString(MyApplication.FULL_NAME_PHONE,userCurrent.getFullName());
-                infoUser.putString(MyApplication.ID_MODE,String.valueOf(userCurrent.getIdMode()));
-                infoUser.putString(MyApplication.AVATAR_ACCOUNT,userCurrent.getImageURL());
-                infoUser.putInt(MyApplication.ID_ACCOUNT,idAccount);
-                intent.putExtras(infoUser);
-                startActivity(intent);
-                finish();
-
-            }
-        });
-
-
+//        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //Lấy mã OTP do người dùng nhập từ EditText
+////                final String otp = editTextConfirmOtp.getText().toString().trim();
+//                if (binding.cbRemember.isChecked())
+//                    saveLoginInfo(userCurrent.phoneNumber, userCurrent.imageURL,userCurrent.fullName, userCurrent.idMode, 1);
+//                else saveLoginInfo(userCurrent.phoneNumber,userCurrent.imageURL,userCurrent.fullName, userCurrent.idMode, -1);
+//                alertDialog.dismiss();
+//                Intent intent =new Intent(getApplicationContext(), MainPageActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Bundle infoUser = new Bundle();
+//                infoUser.putString(MyApplication.KEY_ACCOUNT_PHONE,userCurrent.getPhoneNumber());
+//                infoUser.putString(MyApplication.FULL_NAME_PHONE,userCurrent.getFullName());
+//                infoUser.putString(MyApplication.ID_MODE,String.valueOf(userCurrent.getIdMode()));
+//                infoUser.putString(MyApplication.AVATAR_ACCOUNT,userCurrent.getImageURL());
+//                infoUser.putInt(MyApplication.ID_ACCOUNT,idAccount);
+//                intent.putExtras(infoUser);
+//                startActivity(intent);
+//                finish();
+//
+//            }
+//        });
 
 
 
-        buttonResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Vô hiệu hóa nút Resend
-                buttonResend.setEnabled(false);
 
-                //Tạo một bộ đếm thời gian với thời gian là 30 giây
-                new CountDownTimer(30000, 1000) {
-                    public void onTick(long millisUntilFinished) {
-                        //Cập nhật text của nút Resend trong khi đếm ngược
-                        buttonResend.setText("Resend OTP in " + millisUntilFinished / 1000 + " seconds");
-                    }
 
-                    public void onFinish() {
-                        //Khi bộ đếm thời gian kết thúc, cho phép người dùng nhấn nút Resend và cập nhật text của nút
-                        Random rand = new Random();
-                        buttonResend.setEnabled(true);
-                        buttonResend.setText("Resend OTP");
-                        otpNumber1.setText(Integer.toString((rand.nextInt(10))));
-                        otpNumber2.setText(Integer.toString((rand.nextInt(10))));
-                        otpNumber3.setText(Integer.toString((rand.nextInt(10))));
-                        otpNumber4.setText(Integer.toString((rand.nextInt(10))));
-                        otpNumber5.setText(Integer.toString((rand.nextInt(10))));
-                        otpNumber6.setText(Integer.toString((rand.nextInt(10))));
-                    }
-                }.start();
-            }
+        buttonResend.setOnClickListener(v -> {
+            buttonResend.setEnabled(false);
+
+            new CountDownTimer(30000, 1000) {
+                @SuppressLint("SetTextI18n")
+                public void onTick(long millisUntilFinished) {
+                    buttonResend.setText("Resend OTP in " + millisUntilFinished / 1000 + " seconds");
+                }
+
+                @SuppressLint("SetTextI18n")
+                public void onFinish() {
+                    Random rand = new Random();
+                    buttonResend.setEnabled(true);
+                    buttonResend.setText("Resend OTP");
+                    otpNumber1.setText(Integer.toString((rand.nextInt(10))));
+                    otpNumber2.setText(Integer.toString((rand.nextInt(10))));
+                    otpNumber3.setText(Integer.toString((rand.nextInt(10))));
+                    otpNumber4.setText(Integer.toString((rand.nextInt(10))));
+                    otpNumber5.setText(Integer.toString((rand.nextInt(10))));
+                    otpNumber6.setText(Integer.toString((rand.nextInt(10))));
+                }
+            }.start();
         });
     }
 }

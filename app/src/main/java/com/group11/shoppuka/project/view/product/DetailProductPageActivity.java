@@ -1,5 +1,6 @@
 package com.group11.shoppuka.project.view.product;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,8 @@ import com.group11.shoppuka.project.model.product.Product;
 import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.checkout.CheckoutPageActivity;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -51,71 +55,67 @@ public class DetailProductPageActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        binding.btnCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CartData cartData = new CartData();
-                cartData.setIdProduct(currentProduct.getId());
-                System.out.println("Phone Number :"+phoneNumber);
-                cartData.setPhoneNumber(phoneNumber);
-                cartData.setCount(1);
-                if (currentProduct.getAttributes().getSalePrice() != 0) {
-                    cartData.setTotalPrice(currentProduct.getAttributes().getSalePrice());
-                } else {
-                    cartData.setTotalPrice(currentProduct.getAttributes().getPrice());
-                }
-                CartRequest cartRequest = new CartRequest();
-                cartRequest.setData(cartData);
-
-                cartViewModel.addCart(cartRequest);
-                finish();
+        binding.btnCart.setOnClickListener(view -> {
+            CartData cartData = new CartData();
+            cartData.setIdProduct(currentProduct.getId());
+            System.out.println("Phone Number :"+phoneNumber);
+            cartData.setPhoneNumber(phoneNumber);
+            cartData.setCount(1);
+            if (currentProduct.getAttributes().getSalePrice() != 0) {
+                cartData.setTotalPrice(currentProduct.getAttributes().getSalePrice());
+            } else {
+                cartData.setTotalPrice(currentProduct.getAttributes().getPrice());
             }
+            CartRequest cartRequest = new CartRequest();
+            cartRequest.setData(cartData);
+
+            cartViewModel.addCart(cartRequest);
+            Toast.makeText(view.getContext(),"Đã thêm sản phẩm vào giỏ hàng",Toast.LENGTH_SHORT).show();
+            finish();
         });
-        binding.btnBuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CartData cartData = new CartData();
-                cartData.setIdProduct(currentProduct.getId());
-                cartData.setPhoneNumber(phoneNumber);
-                cartData.setCount(1);
-                if (currentProduct.getAttributes().getSalePrice() != 0) {
-                    cartData.setTotalPrice(currentProduct.getAttributes().getSalePrice());
-                } else {
-                    cartData.setTotalPrice(currentProduct.getAttributes().getPrice());
-                }
-                CartRequest cartRequest = new CartRequest();
-                cartRequest.setData(cartData);
-
-                cartViewModel.addCart(cartRequest);
-                cartViewModel.fetchListCart();
-                cartViewModel.getCartResponseMutableLiveData().observe(DetailProductPageActivity.this, new Observer<CartResponse>() {
-                    @Override
-                    public void onChanged(CartResponse cartResponse) {
-                        Intent intent = new Intent(view.getContext(), CheckoutPageActivity.class);
-                        intent.putExtra(MyApplication.KEY_GET_LISTCART,cartResponse);
-                        view.getContext().startActivity(intent);
-                        finish();
-                    }
-                });
+        binding.btnBuy.setOnClickListener(view -> {
+            CartData cartData = new CartData();
+            cartData.setIdProduct(currentProduct.getId());
+            cartData.setPhoneNumber(phoneNumber);
+            cartData.setCount(1);
+            if (currentProduct.getAttributes().getSalePrice() != 0) {
+                cartData.setTotalPrice(currentProduct.getAttributes().getSalePrice());
+            } else {
+                cartData.setTotalPrice(currentProduct.getAttributes().getPrice());
             }
+            CartRequest cartRequest = new CartRequest();
+            cartRequest.setData(cartData);
+
+            cartViewModel.addCart(cartRequest);
+
+            cartViewModel.getCartResponseMutableLiveData().observe(DetailProductPageActivity.this, cartResponse -> {
+                Intent intent = new Intent(getApplicationContext(), CheckoutPageActivity.class);
+                intent.putExtra(MyApplication.KEY_GET_LISTCART,cartResponse);
+                startActivity(intent);
+                finish();
+            });
+
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setUI() {
-        getSupportActionBar().setTitle(currentProduct.getAttributes().getName().substring(0,Math.min(currentProduct.getAttributes().getName().length(),15))+"...");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#F87217"));
-        }
+        Objects.requireNonNull(getSupportActionBar()).setTitle(currentProduct.getAttributes().getName().substring(0,Math.min(currentProduct.getAttributes().getName().length(),15))+"...");
+        getWindow().setStatusBarColor(Color.parseColor("#cf052d"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.mainColor)));
 
         Glide.with(this).load(urlImage).into(binding.imageViewProduct);
         binding.name.setText(currentProduct.getAttributes().getName());
-        binding.price.setText(currentProduct.getAttributes().getPrice() + "VNĐ");
+        binding.price.setText(MyApplication.formatCurrency(String.valueOf(currentProduct.getAttributes().getPrice())) + " VNĐ");
         if (currentProduct.getAttributes().getSalePrice() != 0) {
             binding.price.setPaintFlags(binding.price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            binding.salePrice.setText(String.valueOf(currentProduct.getAttributes().getSalePrice()) + "VNĐ");
+            binding.price.setTextColor(Color.parseColor("#ACABAB"));
+            binding.salePrice.setVisibility(View.VISIBLE);
+            binding.salePrice.setText(MyApplication.formatCurrency(String.valueOf(currentProduct.getAttributes().getSalePrice())) + " VNĐ");
         }
         binding.description.setText(currentProduct.getAttributes().getDescription());
+
+
 
     }
 

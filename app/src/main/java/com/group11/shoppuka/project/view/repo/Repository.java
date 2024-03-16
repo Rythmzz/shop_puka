@@ -1,13 +1,12 @@
 package com.group11.shoppuka.project.view.repo;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 
 import com.group11.shoppuka.project.base.BaseCallback;
 import com.group11.shoppuka.project.base.BaseResponse;
+import com.group11.shoppuka.project.model.account.ClientResponse;
 import com.group11.shoppuka.project.model.account.User;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.account.UserResponse;
@@ -40,8 +39,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton public class Repository {
-    private ApiService apiService;
-    private SharedPreferences sharedPreferences;
+    private final ApiService apiService;
+    private final SharedPreferences sharedPreferences;
 
     @Inject
     public Repository(ApiService apiService, SharedPreferences sharedPreferences){
@@ -49,22 +48,49 @@ import retrofit2.Response;
         this.sharedPreferences = sharedPreferences;
     }
 
+
+
+    public void login(String username, String password, BaseCallback callback){
+        callback.onLoading();
+
+        apiService.login(username,password).enqueue(new Callback<ClientResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ClientResponse> call, @NonNull Response<ClientResponse> response) {
+                if (response.isSuccessful()){
+                    callback.onSuccess(new BaseResponse.Success<>(response.body()));
+                }
+                else {
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ClientResponse> call, @NonNull Throwable t) {
+                callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
+            }
+        });
+    }
+
     // Feature Cart
-    public void addCart(CartRequest cartRequest, BaseCallback<String> callback){
+    public void addCart(CartRequest cartRequest, BaseCallback callback){
         callback.onLoading();
         apiService.addProductCart(cartRequest).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
 
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success("Thêm sản phẩm thành công !"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
 
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
@@ -72,47 +98,56 @@ import retrofit2.Response;
 
     }
 
-    public void deleteIdCart(int id, BaseCallback<String> callback){
+    public void deleteIdCart(int id, BaseCallback callback){
         callback.onLoading();
         apiService.deleteCart(id).enqueue(new Callback<Cart>() {
 
             @Override
-            public void onResponse(Call<Cart> call, Response<Cart> response) {
+            public void onResponse(@NonNull Call<Cart> call, @NonNull Response<Cart> response) {
                 if (response.isSuccessful()) callback.onSuccess(new BaseResponse.Success<>("Xóa vật phẩm ra giỏ hàng thành công"));
-                else callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                else if (response.errorBody() != null) {
+                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                }
             }
 
             @Override
-            public void onFailure(Call<Cart> call, Throwable t) {
+            public void onFailure(@NonNull Call<Cart> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    public void fetchListCart(BaseCallback<CartResponse> callback){
+    public void fetchListCart(BaseCallback callback){
         callback.onLoading();
         String numberPhone = sharedPreferences.getString(MyApplication.KEY_ACCOUNT_PHONE,null);
         apiService.getListCart(numberPhone,0,-1).enqueue(new Callback<CartResponse>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+            public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
                 if (response.isSuccessful()){
                     CartResponse cartResponse = response.body();
                     Map<String, Cart> map = new HashMap<>();
-                    for (Cart cart: response.body().getData()){
-                        System.out.println("IDPRODUCT=" +cart.getAttributes().getIdProduct());
-                        System.out.println("COUNT=" +cart.getAttributes().getCount());
-                        System.out.println("PHONE" + cart.getAttributes().getPhoneNumber());
+                    if (response.body() != null) {
+                        for (Cart cart: response.body().getData()){
+                            System.out.println("IDPRODUCT=" +cart.getAttributes().getIdProduct());
+                            System.out.println("COUNT=" +cart.getAttributes().getCount());
+                            System.out.println("PHONE" + cart.getAttributes().getPhoneNumber());
+                        }
                     }
-                    for (Cart item : cartResponse.getData()) {
-                        String key = item.getAttributes().getIdProduct() + "-" + item.getAttributes().getPhoneNumber();
-                        if (map.containsKey(key)) {
-                            Cart existingItem = map.get(key);
-                            System.out.println("KEY ="+ key);
-                            existingItem.getAttributes().addIdResource(item.getId());
-                            existingItem.getAttributes().setCount(existingItem.getAttributes().getCount() + item.getAttributes().getCount());
-                        } else {
-                            map.put(key, item);
+                    if (cartResponse != null) {
+                        for (Cart item : cartResponse.getData()) {
+                            String key = item.getAttributes().getIdProduct() + "-" + item.getAttributes().getPhoneNumber();
+                            if (map.containsKey(key)) {
+                                Cart existingItem = map.get(key);
+                                System.out.println("KEY ="+ key);
+                                if (existingItem != null) {
+                                    existingItem.getAttributes().addIdResource(item.getId());
+                                }
+                                if (existingItem != null) {
+                                    existingItem.getAttributes().setCount(existingItem.getAttributes().getCount() + item.getAttributes().getCount());
+                                }
+                            } else {
+                                map.put(key, item);
+                            }
                         }
                     }
                     List<Cart> result = new ArrayList<>(map.values());
@@ -122,32 +157,36 @@ import retrofit2.Response;
                     callback.onSuccess(new BaseResponse.Success(cartResponseFull));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<CartResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    public void updateListCart(int id ,CartRequest cartRequest, BaseCallback<String> callback){
+    public void updateListCart(int id ,CartRequest cartRequest, BaseCallback callback){
         callback.onLoading();
         apiService.updateCart(id,cartRequest).enqueue(new Callback<Cart>() {
             @Override
-            public void onResponse(Call<Cart> call, Response<Cart> response) {
+            public void onResponse(@NonNull Call<Cart> call, @NonNull Response<Cart> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Cập nhật thành công"));
                 }
                 else{
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<Cart> call, Throwable t) {
+            public void onFailure(@NonNull Call<Cart> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
@@ -155,57 +194,60 @@ import retrofit2.Response;
 
     // feature Category
 
-    public void fetchDataCategory(BaseCallback<CategoryResponse> callback){
+    public void fetchDataCategory(BaseCallback callback){
         callback.onLoading();
         apiService.getListCategory().enqueue(new Callback<CategoryResponse>() {
             @Override
-            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+            public void onResponse(@NonNull Call<CategoryResponse> call, @NonNull Response<CategoryResponse> response) {
 
                 if (response.isSuccessful()){
                     CategoryResponse categoryResponse = response.body();
                     callback.onSuccess(new BaseResponse.Success<>(categoryResponse));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<CategoryResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    // Feature User Login, Register
 
-    public void fetchUser(BaseCallback<UserResponse> callback){
+    public void fetchUser(BaseCallback callback){
         callback.onLoading();
         apiService.getListUser().enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
 
                 if (response.isSuccessful()){
                     UserResponse userResponse = response.body();
-                    callback.onSuccess(new BaseResponse.Success<UserResponse>(userResponse));
+                    callback.onSuccess(new BaseResponse.Success<>(userResponse));
                 }
                 else{
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
-    public void signUpUser(UserRequest userRequest, Context context, BaseCallback<String> callback){
+    public void signUpUser(UserRequest userRequest, BaseCallback callback){
 
         Call<ResponseBody> call = apiService.createUser(userRequest);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 callback.onLoading();
                 if (response.isSuccessful()) {
                     callback.onSuccess(new BaseResponse.Success<>("Đăng ký thành công!"));
@@ -216,9 +258,10 @@ import retrofit2.Response;
                     }
                     else {
                         ResponseBody errorBody = response.errorBody();
-                        String errorMessage = "";
+                        String errorMessage;
                         try {
                             errorMessage = errorBody != null ? errorBody.string() : "";
+                            System.out.println(errorMessage);
                         } catch (IOException e) {
                             callback.onError(new BaseResponse.Error(new Exception(e.getMessage())));
                         }
@@ -227,7 +270,7 @@ import retrofit2.Response;
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
@@ -236,90 +279,102 @@ import retrofit2.Response;
 
     // Feature Order
 
-    public void createOrder(OrderRequest orderRequest, BaseCallback<String> callback){
+    public void createOrder(OrderRequest orderRequest, BaseCallback callback){
         callback.onLoading();
         apiService.createOrder(orderRequest).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Tạo một order thành công"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    public void fetchDataOrder(String numberPhone, BaseCallback<OrderResponse> callback){
+    public void fetchDataOrder(String numberPhone, BaseCallback callback){
         callback.onLoading();
         apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+            public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
                 if (response.isSuccessful()){
                     OrderResponse orderResponse = response.body();
-                    List<Order> resultFull =orderResponse.getData().stream().filter(item -> item.getAttributes().getPhoneNumber().equals(numberPhone)).collect(Collectors.toList());
+                    List<Order> resultFull = null;
+                    if (orderResponse != null) {
+                        resultFull = orderResponse.getData().stream().filter(item -> item.getAttributes().getPhoneNumber().equals(numberPhone)).collect(Collectors.toList());
+                    }
                     OrderResponse orderResponseFull = new OrderResponse();
                     orderResponseFull.setData(resultFull);
                     callback.onSuccess(new BaseResponse.Success<>(orderResponseFull));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<OrderResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
-    public void updateDataOrder(int id, OrderRequest orderRequest, BaseCallback<String> callback){
+    public void updateDataOrder(int id, OrderRequest orderRequest, BaseCallback callback){
         callback.onLoading();
         apiService.updateOrder(id,orderRequest).enqueue(new Callback<Order>() {
             @Override
-            public void onResponse(Call<Order> call, Response<Order> response) {
+            public void onResponse(@NonNull Call<Order> call, @NonNull Response<Order> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Tạo một order thành công"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<Order> call, Throwable t) {
+            public void onFailure(@NonNull Call<Order> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
-    public void fetchListDataOrder(int startStatus, int endStatus, BaseCallback<OrderResponse> callback){
+    public void fetchListDataOrder(int startStatus, int endStatus, BaseCallback callback){
         callback.onLoading();
         apiService.getListOrderWithNumberPhone().enqueue(new Callback<OrderResponse>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+            public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
                 if (response.isSuccessful()){
                     OrderResponse orderResponse = response.body();
-                    List<Order> resultFull =orderResponse.getData().stream().filter(item -> (item.getAttributes().getStatus() >= startStatus && item.getAttributes().getStatus() <= endStatus)).collect(Collectors.toList());
+                    List<Order> resultFull = null;
+                    if (orderResponse != null) {
+                        resultFull = orderResponse.getData().stream().filter(item -> (item.getAttributes().getStatus() >= startStatus && item.getAttributes().getStatus() <= endStatus)).collect(Collectors.toList());
+                    }
                     OrderResponse orderResponseFull = new OrderResponse();
                     orderResponseFull.setData(resultFull);
                     callback.onSuccess(new BaseResponse.Success<>(orderResponseFull));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
 
             @Override
-            public void onFailure(Call<OrderResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
@@ -327,82 +382,90 @@ import retrofit2.Response;
 
     // feature product
 
-    public void fetchDataProduct(BaseCallback<ProductResponse> callback){
+    public void fetchDataProduct(BaseCallback callback){
         callback.onLoading();
         apiService.getListProduct().enqueue(new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+            public void onResponse(@NonNull Call<ProductResponse> call, @NonNull Response<ProductResponse> response) {
                 if (response.isSuccessful()){
                     ProductResponse productResponse = response.body();
                     callback.onSuccess(new BaseResponse.Success<>(productResponse));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
 
             }
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<ProductResponse> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    public void createNewProduct(ProductRequest productRequest, BaseCallback<String> callback){
+    public void createNewProduct(ProductRequest productRequest, BaseCallback callback){
         callback.onLoading();
         apiService.createProduct(productRequest).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Tạo product thành công"));
                 }
                 else{
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
     }
 
-    public void updateDataProduct(int id, ProductRequest productRequest, BaseCallback<String> callback){
+    public void updateDataProduct(int id, ProductRequest productRequest, BaseCallback callback){
 
         apiService.updateProduct(id,productRequest).enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse( Call<Product> call,  Response<Product> response) {
                 if (response.isSuccessful()){
-                    callback.onSuccess(new BaseResponse.Success<>("Cập nhật sản phaark"));
+                    callback.onSuccess(new BaseResponse.Success<>("Cập nhật sản phẩm"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
 
             }
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(@NonNull Call<Product> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
     });
     }
 
 
-    public void deleteDataProduct(int id, BaseCallback<String> callback){
+    public void deleteDataProduct(int id, BaseCallback callback){
 
         apiService.deleteProduct(id).enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Xóa sản phẩm thành công"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
 
             }
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(@NonNull Call<Product> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });
@@ -410,21 +473,23 @@ import retrofit2.Response;
 
     // feature User
 
-    public void updateAvatarUser(int id ,UserRequest userRequest, BaseCallback<String> callback){
+    public void updateAvatarUser(int id ,UserRequest userRequest, BaseCallback callback){
 
         apiService.updateAvatar(id,userRequest).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()){
                     callback.onSuccess(new BaseResponse.Success<>("Cập nhật avatar thành công"));
                 }
                 else {
-                    callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    if (response.errorBody() != null) {
+                        callback.onError(new BaseResponse.Error(new Exception(response.errorBody().toString())));
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 callback.onError(new BaseResponse.Error(new Exception(t.getMessage())));
             }
         });

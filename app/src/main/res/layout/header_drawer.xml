@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:padding="15dp"
-    android:layout_height="250dp">
+    android:layout_height="wrap_content">
     <FrameLayout
         android:id="@+id/image_container"
         android:layout_width="wrap_content"
@@ -22,24 +22,37 @@
 
     </FrameLayout>
     <TextView
+        android:textColor="@color/mainColor"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:id="@+id/tvUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User#12940332"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:textColor="@color/black"
+        android:textSize="14dp"
         android:id="@+id/tvFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User#12940332"
-        android:padding="8dp"
+        android:layout_marginBottom="5dp"
         />
     <TextView
+        android:textColor="@color/black"
+        android:textSize="14dp"
         android:id="@+id/tvPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Số điện thoại: 0335304910"
-        android:padding="8dp"
+        android:layout_marginBottom="15dp"
         />
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="3dp"
         android:background="@color/mainColor"
-
         />
 
 

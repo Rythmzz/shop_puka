@@ -1,6 +1,7 @@
 package com.group11.shoppuka.project.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +38,16 @@ public class OrderListDoneAdapter extends RecyclerView.Adapter<OrderListDoneAdap
     @Override
     public OrderListDoneAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_done_item,parent,false);
-        return new OrderListDoneAdapter.Holder(view);
+        return new Holder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull OrderListDoneAdapter.Holder holder, int position) {
         Order order = orderResponse.getData().get(position);
-        holder.orderCode.setText("OrderCode#"+order.getAttributes().getOrderCode().toString().substring(0,7));
+        holder.orderCode.setText("OrderCode#"+ order.getAttributes().getOrderCode().substring(0,7));
         holder.nameProduct.setText(productResponse.getData().get(order.getAttributes().getIdProduct()-1).getAttributes().getName());
-        holder.totalPrice.setText(String.valueOf(order.getAttributes().getTotalPrice()) + " VNĐ");
+        holder.totalPrice.setText(MyApplication.formatCurrency(String.valueOf(order.getAttributes().getTotalPrice())) + " VNĐ");
         holder.address.setText(order.getAttributes().getAddress());
         switch (order.getAttributes().getStatus()){
             case 2: holder.checkStatus.setText("Đơn hàng giao thành công");
@@ -66,7 +68,7 @@ public class OrderListDoneAdapter extends RecyclerView.Adapter<OrderListDoneAdap
         return orderResponse.getData() != null && productResponse.getData() != null  ? orderResponse.getData().size() : 0;
     }
 
-    public class Holder extends RecyclerView.ViewHolder{
+    public static class Holder extends RecyclerView.ViewHolder{
         TextView orderCode, nameProduct, totalPrice, address, phoneNumber, dateCreate, quantity;
         TextView checkStatus;
         ImageView imageProduct;

@@ -1,10 +1,11 @@
 package com.group11.shoppuka.project.view.home.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -22,7 +23,6 @@ import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
 
-import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -45,7 +45,7 @@ public class CartPageFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentCartPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
@@ -56,47 +56,36 @@ public class CartPageFragment extends Fragment {
     }
 
     private void setEventHandler() {
-        binding.btnBuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), CheckoutPageActivity.class);
-                intent.putExtra(MyApplication.KEY_GET_LISTCART,currentCartResponse);
-                view.getContext().startActivity(intent);
-            }
+        binding.btnBuy.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), CheckoutPageActivity.class);
+            intent.putExtra(MyApplication.KEY_GET_LISTCART,currentCartResponse);
+            view.getContext().startActivity(intent);
         });
     }
 
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
     private void setObserverData() {
-        cartViewModel.getCartResponseMutableLiveData().observe(getActivity(), new Observer<CartResponse>() {
-            @Override
-            public void onChanged(CartResponse cartResponse) {
-                if (cartResponse.getData().size() == 0 ) binding.csNotCart.setVisibility(View.VISIBLE);
-                else binding.csNotCart.setVisibility(View.GONE);
-                cartListAdapter.setCartResponse(cartResponse);
-                int totalPrice = 0;
-                currentCartResponse = new CartResponse();
-                currentCartResponse.setData(cartResponse.getData());
-                for (Cart cart : cartResponse.getData()) totalPrice+= (cart.getAttributes().getTotalPrice() * cart.getAttributes().getCount());
-                binding.totalPrice.setText(String.valueOf(totalPrice) + " VNĐ");
-                cartListAdapter.notifyDataSetChanged();
-            }
+        cartViewModel.getCartResponseMutableLiveData().observe(requireActivity(), cartResponse -> {
+            if (cartResponse.getData().size() == 0 ) binding.csNotCart.setVisibility(View.VISIBLE);
+            else binding.csNotCart.setVisibility(View.GONE);
+            cartListAdapter.setCartResponse(cartResponse);
+            int totalPrice = 0;
+            currentCartResponse = new CartResponse();
+            currentCartResponse.setData(cartResponse.getData());
+            for (Cart cart : cartResponse.getData()) totalPrice+= (cart.getAttributes().getTotalPrice() * cart.getAttributes().getCount());
+            binding.totalPrice.setText(MyApplication.formatCurrency(String.valueOf(totalPrice)) + " VNĐ");
+            cartListAdapter.notifyDataSetChanged();
         });
         cartViewModel.fetchListCart();
 
-        productViewModel.getProductResponseLiveData().observe(getActivity(), new Observer<ProductResponse>() {
-            @Override
-            public void onChanged(ProductResponse productResponse) {
-                cartListAdapter.setProductResponse(productResponse);
-                cartListAdapter.notifyDataSetChanged();
-            }
+        productViewModel.getProductResponseLiveData().observe(requireActivity(), productResponse -> {
+            cartListAdapter.setProductResponse(productResponse);
+            cartListAdapter.notifyDataSetChanged();
         });
 
-        productViewModel.getProductIsAvalible().observe(getActivity(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    setAdapter();
-                }
+        productViewModel.getProductIsAvalible().observe(requireActivity(), aBoolean -> {
+            if (aBoolean) {
+                setAdapter();
             }
         });
     }
@@ -110,10 +99,10 @@ public class CartPageFragment extends Fragment {
     }
 
     private void intialData() {
-        cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        productViewModel = new ViewModelProvider(requireActivity()).get(ProductViewModel.class);
 
-        cartListAdapter = new CartListAdapter(new CartResponse(),new ProductResponse(),getActivity(), cartViewModel);
+        cartListAdapter = new CartListAdapter(new CartResponse(),new ProductResponse(), cartViewModel);
 
 
     }

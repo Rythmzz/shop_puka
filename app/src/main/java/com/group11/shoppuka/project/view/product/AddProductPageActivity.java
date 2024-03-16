@@ -4,16 +4,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.group11.shoppuka.R;
@@ -22,7 +21,6 @@ import com.group11.shoppuka.project.model.category.Category;
 import com.group11.shoppuka.project.model.category.CategoryResponse;
 import com.group11.shoppuka.project.model.product.ProductData;
 import com.group11.shoppuka.project.model.product.ProductRequest;
-import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.service.ApiService;
 import com.group11.shoppuka.project.service.RetrofitService;
@@ -34,10 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import okhttp3.MediaType;
@@ -54,7 +52,7 @@ public class AddProductPageActivity extends AppCompatActivity {
     CategoryViewModel cateViewModel;
     ArrayList<String> data = new ArrayList<>();
     ArrayAdapter<String> adapter;
-    private ProductData productData = new ProductData();
+    private final ProductData productData = new ProductData();
     ProductViewModel productViewModel;
     ActivityAddProductBinding binding;
 
@@ -81,10 +79,8 @@ public class AddProductPageActivity extends AppCompatActivity {
     }
 
     private void setUI() {
-        getSupportActionBar().setTitle("Create Product");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#F87217"));
-        }
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Tạo Sản Phẩm");
+        getWindow().setStatusBarColor(Color.parseColor("#cf052d"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.mainColor)));
     }
 
@@ -92,82 +88,67 @@ public class AddProductPageActivity extends AppCompatActivity {
         cateViewModel.fetchDataCategory();
         CategoryResponse currentCategoryResponse = new CategoryResponse();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,data);
-        cateViewModel.getCategoryResponseLiveData().observe(AddProductPageActivity.this, new Observer<CategoryResponse>() {
-            @Override
-            public void onChanged(CategoryResponse categoryResponse) {
-                currentCategoryResponse.setData(categoryResponse.getData());
-                for (Category category : currentCategoryResponse.getData()){
-                    data.add(category.getAttributes().getName());
-                }
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                binding.spnCategory.setAdapter(adapter);
+        cateViewModel.getCategoryResponseLiveData().observe(AddProductPageActivity.this, categoryResponse -> {
+            currentCategoryResponse.setData(categoryResponse.getData());
+            for (Category category : currentCategoryResponse.getData()){
+                data.add(category.getAttributes().getName());
             }
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.spnCategory.setAdapter(adapter);
         });
 
-        productViewModel.getProductResponseLiveData().observe(AddProductPageActivity.this, new Observer<ProductResponse>() {
-            @Override
-            public void onChanged(ProductResponse productResponse) {
-                productData.setIdProduct(productResponse.getData().size()+1);
-            }
-        });
+        productViewModel.getProductResponseLiveData().observe(AddProductPageActivity.this, productResponse -> productData.setIdProduct(productResponse.getData().size()+1));
     }
 
     private void setEventHandler(){
 
 
-        binding.btnSubmitAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.edtProductName.getText().toString().isEmpty()){
-                    binding.edtProductName.setError("Tên sản phẩm không được để trống");
-                }
-                else if (binding.edtProductPrice.getText().toString().isEmpty()){
-                    binding.edtProductPrice.setError("Giá sản phẩm không được để trống");
-                }
-                else if (binding.edtProductSalePrice.getText().toString().isEmpty()){
-                    binding.edtProductSalePrice.setError("Giá khuyến mãi không được để trống");
-                }
-                else if (Integer.valueOf(binding.edtProductPrice.getText().toString()) <= Integer.valueOf(binding.edtProductSalePrice.getText().toString())){
-                    binding.edtProductSalePrice.setError("Giá khuyến mãi không được lớn hơn giá gốc");
-                }
-                else if (binding.edtProductDescription.getText().toString().isEmpty()){
-                    binding.edtProductDescription.setError("Mô tả sản phẩm không được để trống");
-                }
-                else if (productData.getImageURL() == null){
-                    Toast.makeText(AddProductPageActivity.this,"Vui lòng chọn hình cho sản phẩm",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    productData.setName(binding.edtProductName.getText().toString());
-                    productData.setPrice(Integer.valueOf(binding.edtProductPrice.getText().toString()));
-                    productData.setSalePrice(Integer.valueOf(binding.edtProductSalePrice.getText().toString()));
-                    productData.setDescription(binding.edtProductDescription.getText().toString());
-                    productData.setCountSearch(0);
-                    ProductRequest productRequest = new ProductRequest();
-                    productRequest.setData(productData);
-                    productViewModel.createNewProduct(productRequest);
-                    Toast.makeText(AddProductPageActivity.this,"Product được tạo thành công !",Toast.LENGTH_SHORT);
-                    finish();
+        binding.btnSubmitAccount.setOnClickListener(v -> {
+            if (binding.edtProductName.getText().toString().isEmpty()){
+                binding.edtProductName.setError("Tên sản phẩm không được để trống");
+            }
+            else if (binding.edtProductPrice.getText().toString().isEmpty()){
+                binding.edtProductPrice.setError("Giá sản phẩm không được để trống");
+            }
+            else if (binding.edtProductSalePrice.getText().toString().isEmpty()){
+                binding.edtProductSalePrice.setError("Giá khuyến mãi không được để trống");
+            }
+            else if (Integer.parseInt(binding.edtProductPrice.getText().toString()) <= Integer.parseInt(binding.edtProductSalePrice.getText().toString())){
+                binding.edtProductSalePrice.setError("Giá khuyến mãi không được lớn hơn giá gốc");
+            }
+            else if (binding.edtProductDescription.getText().toString().isEmpty()){
+                binding.edtProductDescription.setError("Mô tả sản phẩm không được để trống");
+            }
+            else if (productData.getImageURL() == null){
+                Toast.makeText(AddProductPageActivity.this,"Vui lòng chọn hình cho sản phẩm",Toast.LENGTH_SHORT).show();
+            }
+            else {
+                productData.setName(binding.edtProductName.getText().toString());
+                productData.setPrice(Integer.parseInt(binding.edtProductPrice.getText().toString()));
+                productData.setSalePrice(Integer.parseInt(binding.edtProductSalePrice.getText().toString()));
+                productData.setDescription(binding.edtProductDescription.getText().toString());
+                productData.setCountSearch(0);
+                ProductRequest productRequest = new ProductRequest();
+                productRequest.setData(productData);
+                productViewModel.createNewProduct(productRequest);
+                Toast.makeText(AddProductPageActivity.this,"Product được tạo thành công !",Toast.LENGTH_SHORT).show();
+                finish();
 
-
-                }
 
             }
+
         });
 
-        binding.ivImageURL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"), MyApplication.PICK_IMAGE);
-            }
+        binding.ivImageURL.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"), MyApplication.PICK_IMAGE);
         });
 
         binding.spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = data.get(i);
                 productData.setIdCategory(i+1);
                 System.out.println(i);
             }
@@ -195,7 +176,7 @@ public class AddProductPageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MyApplication.PICK_IMAGE){
             if (resultCode == RESULT_OK){
-                Uri imageUri = data.getData();
+                Uri imageUri = Objects.requireNonNull(data).getData();
                 binding.ivImageURL.setImageURI(imageUri);
                 try {
                     InputStream inputStream =getContentResolver().openInputStream(imageUri);
@@ -207,20 +188,18 @@ public class AddProductPageActivity extends AppCompatActivity {
 
                     apiService.uploadImage(image).enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
 
                             if (response.isSuccessful()) {
                                 try {
-                                    String responseBody = response.body().string();
+                                    String responseBody = Objects.requireNonNull(response.body()).string();
                                     JSONArray jsonArray = new JSONArray(responseBody);
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                                     imageUrl = jsonObject.getString("url");
                                     productData.setImageURL(imageUrl);
                                     System.out.println(imageUrl);
                                     // Sử dụng imageUrl để cập nhật thuộc tính url trong bảng sản phẩm
-                                }  catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                } catch (IOException e) {
+                                }  catch (JSONException | IOException e) {
                                     throw new RuntimeException(e);
                                 }
 
@@ -228,9 +207,9 @@ public class AddProductPageActivity extends AppCompatActivity {
                             } else {
                                 int statusCode = response.code();
                                 ResponseBody errorBody = response.errorBody();
-                                String errorMessage = null;
+                                String errorMessage;
                                 try {
-                                    errorMessage = response.errorBody().string();
+                                    errorMessage = Objects.requireNonNull(response.errorBody()).string();
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -238,6 +217,7 @@ public class AddProductPageActivity extends AppCompatActivity {
                                 System.out.println(errorMessage);
                                 try {
                                     errorMessage = errorBody != null ? errorBody.string() : "";
+                                    System.out.println(errorMessage);
                                 } catch (IOException e) {
                                     Toast.makeText(AddProductPageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
@@ -245,13 +225,11 @@ public class AddProductPageActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             t.printStackTrace();
                         }
                     });
 
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

@@ -1,9 +1,8 @@
 package com.group11.shoppuka.project.service;
 
-import android.net.Uri;
 
+import com.group11.shoppuka.project.model.account.ClientResponse;
 import com.group11.shoppuka.project.model.account.User;
-import com.group11.shoppuka.project.model.account.UserData;
 import com.group11.shoppuka.project.model.account.UserRequest;
 import com.group11.shoppuka.project.model.account.UserResponse;
 import com.group11.shoppuka.project.model.cart.Cart;
@@ -22,6 +21,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -30,9 +31,13 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface    ApiService {
-    @GET("api/products/{id}")
-    Call<Product> getProduct(@Path("id") int id);
+public interface ApiService {
+    @FormUrlEncoded
+    @POST("api/auth/local")
+    Call<ClientResponse> login(@Field("identifier") String username, @Field("password") String password);
+
+//    @GET("api/products/{id}")
+//    Call<Product> getProduct(@Path("id") int id);
 
     @GET("api/categories/")
     Call<CategoryResponse> getListCategory();

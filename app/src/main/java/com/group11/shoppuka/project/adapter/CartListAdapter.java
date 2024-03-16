@@ -1,7 +1,8 @@
 package com.group11.shoppuka.project.adapter;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,21 +28,21 @@ import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.view.product.DetailProductPageActivity;
 import com.group11.shoppuka.project.viewmodel.CartViewModel;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder> {
-    CartResponse cartResponse;
-    ProductResponse productResponse;
-    private Context context;
+    private CartResponse cartResponse;
+    private ProductResponse productResponse;
 
-    CartViewModel cartViewModel;
+    private final CartViewModel cartViewModel;
 
     @Inject
-    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse, Context context, CartViewModel cartViewModel){
+    public CartListAdapter(CartResponse cartResponse, ProductResponse productResponse,  CartViewModel cartViewModel){
         this.cartResponse = cartResponse;
         this.productResponse = productResponse;
         this.cartViewModel = cartViewModel;
-        this.context = context;
     }
 
     public void setCartResponse(CartResponse cartResponse) {
@@ -61,36 +60,40 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
         return new Holder(view);
     }
 
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
     @Override
     public void onBindViewHolder(@NonNull CartListAdapter.Holder holder, int position) {
-        holder.textView2.setVisibility(View.GONE);
-        holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        Product currentProductSelect = new Product();
-        if (productResponse != null && cartResponse != null){
-            for (Product product: productResponse.getData()){
-                if (cartResponse.getData().get(position).getAttributes().getIdProduct() == product.getAttributes().getIdProduct())
-                    currentProductSelect = product;
-            }
-            int currentCountProduct = cartResponse.getData().get(position).getAttributes().getCount();
-            int currentPriceProduct = (currentProductSelect.getAttributes().getPrice()*currentCountProduct);
-            int currentSalePriceProduct = (currentProductSelect.getAttributes().getSalePrice());
-            if (currentSalePriceProduct != 0) {
-                holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                holder.textView2.setText(String.valueOf(currentSalePriceProduct*currentCountProduct) + " VNĐ");
-                holder.textView2.setVisibility(View.VISIBLE);
-            }
-            String url = MyApplication.localHost + currentProductSelect.getAttributes().getImageURL();
-            Glide.with(holder.itemView.getContext()).load(url).into(holder.imageView);
-            if (currentProductSelect.getAttributes().getName().length() <= 20)
-                holder.textView.setText(currentProductSelect.getAttributes().getName());
-            else
-                holder.textView.setText((currentProductSelect.getAttributes().getName()).substring(0, Math.min(productResponse.getData().get(position).getAttributes().getName().length(), 20)) + "...");
-            holder.textView1.setText(String.valueOf(currentPriceProduct*currentCountProduct) + " VNĐ");
+        try{
+            holder.textView2.setVisibility(View.GONE);
+            holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            Product currentProductSelect = new Product();
+            if (productResponse != null && cartResponse != null){
+                for (Product product: productResponse.getData()){
+                    if (cartResponse.getData().get(position).getAttributes().getIdProduct() == product.getAttributes().getIdProduct())
+                        currentProductSelect = product;
+                }
+                int currentCountProduct = cartResponse.getData().get(position).getAttributes().getCount();
+                int currentPriceProduct = (currentProductSelect.getAttributes().getPrice()*currentCountProduct);
+                int currentSalePriceProduct = (currentProductSelect.getAttributes().getSalePrice());
+                if (currentSalePriceProduct != 0) {
+                    holder.textView1.setPaintFlags(holder.textView1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    holder.textView1.setTextColor(Color.parseColor("#ACABAB"));
+                    holder.textView2.setText(MyApplication.formatCurrency(String.valueOf(currentSalePriceProduct*currentCountProduct)) + " VNĐ");
+                    holder.textView2.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.textView1.setTextColor(Color.parseColor("#cf052d"));
+                }
+                String url = MyApplication.localHost + currentProductSelect.getAttributes().getImageURL();
+                Glide.with(holder.itemView.getContext()).load(url).into(holder.imageView);
+                if (currentProductSelect.getAttributes().getName().length() <= 20)
+                    holder.textView.setText(currentProductSelect.getAttributes().getName());
+                else
+                    holder.textView.setText((currentProductSelect.getAttributes().getName()).substring(0, Math.min(productResponse.getData().get(position).getAttributes().getName().length(), 20)) + "...");
+                holder.textView1.setText(MyApplication.formatCurrency(String.valueOf(currentPriceProduct*currentCountProduct)) + " VNĐ");
 
-            holder.tvCount.setText(String.valueOf(cartResponse.getData().get(position).getAttributes().getCount()));
-            holder.btnAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                holder.tvCount.setText(String.valueOf(cartResponse.getData().get(position).getAttributes().getCount()));
+                holder.btnAdd.setOnClickListener(view -> {
                     CartRequest cartRequest = new CartRequest();
                     CartData cartData = new CartData();
                     cartData.setIdProduct(cartResponse.getData().get(position).getAttributes().getIdProduct());
@@ -102,65 +105,51 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
                     cartViewModel.addCart(cartRequest);
                     cartViewModel.fetchListCart();
                     notifyItemChanged(position);
-                }
-            });
-            holder.btnSub.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                });
+                holder.btnSub.setOnClickListener(view -> {
                     CartResponse currentCartResponse = new CartResponse();
-                    currentCartResponse.setData(cartViewModel.getCartResponseMutableLiveData().getValue().getData());
+                    currentCartResponse.setData(Objects.requireNonNull(cartViewModel.getCartResponseMutableLiveData().getValue()).getData());
                     Cart currentCart = cartResponse.getData().get(position);
+                    int fake;
                     if (currentCart.getAttributes().getIdResource().isEmpty()){
-                        int fake =  currentCart.getId();
+                        fake = currentCart.getId();
                         cartViewModel.deleteIdCart(currentCart.getId());
                         cartResponse.getData().remove(position);
                         notifyDataSetChanged();
-                        System.out.println("Xóa Thành Công ID RESOURCE: "+ fake);
                     }
                     else {
-                        for (int i = 0 ; i < cartResponse.getData().get(position).getAttributes().getIdResource().size();i++ ){
-                            int fake =  cartResponse.getData().get(position).getId();
-                            cartViewModel.deleteIdCart(currentCart.getAttributes().getIdResource().get(i));
-                            cartResponse.getData().get(position).getAttributes().getIdResource().remove(i);
-                            System.out.println("Xóa Thành Công ID RESOURCE: "+ fake);
-                            break;
-                        }
-                    }
+                        fake = cartResponse.getData().get(position).getId();
+                        cartViewModel.deleteIdCart(currentCart.getAttributes().getIdResource().get(0));
+                        cartResponse.getData().get(position).getAttributes().getIdResource().remove(0);
 
-                    int currentCount = Integer.valueOf(holder.tvCount.getText().toString())-1;
+                    }
+                    System.out.println("Xóa Thành Công ID RESOURCE: "+ fake);
+
                     cartViewModel.fetchListCart();
                     notifyItemChanged(position);
-                }
-            });
-            Product finalCurrentProductSelect = currentProductSelect;
-            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    Product product = new Product();
+                });
+                Product finalCurrentProductSelect = currentProductSelect;
+                holder.relativeLayout.setOnClickListener(view -> {
+                    Product product;
                     product = finalCurrentProductSelect;
                     Intent intent = new Intent(view.getContext(), DetailProductPageActivity.class);
                     intent.putExtra("product",product);
                     view.getContext().startActivity(intent);
-                }
-            });
+                });
+            }
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
         }
 
-    }
-    public void removeItem(int position) {
-        if (position >= 0 && position < cartResponse.getData().size()) {
-            cartResponse.getData().remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, cartResponse.getData().size());
-        }
     }
 
     @Override
     public int getItemCount() {
-        return cartResponse.getData() != null ? cartResponse.getData().size() : 0;
+        return cartResponse.getData().size();
     }
 
-    public class Holder extends RecyclerView.ViewHolder{
+    public static class Holder extends RecyclerView.ViewHolder{
         RelativeLayout relativeLayout;
         ImageView imageView;
         TextView textView;
@@ -168,8 +157,8 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.Holder
         TextView textView2;
         FrameLayout frameLayout;
 
-        TextView btnAdd;
-        TextView btnSub;
+        ImageView btnAdd;
+        ImageView btnSub;
         TextView tvCount;
 
         ConstraintLayout clNoCart;

@@ -2,8 +2,8 @@ package com.group11.shoppuka.project.base;
 
 import androidx.annotation.NonNull;
 
-public abstract class BaseResponse<T> {
-    public static final class Success<T> extends BaseResponse<T>{
+public abstract class BaseResponse {
+    public static final class Success<T> extends BaseResponse {
         private final T data;
 
 
@@ -30,10 +30,6 @@ public abstract class BaseResponse<T> {
             this.exception = exception;
         }
 
-        public Exception getException() {
-            return exception;
-        }
-
         @NonNull
         @Override
         public String toString() {
@@ -49,10 +45,11 @@ public abstract class BaseResponse<T> {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (this instanceof Success) {
-            return ((Success) this).toString();
+            return ((Success<?>) this).toString();
         } else if (this instanceof Error) {
             return ((Error) this).toString();
         } else if (this instanceof Loading) {

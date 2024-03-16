@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:icon="@drawable/ic_bell"
-        android:id="@+id/notify"
-        android:title="Thông báo"
-        />
-    <item
-        android:icon="@drawable/pk_icon_order"
-        android:id="@+id/manageOrder"
-        android:title="Quản lý đơn hàng"
-        />
-    <item
-        android:icon="@drawable/tmaddproduct48"
-        android:id="@+id/modeAuthentication"
-        android:title="Quản lý sản phẩm"
-        />
-    <item
-        android:icon="@drawable/tm_logout_32"
-        android:id="@+id/logOut"
-        android:title="Đăng xuất"
-        />
+
+    <item android:id="@+id/admin_mode" android:title="Quản lý">
+        <menu>
+            <item
+                android:iconTint="@color/mainColor"
+                android:icon="@drawable/pk_ic_manage_order"
+                android:id="@+id/manageOrder"
+                android:title="Quản lý đơn hàng"
+                />
+            <item
+                android:iconTint="@color/mainColor"
+                android:icon="@drawable/pk_ic_manage"
+                android:id="@+id/modeAuthentication"
+                android:title="Quản lý sản phẩm"
+                />
+        </menu>
+    </item>
+    <item android:id="@+id/client_mode" android:title="Người dùng">
+        <menu>
+            <item
+                android:iconTint="@color/mainColor"
+                android:icon="@drawable/tm_logout_32"
+                android:id="@+id/logOut"
+                android:title="Đăng xuất"
+                />
+            <item
+                android:iconTint="@color/mainColor"
+                android:visible="false"
+                android:icon="@drawable/ic_bell"
+                android:id="@+id/notify"
+                android:title="Thông báo"
+                />
+        </menu>
+    </item>
 </menu>

@@ -1,7 +1,7 @@
 package com.group11.shoppuka.project.base;
 
-public interface BaseCallback<T> {
-    void onSuccess(BaseResponse<T> responseSuccess);
-    void onError(BaseResponse<Exception> responseError);
+public interface BaseCallback {
+    void onSuccess(BaseResponse responseSuccess);
+    void onError(BaseResponse responseError);
     void onLoading();
 }

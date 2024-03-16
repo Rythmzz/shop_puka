@@ -43,6 +43,15 @@
     <string name="edit">Edit</string>
     <string name="normal_tip_X" />
 
+    <string name="about_app">
+        Chào mừng đến với ứng dụng Shop Puka - nơi bạn có thể tìm thấy mọi thứ cần thiết để nâng cao trải nghiệm chơi game của bản thân!\n
+
+Với sứ mệnh làm cho mỗi trải nghiệm chơi game trở nên thú vị và đầy đủ, ứng dụng cung cấp một bộ sưu tập đa dạng các đồ dùng dụng cụ gaming hàng đầu trên thị trường. Từ bàn phím, chuột, tai nghe, tới bàn di chuột, ghế gaming và nhiều thiết bị khác - tất cả đều có sẵn để bạn khám phá và lựa chọn.\n
+
+Với giao diện thân thiện và dễ sử dụng, ứng dụng sẽ giúp bạn dễ dàng tìm kiếm và mua sắm các sản phẩm yêu thích của mình chỉ trong vài lần chạm màn hình. Ngoài ra, còn cung cấp thông tin chi tiết và đánh giá sản phẩm từ cộng đồng người dùng, giúp bạn có quyết định đúng đắn và tự tin hơn khi mua sắm.\n
+
+Hãy biến giấc mơ gaming của bạn thành hiện thực! Lướt Shop Puka và mua sắm ngay đi nào!
+    </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

@@ -1,11 +1,11 @@
 package com.group11.shoppuka.project.view.home.fragment;
 
-import android.os.Build;
+import android.annotation.SuppressLint;
+
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -42,7 +42,7 @@ public class SearchPageFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentSearchPageBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
@@ -59,7 +59,7 @@ public class SearchPageFragment extends Fragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @RequiresApi(api = Build.VERSION_CODES.N)
+            @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String filterString = s.toString();
@@ -69,7 +69,7 @@ public class SearchPageFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
                 else {
-                    binding.tvSearch.setText("Search Result For Keyword \""+s.toString()+"\"");
+                    binding.tvSearch.setText("Search Result For Keyword \""+ s +"\"");
                     List<Product> productFilteredSearch = viewModel.getProductResponseLiveData().getValue().getData().stream().filter(product -> product.getAttributes().getName().contains(filterString)).collect(Collectors.toList());
                     ProductResponse productFilteredSearchResponse = new ProductResponse(productFilteredSearch);
                     adapter.setProductResponse(productFilteredSearchResponse);
@@ -88,13 +88,11 @@ public class SearchPageFragment extends Fragment {
         binding.imageItem1.setLayoutManager(layoutManagerProduct);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setObserverData() {
-        viewModel.getProductResponseLiveData().observe(getActivity(), new Observer<ProductResponse>() {
-            @Override
-            public void onChanged(ProductResponse productResponse) {
-                adapter.setProductResponse(new ProductResponse());
-                adapter.notifyDataSetChanged();
-            }
+        viewModel.getProductResponseLiveData().observe(requireActivity(), productResponse -> {
+            adapter.setProductResponse(new ProductResponse());
+            adapter.notifyDataSetChanged();
         });
         viewModel.fetchData();
     }
@@ -105,6 +103,6 @@ public class SearchPageFragment extends Fragment {
 
     private void setIntitalData() {
         adapter = new ProductListFilterAdapter(new ProductResponse());
-        viewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(ProductViewModel.class);
     }
 }

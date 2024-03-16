@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".project.view.home.fragment.HomePageFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
@@ -22,10 +21,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/white"
+                android:background="@color/subColor"
 
                 >
                 <EditText
+                    android:textColorHint="@color/white"
                     android:layout_marginLeft="50dp"
                     android:layout_marginRight="50dp"
                     android:gravity="center"
@@ -55,8 +55,7 @@
             <RelativeLayout
                 android:id="@+id/rlayout_2"
                 android:background="@color/white"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +67,7 @@
                 <com.smarteist.autoimageslider.SliderView
                     android:id="@+id/imageSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="200dp"
                     app:sliderAnimationDuration="600"
                     app:sliderAutoCycleDirection="back_and_forth"
                     app:sliderAutoCycleEnabled="true"
@@ -78,7 +77,7 @@
                     app:sliderIndicatorOrientation="horizontal"
                     app:sliderIndicatorPadding="3dp"
                     app:sliderIndicatorRadius="2dp"
-                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorSelectedColor="@color/mainColor"
                     app:sliderIndicatorUnselectedColor="#FFF"
                     app:sliderScrollTimeInSec="1"
                     app:sliderStartAutoCycle="true" />
@@ -94,7 +93,7 @@
                 >
                 <TextView
                     android:padding="8dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:text="Danh Mục"
                     android:textColor="@color/white"
@@ -103,7 +102,7 @@
                     />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/image_item"
-                    android:background="@color/white"
+                    android:background="@color/subColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                    >
@@ -117,21 +116,26 @@
                 android:id="@+id/layout_image_item1"
                 app:layout_constraintTop_toBottomOf="@id/layout_image_item"
                 >
-                <TextView
-                    android:padding="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Khuyến mãi"
-                    android:textColor="@color/white"
-                    android:textStyle="bold|italic"
-                    android:textSize="20dp"
-                    />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:padding="8dp"
+                        android:layout_width="250dp"                        android:layout_height="wrap_content"
+                        android:text="Khuyến mãi"
+                        android:textColor="@color/white"
+                        android:textStyle="bold|italic"
+                        android:textSize="20dp"
+                        />
+                </LinearLayout>
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/image_item1"
-                    android:background="@color/white"
+                    android:background="@color/subColor"
 
                     />
             </LinearLayout>
@@ -142,21 +146,27 @@
                 android:id="@+id/layout_image_item2"
                 app:layout_constraintTop_toBottomOf="@id/layout_image_item1"
                 >
-                <TextView
-                    android:padding="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tìm kiếm hàng đầu"
-                    android:textColor="@color/white"
-                    android:textStyle="bold|italic"
-                    android:textSize="20dp"
-                    />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:padding="8dp"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:text="Tìm kiếm hàng đầu"
+                        android:textColor="@color/white"
+                        android:textStyle="bold|italic"
+                        android:textSize="20dp"
+                        />
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/image_item2"
-                    android:background="@color/white"
+                    android:background="@color/subColor"
 
                     />
             </LinearLayout>
@@ -175,7 +185,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         android:id="@+id/tvViewAll"
                         android:padding="8dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="250dp"
                         android:layout_height="match_parent"
                         android:text="Gợi ý hôm nay"
                         android:textColor="@color/white"
@@ -183,14 +193,16 @@
                         android:textSize="20dp"
                         />
                     <Button
-                        android:padding="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:gravity="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:id="@+id/btnViewAll"
                         android:text="Xem tất cả"
                         android:backgroundTint="@color/white"
                         android:textColor="@color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
                         />
 
 
@@ -200,7 +212,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/image_item3"
-                    android:background="@color/white"
+                    android:background="@color/subColor"
 
                     />
             </LinearLayout>

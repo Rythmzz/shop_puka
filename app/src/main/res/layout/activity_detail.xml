@@ -5,83 +5,118 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange">
+    android:background="@color/black">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/orange"
         tools:context=".MainActivity">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/imageViewProduct"
             android:layout_width="match_parent"
             android:layout_height="300dp"/>
 
-        <me.relex.circleindicator.CircleIndicator
-            android:id="@+id/circle_indicator"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="30dp"/>
         <LinearLayout
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginLeft="20dp">
+            >
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="18dp"
+                android:textColor="@color/mainColor"
+                android:textStyle="bold"
+                android:text="Tên sản phẩm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="25dp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="test">
+                android:textColor="@color/white"
+                android:text="Two Seater Luxury Sofa">
             </TextView>
             <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="16dp"
+                android:textColor="@color/mainColor"
+                android:textStyle="bold"
+                android:text="Giá sản phẩm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:text="0 VNĐ"
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:text="0 VNĐ"
                 android:id="@+id/salePrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="16dp"
+                android:textColor="@color/mainColor"                android:textStyle="bold"
+                android:text="Chi tiết sản phẩm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textStyle="italic"
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textSize="12sp"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
                 android:textColor="@color/white"
-                android:text="test"
+                android:text="Minimal Sofa is made of by natural wood. The design that is very simple and minimal. This is truly one of the best furnitures in any family for now. With 3 different colors, you can easily select the best match for your home."
                 >
             </TextView>
         </LinearLayout>
         <LinearLayout
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
+
             <android.widget.Button
                 android:id="@+id/btnCart"
-                android:layout_width="150dp"
+                android:layout_width="170dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="30dp"
                 android:background="@drawable/gotocart"
                 android:textColor="@color/white"
-                android:text="Go to cart"/>
+                android:text="Thêm vào giỏ hàng"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
             <android.widget.Button
                 android:id="@+id/btnBuy"
                 android:layout_height="50dp"
                 android:layout_width="150dp"
-                android:layout_marginLeft="55dp"
                 android:background="@drawable/buynow"
                 android:textColor="@color/white"
-                android:text="Buy Now">
+                android:text="Mua ngay">
+
 
             </android.widget.Button>
+
+
         </LinearLayout>
 
     </LinearLayout>

@@ -1,57 +1,66 @@
 package com.group11.shoppuka.project.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.group11.shoppuka.R;
+import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.model.order.Order;
 import com.group11.shoppuka.project.model.order.OrderData;
 import com.group11.shoppuka.project.model.order.OrderRequest;
 import com.group11.shoppuka.project.model.order.OrderResponse;
 import com.group11.shoppuka.project.model.product.ProductResponse;
-import com.group11.shoppuka.project.application.MyApplication;
 import com.group11.shoppuka.project.viewmodel.OrderViewModel;
 
 public class OrderListProgressAdapter extends RecyclerView.Adapter<OrderListProgressAdapter.Holder> {
     private OrderResponse orderResponse;
     private ProductResponse productResponse;
 
-    public OrderListProgressAdapter(OrderResponse orderResponse, ProductResponse productResponse){
+    private final OrderViewModel orderViewModel;
+
+    public OrderListProgressAdapter(OrderResponse orderResponse, ProductResponse productResponse, OrderViewModel orderViewModel){
         this.orderResponse = orderResponse;
         this.productResponse = productResponse;
+        this.orderViewModel = orderViewModel;
     }
 
     public void setProductResponse(ProductResponse productResponse) {
         this.productResponse = productResponse;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setOrderResponse(OrderResponse orderResponse) {
         this.orderResponse = orderResponse;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public OrderListProgressAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_progress_item,parent,false);
-        return new OrderListProgressAdapter.Holder(view);
+        return new Holder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull OrderListProgressAdapter.Holder holder, int position) {
         Order order = orderResponse.getData().get(position);
-        holder.orderCode.setText("OrderCode#"+order.getAttributes().getOrderCode().toString().substring(0,7));
+        holder.orderCode.setText("OrderCode#"+ order.getAttributes().getOrderCode().substring(0,7));
         holder.nameProduct.setText(productResponse.getData().get(order.getAttributes().getIdProduct()-1).getAttributes().getName());
-        holder.totalPrice.setText(String.valueOf(order.getAttributes().getTotalPrice()) + " VNĐ");
+        holder.totalPrice.setText(MyApplication.formatCurrency(String.valueOf(order.getAttributes().getTotalPrice())) + " VNĐ");
         holder.address.setText(order.getAttributes().getAddress());
         holder.dateCreate.setText(order.getAttributes().getDateCreate());
         holder.quantity.setText("x"+order.getAttributes().getQuantity());
@@ -59,43 +68,42 @@ public class OrderListProgressAdapter extends RecyclerView.Adapter<OrderListProg
         Glide.with(holder.itemView.getContext()).load(MyApplication.localHost+ url).into(holder.imageProduct);
         holder.phoneNumber.setText(order.getAttributes().getPhoneNumber());
 
-        holder.checkSuccess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    holder.checkSuccess.setChecked(false);
-                    OrderData orderData = new OrderData();
-                    orderData.setStatus(2);
-                    orderData.setTotalPrice(order.getAttributes().getTotalPrice());
-                    orderData.setQuantity(order.getAttributes().getQuantity());
-                    orderData.setIdProduct(order.getAttributes().getIdProduct());
-                    OrderRequest orderRequest = new OrderRequest();
-                    orderRequest.setData(orderData);
-                    OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
-                    orderViewModel.updateData(order.getId(),orderRequest);
-                    orderViewModel.fetchListData(1,1);
-                }
+        holder.checkSuccess.setOnClickListener(v -> {
+            OrderData orderData = new OrderData();
+            orderData.setStatus(2);
+            orderData.setTotalPrice(order.getAttributes().getTotalPrice());
+            orderData.setQuantity(order.getAttributes().getQuantity());
+            orderData.setIdProduct(order.getAttributes().getIdProduct());
+            OrderRequest orderRequest = new OrderRequest();
+            orderRequest.setData(orderData);
+            OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
+            orderViewModel.updateData(order.getId(),orderRequest);
+            orderViewModel.fetchListData(1,1);
+            holder.checkSuccess.setEnabled(false);
+            holder.checkFail.setEnabled(false);
 
-            }
+            Toast.makeText(holder.itemView.getContext(),"Đơn hàng đã được giao thành công",Toast.LENGTH_SHORT).show();
+
+
         });
-        holder.checkFail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    holder.checkFail.setChecked(false);
-                    OrderData orderData = new OrderData();
-                    orderData.setStatus(3);
-                    orderData.setTotalPrice(order.getAttributes().getTotalPrice());
-                    orderData.setQuantity(order.getAttributes().getQuantity());
-                    orderData.setIdProduct(order.getAttributes().getIdProduct());
-                    OrderRequest orderRequest = new OrderRequest();
-                    orderRequest.setData(orderData);
-                    OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
-                    orderViewModel.updateData(order.getId(),orderRequest);
-                    orderViewModel.fetchListData(1,1);
-                }
+        holder.checkFail.setOnClickListener(v -> {
 
-            }
+            OrderData orderData = new OrderData();
+            orderData.setStatus(3);
+            orderData.setTotalPrice(order.getAttributes().getTotalPrice());
+            orderData.setQuantity(order.getAttributes().getQuantity());
+            orderData.setIdProduct(order.getAttributes().getIdProduct());
+            OrderRequest orderRequest = new OrderRequest();
+            orderRequest.setData(orderData);
+           // OrderViewModel orderViewModel = new ViewModelProvider((ViewModelStoreOwner) holder.itemView.getContext()).get(OrderViewModel.class);
+            orderViewModel.updateData(order.getId(),orderRequest);
+            orderViewModel.fetchListData(1,1);
+            holder.checkSuccess.setEnabled(false);
+            holder.checkFail.setEnabled(false);
+
+            Toast.makeText(holder.itemView.getContext(),"Đơn hàng đã bị trả về",Toast.LENGTH_SHORT).show();
+
+
         });
     }
 
@@ -104,9 +112,9 @@ public class OrderListProgressAdapter extends RecyclerView.Adapter<OrderListProg
         return orderResponse.getData() != null && productResponse.getData() != null  ? orderResponse.getData().size() : 0;
     }
 
-    public class Holder extends RecyclerView.ViewHolder{
+    public static class Holder extends RecyclerView.ViewHolder{
         TextView orderCode, nameProduct, totalPrice, address, phoneNumber, dateCreate, quantity;
-        CheckBox checkSuccess, checkFail;
+        AppCompatButton checkSuccess, checkFail;
         ImageView imageProduct;
 
 

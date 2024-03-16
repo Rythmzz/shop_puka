@@ -1,16 +1,16 @@
 package com.group11.shoppuka.project.model.account;
 
 public class AttributesUser {
-    public String phoneNumber;
-    public String fullName;
-    public String password;
-    public String createdAt;
-    public String updatedAt;
-    public String publishedAt;
+    private String phoneNumber;
+    private String fullName;
+    private String password;
+    private String createdAt;
+    private String updatedAt;
+    private String publishedAt;
 
-    public String imageURL;
+    private String imageURL;
 
-    public int idMode;
+    private int idMode;
 
     public String getImageURL() {
         return imageURL;

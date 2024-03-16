@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,7 +18,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +50,7 @@ public class ProductListManageAdapter extends RecyclerView.Adapter<ProductListMa
         return new AccountAdapterViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull AccountAdapterViewHolder holder, int position) {
 
@@ -62,54 +62,43 @@ public class ProductListManageAdapter extends RecyclerView.Adapter<ProductListMa
             holder.tvNameProduct.setText(currentProduct.getAttributes().getName());
         else
             holder.tvNameProduct.setText((currentProduct.getAttributes().getName()).substring(0, Math.min(currentProduct.getAttributes().getName().length(), 27)) + "...");
-        holder.price.setText(String.valueOf(currentProduct.getAttributes().getPrice())+" VNĐ");
-        holder.salePrice.setText(String.valueOf(currentProduct.getAttributes().getSalePrice())+ " VNĐ");
-        holder.llItemAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Product product = products.getData().get(position);
-                Intent intent = new Intent(view.getContext(), ModifyProductActivity.class);
-                intent.putExtra("product",product);
-                view.getContext().startActivity(intent);
-            }
+        holder.price.setText(MyApplication.formatCurrency(String.valueOf(currentProduct.getAttributes().getPrice()))+" VNĐ");
+        holder.salePrice.setText(MyApplication.formatCurrency(String.valueOf(currentProduct.getAttributes().getSalePrice()))+ " VNĐ");
+        holder.llItemAccount.setOnClickListener(view -> {
+            Product product = products.getData().get(position);
+            Intent intent = new Intent(view.getContext(), ModifyProductActivity.class);
+            intent.putExtra("product",product);
+            view.getContext().startActivity(intent);
         });
         execBtnOptionAccount(holder, position);
     }
 
     private void execBtnOptionAccount(AccountAdapterViewHolder holder, int position){
-        holder.btnOptionalAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopMenu(holder,position);
-            }
-        });
+        holder.btnOptionalAccount.setOnClickListener(view -> showPopMenu(holder,position));
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void showPopMenu(AccountAdapterViewHolder view, int position){
         PopupMenu popupMenu = new PopupMenu(mContext,view.btnOptionalAccount);
         popupMenu.getMenuInflater().inflate(R.menu.menu_account_optional,popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.menu_update_account:
-                        Product product = products.getData().get(position);
-                        Intent intent = new Intent(mContext, ModifyProductActivity.class);
-                        intent.putExtra("product",product);
-                        mContext.startActivity(intent);
-                        break;
-                    case R.id.menu_delete_account:
-                        openDialogVerify(Gravity.CENTER,position);
-                        break;
-                }
-                return false;
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case R.id.menu_update_account:
+                    Product product = products.getData().get(position);
+                    Intent intent = new Intent(mContext, ModifyProductActivity.class);
+                    intent.putExtra("product",product);
+                    mContext.startActivity(intent);
+                    break;
+                case R.id.menu_delete_account:
+                    openDialogVerify(position);
+                    break;
             }
+            return false;
         });
         popupMenu.show();
     }
 
-    private void openDialogVerify(int gravity, int position){
+    private void openDialogVerify(int position){
         final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(androidx.core.R.layout.custom_dialog);
@@ -122,27 +111,19 @@ public class ProductListManageAdapter extends RecyclerView.Adapter<ProductListMa
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = gravity;
+        windowAttributes.gravity = Gravity.CENTER;
         dialog.setCancelable(false);
         dialog.show();
 
         Button btnAccept = dialog.findViewById(R.id.btn_accept_dialog);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel_dialog);
 
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ProductViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(ProductViewModel.class);
-                viewModel.deleteData(products.getData().get(position).getId());
-                dialog.cancel();
-            }
+        btnAccept.setOnClickListener(view -> {
+            ProductViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(ProductViewModel.class);
+            viewModel.deleteData(products.getData().get(position).getId());
+            dialog.cancel();
         });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.cancel();
-            }
-        });
+        btnCancel.setOnClickListener(view -> dialog.cancel());
     }
 
 
@@ -156,14 +137,11 @@ public class ProductListManageAdapter extends RecyclerView.Adapter<ProductListMa
     }
 
 
-    public class AccountAdapterViewHolder extends RecyclerView.ViewHolder{
+    public static class AccountAdapterViewHolder extends RecyclerView.ViewHolder{
         private TextView tvNameProduct;
         private CircleImageView civAccount;
-        private CardView itemAccount;
-        private ImageButton imgEditAccount;
         private LinearLayout llItemAccount;
         private ImageButton btnOptionalAccount;
-        private Button btnAcceptDialog, btnCancelDialog;
 
         private TextView price;
         private TextView salePrice;
@@ -175,11 +153,8 @@ public class ProductListManageAdapter extends RecyclerView.Adapter<ProductListMa
 
         private void setControl(View view){
             tvNameProduct = view.findViewById(R.id.tv_name_account);
-            itemAccount = view.findViewById(R.id.cvAccount);
             llItemAccount = view.findViewById(R.id.ll_item_account);
             btnOptionalAccount = view.findViewById(R.id.btn_optional_account);
-            btnAcceptDialog = view.findViewById(R.id.btn_accept_dialog);
-            btnCancelDialog = view.findViewById(R.id.btn_cancel_dialog);
             civAccount= view.findViewById(R.id.civ_account);
             price = view.findViewById(R.id.tv_price_product);
             salePrice = view.findViewById(R.id.tv_sale_price_product);

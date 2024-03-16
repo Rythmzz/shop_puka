@@ -1,26 +1,24 @@
 package com.group11.shoppuka.project.view.product;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.group11.shoppuka.R;
 import com.group11.shoppuka.databinding.ActivityManageProductBinding;
 import com.group11.shoppuka.project.adapter.ProductListManageAdapter;
 import com.group11.shoppuka.project.model.product.ProductResponse;
 import com.group11.shoppuka.project.viewmodel.ProductViewModel;
+
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -53,20 +51,16 @@ public class ManageProductPageActivity extends AppCompatActivity {
     }
 
     private void setUI() {
-        getSupportActionBar().setTitle("Management Product");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#F87217"));
-        }
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Quản Lý Sản Phẩm");
+        getWindow().setStatusBarColor(Color.parseColor("#cf052d"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.mainColor)));
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setObserverData() {
-        productViewModel.getProductResponseLiveData().observe(ManageProductPageActivity.this, new Observer<ProductResponse>() {
-            @Override
-            public void onChanged(ProductResponse productResponse) {
-                productAdapter.setData(productResponse);
-                productAdapter.notifyDataSetChanged();
-            }
+        productViewModel.getProductResponseLiveData().observe(ManageProductPageActivity.this, productResponse -> {
+            productAdapter.setData(productResponse);
+            productAdapter.notifyDataSetChanged();
         });
         productViewModel.fetchData();
     }
@@ -89,20 +83,14 @@ public class ManageProductPageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     private void setEventHandler(){
-        binding.btnAddAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(ManageProductPageActivity.this, AddProductPageActivity.class);
-                startActivity(intent);
-            }
+        binding.btnAddAccount.setOnClickListener(v -> {
+           Intent intent = new Intent(ManageProductPageActivity.this, AddProductPageActivity.class);
+            startActivity(intent);
         });
 
-        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                productViewModel.fetchData();
-                binding.swipeRefreshLayout.setRefreshing(false);
-            }
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            productViewModel.fetchData();
+            binding.swipeRefreshLayout.setRefreshing(false);
         });
     }
 

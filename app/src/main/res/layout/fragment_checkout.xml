@@ -2,8 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
     <LinearLayout
+        android:background="@color/white"
             android:paddingTop="4dp"
             android:paddingBottom="16dp"
             android:orientation="vertical"
@@ -11,64 +13,94 @@
 
 
         <LinearLayout
+            android:padding="10dp"
                 android:orientation="horizontal"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <TextView
-
-                    android:text="Phone"
+                android:textSize="18dp"
+                android:textColor="@color/mainColor"
+                android:textStyle="bold"
+                    android:text="Số điện thoại: "
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"/>
+                    android:layout_width="120dp"/>
             <TextView
+                android:textColor="@color/black"
+                android:text="0365304510"
+                android:textSize="16dp"
+                android:layout_gravity="center"
                     android:id="@+id/tvPhoneNumber"
                     android:background="@android:color/transparent"
-                    android:hint="Phone Number"
                     android:layout_width="160dp"
                     android:layout_weight="5"
                     android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent" android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvCity"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="City" />
-
-            <Spinner
-                android:id="@+id/spinner_province"
-                android:layout_width="150dp"
-                android:layout_height="30dp" />
-
-            <TextView
-                    android:id="@+id/tvDistrict"
-                    android:text="District"
+            <LinearLayout
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="18dp"
+                    android:textColor="@color/mainColor"
+                    android:textStyle="bold"
+                    android:id="@+id/tvCity"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:layout_width="5dp"/>
-            <Spinner
-                android:id="@+id/spinner_district"
-                android:layout_width="100dp"
-                android:layout_height="30dp" />
+                    android:text="Tỉnh (thành): " />
+
+                <Spinner
+                    android:id="@+id/spinner_province"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="18dp"
+                    android:textColor="@color/mainColor"
+                    android:textStyle="bold"
+                    android:id="@+id/tvDistrict"
+                    android:text="Quận (huyện): "
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_width="120dp"/>
+                <Spinner
+                    android:id="@+id/spinner_district"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
+            android:padding="10dp"
                 android:orientation="horizontal"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <TextView
-                    android:text="Street"
+                android:textSize="18dp"
+                android:textColor="@color/mainColor"
+                android:textStyle="bold"
+                    android:text="Đường: "
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"/>
+                    android:layout_width="120dp"/>
             <EditText
+                android:textSize="16dp"
+                    android:hint="Nhập địa chỉ cụ thể"
+                    android:textColor="@color/black"
+                    android:maxLines="2"
                     android:inputType="text"
                     android:id="@+id/etStreet"
-                    android:hint="Street"
                     android:background="@android:color/transparent"
-                    android:layout_width="160dp"
-                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
         </LinearLayout>
@@ -76,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
-                android:background="@android:color/darker_gray"/>
+                android:background="@color/mainColor"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCart"
@@ -90,16 +122,14 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
-                    android:text="Total : "/>
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:text="Tổng Thanh Toán : "/>
             <TextView
                     android:id="@+id/totalPrice"
                     android:paddingTop="16dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
+                    android:textColor="@color/mainColor"
+                    android:textSize="18dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -108,7 +138,8 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginTop="20dp"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <Button
                 android:background="@drawable/borderfillbtn"
@@ -117,7 +148,7 @@
                 android:layout_height="50dp"
                 android:backgroundTint="@color/mainColor"
                 android:fontFamily="sans-serif-black"
-                android:text="Pay"
+                android:text="Xác Nhận Thanh Toán"
                 android:textColor="@color/white" />
 
             <Button
@@ -128,7 +159,7 @@
                 android:layout_height="50dp"
                 android:backgroundTint="@color/mainColor"
                 android:fontFamily="sans-serif-black"
-                android:text="Cancel"
+                android:text="Hủy Bỏ"
                 android:textColor="@color/white" />
 
         </LinearLayout>

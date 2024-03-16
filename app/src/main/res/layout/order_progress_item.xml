@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="330dp"
     android:layout_marginTop="1dp"
     android:background="@drawable/border_shopnow"
     android:foreground="?android:selectableItemBackground"
@@ -90,7 +90,8 @@
     </LinearLayout>
 
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
+        app:riv_corner_radius="8dp"
         android:id="@+id/order_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -130,8 +131,8 @@
     <LinearLayout
         android:id="@+id/llStatus"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
+        android:layout_height="80dp"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/tvQuantity"
         >
         <TextView
@@ -139,18 +140,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-        <CheckBox
-            android:id="@+id/btnConfirmProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Giao thành công"
-            />
-        <CheckBox
-            android:id="@+id/btnCancelProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Giao thất bại"
-            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnConfirmProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giao thành công"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnCancelProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giao thất bại"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/llPhoneNumber"

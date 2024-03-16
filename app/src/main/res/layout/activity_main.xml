@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/subColor"
+    >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -28,6 +30,9 @@
         app:menu="@menu/bottom_nav_menu"
         app:headerLayout="@layout/layout_header"
         android:layout_gravity="start"
+        app:itemIconTint="@color/mainColor"
+        app:itemShapeFillColor="@color/mainColor"
+        app:itemTextColor="@color/mainColor"
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>

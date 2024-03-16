@@ -6,16 +6,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -36,10 +35,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import okhttp3.MediaType;
@@ -53,7 +52,7 @@ import retrofit2.Response;
 public class ModifyProductActivity extends AppCompatActivity {
     ActivityModifyProductBinding binding;
     CategoryViewModel cateViewModel;
-    private ProductData productData = new ProductData();
+    private final ProductData productData = new ProductData();
     @Override
     protected void onResume() {
         super.onResume();
@@ -82,7 +81,6 @@ public class ModifyProductActivity extends AppCompatActivity {
         binding.spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = dataMenu.get(i);
                 productData.setIdCategory(i+1);
                 System.out.println("ID CATEGORY : "+ i);
             }
@@ -93,76 +91,68 @@ public class ModifyProductActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnUpdateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (binding.edtProductName.getText().toString().isEmpty()){
-                    binding.edtProductName.setError("Tên sản phẩm không được để trống");
+        binding.btnUpdateAccount.setOnClickListener(view -> {
+            if (binding.edtProductName.getText().toString().isEmpty()){
+                binding.edtProductName.setError("Tên sản phẩm không được để trống");
+            }
+            else if (binding.edtProductPrice.getText().toString().isEmpty()){
+                binding.edtProductPrice.setError("Giá sản phẩm không được để trống");
+            }
+            else if (binding.edtProductSalePrice.getText().toString().isEmpty()){
+                binding.edtProductSalePrice.setError("Giá khuyến mãi không được để trống");
+            }
+            else if (Integer.parseInt(binding.edtProductPrice.getText().toString()) <= Integer.parseInt(binding.edtProductSalePrice.getText().toString())){
+                binding.edtProductSalePrice.setError("Giá khuyến mãi không được lớn hơn giá gốc");
+            }
+            else if (binding.edtProductDescription.getText().toString().isEmpty()){
+                binding.edtProductDescription.setError("Mô tả sản phẩm không được để trống");
+            }
+            else {
+                if (productData.getImageURL() == null){
+                    productData.setImageURL(currentProduct.getAttributes().getImageURL());
                 }
-                else if (binding.edtProductPrice.getText().toString().isEmpty()){
-                    binding.edtProductPrice.setError("Giá sản phẩm không được để trống");
-                }
-                else if (binding.edtProductSalePrice.getText().toString().isEmpty()){
-                    binding.edtProductSalePrice.setError("Giá khuyến mãi không được để trống");
-                }
-                else if (Integer.valueOf(binding.edtProductPrice.getText().toString()) <= Integer.valueOf(binding.edtProductSalePrice.getText().toString())){
-                    binding.edtProductSalePrice.setError("Giá khuyến mãi không được lớn hơn giá gốc");
-                }
-                else if (binding.edtProductDescription.getText().toString().isEmpty()){
-                    binding.edtProductDescription.setError("Mô tả sản phẩm không được để trống");
-                }
-                else {
-                    if (productData.getImageURL() == null){
-                        productData.setImageURL(currentProduct.getAttributes().getImageURL());
-                    }
-                    productData.setName(binding.edtProductName.getText().toString());
-                    productData.setPrice(Integer.valueOf(binding.edtProductPrice.getText().toString()));
-                    productData.setSalePrice(Integer.valueOf(binding.edtProductSalePrice.getText().toString()));
-                    productData.setDescription(binding.edtProductDescription.getText().toString());
-                    productData.setCountSearch(0);
-                    ProductRequest productRequest = new ProductRequest();
-                    productRequest.setData(productData);
-                    ProductViewModel productViewModel = new ViewModelProvider(ModifyProductActivity.this).get(ProductViewModel.class);
-                    productViewModel.updateData(currentProduct.getId(),productRequest);
-                    Toast.makeText(getApplicationContext(),"Product được chỉnh sửa thành công !",Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                productData.setName(binding.edtProductName.getText().toString());
+                productData.setPrice(Integer.parseInt(binding.edtProductPrice.getText().toString()));
+                productData.setSalePrice(Integer.parseInt(binding.edtProductSalePrice.getText().toString()));
+                productData.setDescription(binding.edtProductDescription.getText().toString());
+                productData.setCountSearch(0);
+                productData.setIdProduct(currentProduct.getId());
+                ProductRequest productRequest = new ProductRequest();
+                productRequest.setData(productData);
+                ProductViewModel productViewModel = new ViewModelProvider(ModifyProductActivity.this).get(ProductViewModel.class);
+                productViewModel.updateData(currentProduct.getId(),productRequest);
+                Toast.makeText(getApplicationContext(),"Product được chỉnh sửa thành công !",Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 
-        binding.ivImageURL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"),MyApplication.PICK_IMAGE);
-            }
+        binding.ivImageURL.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"),MyApplication.PICK_IMAGE);
         });
     }
 
     private void setObserverData() {
-        cateViewModel.getCategoryResponseLiveData().observe(ModifyProductActivity.this, new Observer<CategoryResponse>() {
-            @Override
-            public void onChanged(CategoryResponse categoryResponse) {
-                currentCategoryResponse.setData(categoryResponse.getData());
-                for (Category category : currentCategoryResponse.getData()){
-                    dataMenu.add(category.getAttributes().getName());
-                }
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                binding.spnCategory.setAdapter(adapter);
-                binding.spnCategory.setSelection(currentProduct.getAttributes().getIdCategory()-1);
-
+        cateViewModel.getCategoryResponseLiveData().observe(ModifyProductActivity.this, categoryResponse -> {
+            currentCategoryResponse.setData(categoryResponse.getData());
+            for (Category category : currentCategoryResponse.getData()){
+                dataMenu.add(category.getAttributes().getName());
             }
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.spnCategory.setAdapter(adapter);
+            binding.spnCategory.setSelection(currentProduct.getAttributes().getIdCategory()-1);
+
         });
-        cateViewModel.fetchDataCategory();
+
+
+
     }
 
     private void setUI() {
-        getSupportActionBar().setTitle(currentProduct.getAttributes().getName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#F87217"));
-        }
+        Objects.requireNonNull(getSupportActionBar()).setTitle(currentProduct.getAttributes().getName());
+        getWindow().setStatusBarColor(Color.parseColor("#cf052d"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.mainColor)));
         String url = MyApplication.localHost + currentProduct.getAttributes().getImageURL();
         Glide.with(this).load(url).into(binding.ivImageURL);
@@ -178,7 +168,9 @@ public class ModifyProductActivity extends AppCompatActivity {
         currentProduct = (Product) data.getSerializableExtra("product");
         currentCategoryResponse = new CategoryResponse();
         dataMenu = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,dataMenu);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, dataMenu);
+        cateViewModel =  new ViewModelProvider(this).get(CategoryViewModel.class);
+        cateViewModel.fetchDataCategory();
     }
 
     @Override
@@ -186,7 +178,10 @@ public class ModifyProductActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MyApplication.PICK_IMAGE){
             if (resultCode == RESULT_OK){
-                Uri imageUri = data.getData();
+                Uri imageUri = null;
+                if (data != null) {
+                    imageUri = data.getData();
+                }
                 binding.ivImageURL.setImageURI(imageUri);
                 try {
                     InputStream inputStream =getContentResolver().openInputStream(imageUri);
@@ -198,21 +193,20 @@ public class ModifyProductActivity extends AppCompatActivity {
 
                     apiService.uploadImage(image).enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
 
                             if (response.isSuccessful()) {
                                 try {
+                                    assert response.body() != null;
                                     String responseBody = response.body().string();
                                     JSONArray jsonArray = new JSONArray(responseBody);
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                                     imageUrl = jsonObject.getString("url");
                                     productData.setImageURL(imageUrl);
                                     System.out.println(imageUrl);
-                                    // Sử dụng imageUrl để cập nhật thuộc tính url trong bảng sản phẩm
-                                }  catch (JSONException e) {
+                                }  catch (JSONException | IOException e) {
                                     throw new RuntimeException(e);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
+
                                 }
 
                                 System.out.println("upload hình thành công");
@@ -221,7 +215,9 @@ public class ModifyProductActivity extends AppCompatActivity {
                                 ResponseBody errorBody = response.errorBody();
                                 String errorMessage = null;
                                 try {
-                                    errorMessage = response.errorBody().string();
+                                    if (response.errorBody() != null) {
+                                        errorMessage = response.errorBody().string();
+                                    }
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -229,6 +225,7 @@ public class ModifyProductActivity extends AppCompatActivity {
                                 System.out.println(errorMessage);
                                 try {
                                     errorMessage = errorBody != null ? errorBody.string() : "";
+                                    System.out.println(errorMessage);
                                 } catch (IOException e) {
                                     Toast.makeText(ModifyProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
@@ -236,13 +233,11 @@ public class ModifyProductActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             t.printStackTrace();
                         }
                     });
 
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
